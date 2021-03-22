@@ -67,46 +67,16 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>000.001.002
-                                    </td>
-                                    <td>1</td>
-                                    <td> 4</td>
-                                    <td>X</td>
-                                </tr>
-                                <tr>
-                                    <td>1</td>
-                                    <td>000.001.002
-                                    </td>
-                                    <td>1</td>
-                                    <td>5</td>
-                                    <td>C</td>
-                                </tr>
-                                <tr>
-                                    <td>1</td>
-                                    <td>000.001.002
-                                    </td>
-                                    <td>1</td>
-                                    <td>5.5</td>
-                                    <td>A</td>
-                                </tr>
-                                <tr>
-                                    <td>1</td>
-                                    <td>000.001.002
-                                    </td>
-                                    <td>1</td>
-                                    <td>5.5</td>
-                                    <td>A</td>
-                                </tr>
-                                <tr>
-                                    <td>1</td>
-                                    <td>000.001.002
-                                    </td>
-                                    <td>1</td>
-                                    <td>5.5</td>
-                                    <td>A</td>
-                                </tr>
+                                {% for intrare in date %}
+                                    <tr>
+                                        <td>1</td>
+                                        <td>{{ intrare.cod_placa_id}}</td>
+                                        <td>{{ intrare.line_productie }}</td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                {% endfor %}
+                                
                             </tbody>
                         </table>
                     </div>
