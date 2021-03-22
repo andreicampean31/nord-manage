@@ -17,12 +17,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
     href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="{% static 'wave/plugins/fontawesome-free/css/all.min.css' %}">
-  <!-- DataTables -->
-  <link rel="stylesheet" href="{% static 'wave/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %} ">
-  <link rel="stylesheet" href="{% static 'wave/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %} ">
-  <link rel="stylesheet" href="{% static 'wave/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
   <!-- Theme style -->
   <link rel="stylesheet" href="{% static 'wave/css/adminlte.min.css' %}">
+  <!-- Page specific plugins/css -->
+  {% block specific_plugins_css %}{% endblock specific_plugins_css %}
 </head>
 
 <body class="hold-transition sidebar-mini">
@@ -154,6 +152,21 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
+      <section class="content-header">
+        <div class="container-fluid">
+          <div class="row mb-2">
+            <div class="col-sm-6">
+              <h1>Home Wave</h1>
+            </div>
+            <div class="col-sm-6">
+              <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a href="#">Home</a></li>
+                <li class="breadcrumb-item active">Wave</li>
+              </ol>
+            </div>
+          </div>
+        </div><!-- /.container-fluid -->
+      </section>
       <section class="content">
         <div class="container-fluid">
           {% block content %} {% endblock content %}
@@ -176,15 +189,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <!-- ./wrapper -->
 
   <!-- REQUIRED SCRIPTS -->
-
   <!-- jQuery -->
-
   <script src="{% static 'wave/plugins/jquery/jquery.min.js' %}"></script>
   <!-- Bootstrap 4 -->
   <script src="{% static 'wave/plugins/bootstrap/js/bootstrap.bundle.min.js' %} "></script>
   <!-- AdminLTE App -->
   <script src="{% static 'wave/js/adminlte.min.js' %} "></script>
-  <!-- Page specific script -->
+  <!-- Page specific scripts -->
   {% block page_specific_scripts %} {% endblock page_specific_scripts %}
 </body>
 
