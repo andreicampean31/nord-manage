@@ -67,12 +67,12 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for intrare in date %}
+                                {% for i in data %}
                                     <tr>
                                         <td>1</td>
-                                        <td>{{ intrare.cod_placa_id}}</td>
-                                        <td>{{ intrare.line_productie }}</td>
-                                        <td></td>
+                                        <td>{{ i.0}}</td>
+                                        <td>1</td>
+                                        <td>{{ i.1}}</td>
                                         <td></td>
                                     </tr>
                                 {% endfor %}
@@ -88,6 +88,7 @@
         </div>
         <!-- /.row -->
     </div>
+ 
 {% endblock content %}
 
 {% block page_specific_scripts %}
