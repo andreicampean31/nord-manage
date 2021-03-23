@@ -78,7 +78,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'nord_manageDB',
-        'USER': 'andreicampean',
+        'USER': 'andrei',
         'PASSWORD': 'AlbaIulia12',
         'HOST': 'localhost',
         'PORT': '3306'
