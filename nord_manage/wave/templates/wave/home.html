@@ -107,7 +107,7 @@
         <div class="card-body">
           <div class="chart">
             <canvas id="areaChart2"
-              style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+              style="min-height: 350px; height: 350px; max-height: 350px; max-width: 100%;"></canvas>
           </div>
         </div>
         <!-- /.card-body -->
@@ -440,10 +440,10 @@
     var areaChartCanvas = $('#areaChart2').get(0).getContext('2d')
 
     var areaChartData = {
-      labels: ['0', '3', '6', 9, 12],
+      labels: ['6:30', '7:00', '7:30', '8:00', '8:30', '9:00', '9:30', '10:00', '10:30', '10:30', '10:30', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30'],
       datasets: [
         {
-          label: 'Minute lucrate',
+          label: 'Eficienta',
           lineTension: 0,
           steppedLine: '',
           backgroundColor: '',
@@ -453,10 +453,8 @@
           pointStrokeColor: 'rgba(60,141,188,1)',
           pointHighlightFill: '#fff',
           pointHighlightStroke: 'rgba(60,141,188,1)',
-          data: [0, 60, 6, 9, 12, 0,]
-        },
-
-      ]
+          data: [0, 83.33, 28, 27, 30, 28, 29, 26, 28, 0, 0, 28, 23, 26, 30, 32, 29]
+        }],
     }
 
     var areaChartOptions = {
@@ -474,7 +472,7 @@
         yAxes: [{
           ticks: {
             min: 0,
-            max: 80
+            max: 120
           },
           gridLines: {
             display: true,
@@ -482,10 +480,10 @@
         }]
       },
       drawHorizontalLine: {
-        lineY: [60, 60],
+        lineY: [100, 100],
         lineColor: "rgba(50, 155, 255, 0.85)",
         text: '',
-        textPosition: 720,
+        textPosition: 360,
         textFont: '18px sans-serif',
         textColor: "rgba(50, 155, 255, 0.85)"
       }
@@ -498,7 +496,7 @@
       options: areaChartOptions
     })
   })
-  
+
 </script>
 <!-- Page specific script - area chart - chart.js 3 -->
 <script>
