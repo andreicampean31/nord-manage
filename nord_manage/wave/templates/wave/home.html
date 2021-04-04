@@ -30,7 +30,7 @@
         </div>
         <div class="card-body">
           <div class="chart">
-            <canvas id="areaChart1"
+            <canvas id="areaChart1" data-url="{% url 'efficency-chart' %}"
               style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
           </div>
         </div>
@@ -58,7 +58,7 @@
                 <th>Cod placa</th>
                 <th>Linia</th>
                 <th>Nr Bucati</th>
-                <th>Target</th>
+                <th>Target/ora</th>
               </tr>
             </thead>
             <tbody>
@@ -68,7 +68,7 @@
                 <td>{{ i.0 }}</td>
                 <td>1</td>
                 <td>{{ i.1 }}</td>
-                <td></td>
+                <td><{{i.2}}/td>
               </tr>
               {% endfor %}
 
@@ -106,7 +106,7 @@
         </div>
         <div class="card-body">
           <div class="chart">
-            <canvas id="areaChart2"
+            <canvas id="areaChart2" data-url="{% url 'efficency-chart' %}"
               style="min-height: 350px; height: 350px; max-height: 350px; max-width: 100%;"></canvas>
           </div>
         </div>
@@ -134,7 +134,7 @@
                 <th>Cod placa</th>
                 <th>Linia</th>
                 <th>Nr Bucati</th>
-                <th>Target</th>
+                <th>Target/ora</th>
               </tr>
             </thead>
             <tbody>
@@ -144,7 +144,7 @@
                 <td>{{ i.0 }}</td>
                 <td>1</td>
                 <td>{{ i.1 }}</td>
-                <td></td>
+                <td>{{ i.2 }}</td>
               </tr>
               {% endfor %}
 
@@ -181,7 +181,7 @@
         </div>
         <div class="card-body">
           <div class="chart">
-            <canvas id="areaChart3"
+            <canvas id="areaChart3" data-url="{% url 'efficency-chart' %}"
               style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
           </div>
         </div>
@@ -209,7 +209,7 @@
                 <th>Cod placa</th>
                 <th>Linia</th>
                 <th>Nr Bucati</th>
-                <th>Target</th>
+                <th>Target/ora</th>
               </tr>
             </thead>
             <tbody>
@@ -219,7 +219,7 @@
                 <td>{{ i.0 }}</td>
                 <td>1</td>
                 <td>{{ i.1 }}</td>
-                <td></td>
+                <td>{{ i.2 }}</td>
               </tr>
               {% endfor %}
 
@@ -368,61 +368,74 @@
     //--------------
 
     // Get context with jQuery - using jQuery's .get() method.
-    var areaChartCanvas = $('#areaChart1').get(0).getContext('2d')
+    var $efficencyChart = $("#areaChart1");
+    $.ajax({
+      url: $efficencyChart.data("url"),
+      success: function (data) {
+        
+        var areaChartCanvas = $('#areaChart1').get(0).getContext('2d')
 
-    var areaChartData = {
-      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-      datasets: [
-        {
-          label: 'Digital Goods',
-          lineTension: 0,
-          backgroundColor: '',
-          borderColor: 'rgba(60,141,188,0.8)',
-          pointRadius: false,
-          pointColor: '#3b8bba',
-          pointStrokeColor: 'rgba(60,141,188,1)',
-          pointHighlightFill: '#fff',
-          pointHighlightStroke: 'rgba(60,141,188,1)',
-          data: [28, 48, 40, 19, 86, 27, 90]
-        },
-      ]
-    }
+        var areaChartData = {
+          labels: data.labels["linia1"],
+          datasets: [
+            {
+              label: 'Eficienta',
+              lineTension: 0,
+              steppedLine: '',
+              backgroundColor: '',
+              borderColor: 'rgba(60,141,188,0.8)',
+              pointRadius: true,
+              pointColor: '#3b8bba',
+              pointStrokeColor: 'rgba(60,141,188,1)',
+              pointHighlightFill: '#fff',
+              pointHighlightStroke: 'rgba(60,141,188,1)',
+              data: data.data["linia1"],
+            }],
+        }
 
-    var areaChartOptions = {
-      maintainAspectRatio: false,
-      responsive: true,
-      legend: {
-        display: false
-      },
-      scales: {
-        xAxes: [{
-          gridLines: {
-            display: true,
+        var areaChartOptions = {
+          maintainAspectRatio: false,
+          responsive: true,
+          legend: {
+            display: false
+          },
+          scales: {
+            xAxes: [{
+              gridLines: {
+                display: true,
+              }
+            }],
+            yAxes: [{
+              ticks: {
+                min: 0,
+                max: 120
+              },
+              gridLines: {
+                display: true,
+              }
+            }]
+          },
+          drawHorizontalLine: {
+            lineY: [100, 100],
+            lineColor: "rgba(50, 155, 255, 0.85)",
+            text: '',
+            textPosition: 360,
+            textFont: '18px sans-serif',
+            textColor: "rgba(50, 155, 255, 0.85)"
           }
-        }],
-        yAxes: [{
-          gridLines: {
-            display: true,
-          }
-        }]
-      },
-      drawHorizontalLine: {
-        lineY: [30, 30],
-        lineColor: "rgba(50, 155, 255, 0.85)",
-        text: '',
-        textPosition: 720,
-        textFont: '18px sans-serif',
-        textColor: "rgba(50, 155, 255, 0.85)"
+        }
+
+        // This will get the first returned node in the jQuery collection.
+        new Chart(areaChartCanvas, {
+          type: 'line',
+          data: areaChartData,
+          options: areaChartOptions
+        })
       }
-    }
-
-    // This will get the first returned node in the jQuery collection.
-    new Chart(areaChartCanvas, {
-      type: 'line',
-      data: areaChartData,
-      options: areaChartOptions
     })
+
   })
+
 </script>
 <!-- Page specific script - area chart - chart.js 2 -->
 <script>
@@ -437,64 +450,72 @@
     //--------------
 
     // Get context with jQuery - using jQuery's .get() method.
-    var areaChartCanvas = $('#areaChart2').get(0).getContext('2d')
+    var $efficencyChart = $("#areaChart2");
+    $.ajax({
+      url: $efficencyChart.data("url"),
+      success: function (data) {
+        
+        var areaChartCanvas = $('#areaChart2').get(0).getContext('2d')
 
-    var areaChartData = {
-      labels: ['6:30', '7:00', '7:30', '8:00', '8:30', '9:00', '9:30', '10:00', '10:30', '10:30', '10:30', '10:30', '11:00', '11:30', '12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30'],
-      datasets: [
-        {
-          label: 'Eficienta',
-          lineTension: 0,
-          steppedLine: '',
-          backgroundColor: '',
-          borderColor: 'rgba(60,141,188,0.8)',
-          pointRadius: true,
-          pointColor: '#3b8bba',
-          pointStrokeColor: 'rgba(60,141,188,1)',
-          pointHighlightFill: '#fff',
-          pointHighlightStroke: 'rgba(60,141,188,1)',
-          data: [0, 83.33, 28, 27, 30, 28, 29, 26, 28, 0, 0, 28, 23, 26, 30, 32, 29]
-        }],
-    }
+        var areaChartData = {
+          labels: data.labels["linia2"],
+          datasets: [
+            {
+              label: 'Eficienta',
+              lineTension: 0,
+              steppedLine: '',
+              backgroundColor: '',
+              borderColor: 'rgba(60,141,188,0.8)',
+              pointRadius: true,
+              pointColor: '#3b8bba',
+              pointStrokeColor: 'rgba(60,141,188,1)',
+              pointHighlightFill: '#fff',
+              pointHighlightStroke: 'rgba(60,141,188,1)',
+              data: data.data["linia2"],
+            }],
+        }
 
-    var areaChartOptions = {
-      maintainAspectRatio: false,
-      responsive: true,
-      legend: {
-        display: false
-      },
-      scales: {
-        xAxes: [{
-          gridLines: {
-            display: true,
-          }
-        }],
-        yAxes: [{
-          ticks: {
-            min: 0,
-            max: 120
+        var areaChartOptions = {
+          maintainAspectRatio: false,
+          responsive: true,
+          legend: {
+            display: false
           },
-          gridLines: {
-            display: true,
+          scales: {
+            xAxes: [{
+              gridLines: {
+                display: true,
+              }
+            }],
+            yAxes: [{
+              ticks: {
+                min: 0,
+                max: 120
+              },
+              gridLines: {
+                display: true,
+              }
+            }]
+          },
+          drawHorizontalLine: {
+            lineY: [100, 100],
+            lineColor: "rgba(50, 155, 255, 0.85)",
+            text: '',
+            textPosition: 360,
+            textFont: '18px sans-serif',
+            textColor: "rgba(50, 155, 255, 0.85)"
           }
-        }]
-      },
-      drawHorizontalLine: {
-        lineY: [100, 100],
-        lineColor: "rgba(50, 155, 255, 0.85)",
-        text: '',
-        textPosition: 360,
-        textFont: '18px sans-serif',
-        textColor: "rgba(50, 155, 255, 0.85)"
-      }
-    }
+        }
 
-    // This will get the first returned node in the jQuery collection.
-    new Chart(areaChartCanvas, {
-      type: 'line',
-      data: areaChartData,
-      options: areaChartOptions
+        // This will get the first returned node in the jQuery collection.
+        new Chart(areaChartCanvas, {
+          type: 'line',
+          data: areaChartData,
+          options: areaChartOptions
+        })
+      }
     })
+
   })
 
 </script>
@@ -511,60 +532,73 @@
     //--------------
 
     // Get context with jQuery - using jQuery's .get() method.
-    var areaChartCanvas = $('#areaChart3').get(0).getContext('2d')
+    var $efficencyChart = $("#areaChart3");
+    $.ajax({
+      url: $efficencyChart.data("url"),
+      success: function (data) {
+        
+        var areaChartCanvas = $('#areaChart3').get(0).getContext('2d')
 
-    var areaChartData = {
-      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-      datasets: [
-        {
-          label: 'Digital Goods',
-          lineTension: 0,
-          backgroundColor: '',
-          borderColor: 'rgba(60,141,188,0.8)',
-          pointRadius: false,
-          pointColor: '#3b8bba',
-          pointStrokeColor: 'rgba(60,141,188,1)',
-          pointHighlightFill: '#fff',
-          pointHighlightStroke: 'rgba(60,141,188,1)',
-          data: [28, 48, 40, 19, 86, 27, 90]
-        },
-      ]
-    }
+        var areaChartData = {
+          labels: data.labels["linia3"],
+          datasets: [
+            {
+              label: 'Eficienta',
+              lineTension: 0,
+              steppedLine: '',
+              backgroundColor: '',
+              borderColor: 'rgba(60,141,188,0.8)',
+              pointRadius: true,
+              pointColor: '#3b8bba',
+              pointStrokeColor: 'rgba(60,141,188,1)',
+              pointHighlightFill: '#fff',
+              pointHighlightStroke: 'rgba(60,141,188,1)',
+              data: data.data["linia3"],
+            }],
+        }
 
-    var areaChartOptions = {
-      maintainAspectRatio: false,
-      responsive: true,
-      legend: {
-        display: false
-      },
-      scales: {
-        xAxes: [{
-          gridLines: {
-            display: true,
+        var areaChartOptions = {
+          maintainAspectRatio: false,
+          responsive: true,
+          legend: {
+            display: false
+          },
+          scales: {
+            xAxes: [{
+              gridLines: {
+                display: true,
+              }
+            }],
+            yAxes: [{
+              ticks: {
+                min: 0,
+                max: 120
+              },
+              gridLines: {
+                display: true,
+              }
+            }]
+          },
+          drawHorizontalLine: {
+            lineY: [100, 100],
+            lineColor: "rgba(50, 155, 255, 0.85)",
+            text: '',
+            textPosition: 360,
+            textFont: '18px sans-serif',
+            textColor: "rgba(50, 155, 255, 0.85)"
           }
-        }],
-        yAxes: [{
-          gridLines: {
-            display: true,
-          }
-        }]
-      },
-      drawHorizontalLine: {
-        lineY: [60, 60],
-        lineColor: "rgba(50, 155, 255, 0.85)",
-        text: '',
-        textPosition: 720,
-        textFont: '18px sans-serif',
-        textColor: "rgba(50, 155, 255, 0.85)"
+        }
+
+        // This will get the first returned node in the jQuery collection.
+        new Chart(areaChartCanvas, {
+          type: 'line',
+          data: areaChartData,
+          options: areaChartOptions
+        })
       }
-    }
-
-    // This will get the first returned node in the jQuery collection.
-    new Chart(areaChartCanvas, {
-      type: 'line',
-      data: areaChartData,
-      options: areaChartOptions
     })
+
   })
+
 </script>
 {% endblock page_specific_scripts %}

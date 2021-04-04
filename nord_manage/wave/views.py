@@ -8,113 +8,111 @@ def home(request):
       #LINIA 1 
       #linia 1 rezultate pentru tabel
       linia1_tabel = connection.cursor()
-      linia1_tabel.execute('''select cod_placa, count(*) as nr_buc
-          from (select wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.line_productie
-        from wave_productie
-                  inner join wave_date_placi on wave_productie.cod_placa_id = wave_date_placi.id
-        where CAST(wave_productie.data as Date) = CAST(NOW() as Date)
-          and wave_productie.line_productie = 1) as wpwdp
-          group by cod_placa;''')
+      linia1_tabel.execute('''SELECT cod_placa, COUNT(*) as nr_buc, FLOOR(60/min_placa) as target
+          FROM (SELECT wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.line_productie
+        FROM wave_productie
+                  INNER JOIN wave_date_placi ON wave_productie.cod_placa_id = wave_date_placi.id
+        WHERE CAST(wave_productie.data AS Date) = CAST(NOW() as Date)
+          AND wave_productie.line_productie = 1) AS productie_actuala
+          GROUP BY cod_placa;''')
       results_linia1_tabel = linia1_tabel.fetchall()
-
-      #linia 1 rezultate pentru chart
-      linia1_chart = connection.cursor()
-      linia1_chart.execute('''select cod_placa, min_placa, count(*) as nr_buc
-          from (select wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.line_productie
-        from wave_productie
-                  inner join wave_date_placi on wave_productie.cod_placa_id = wave_date_placi.id
-        where EXTRACT(HOUR FROM wave_productie.data) = EXTRACT(HOUR from now())
-          and wave_productie.line_productie = 1) as wpwdp
-          group by cod_placa;''')
-      results_linia1_chart = linia1_chart.fetchall()
-
-      min_lucrate_linia1 = 0
-      for i in results_linia1_chart:
-            min_lucrate_linia1 += i[1]*i[2]
-
-      print(min_lucrate_linia1)
 
       #LINIA 2 
       #linia 2 rezultate pentru tabel
       linia2_tabel = connection.cursor()
-      linia2_tabel.execute('''select cod_placa, count(*) as nr_buc
-          from (select wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.line_productie
-        from wave_productie
-                  inner join wave_date_placi on wave_productie.cod_placa_id = wave_date_placi.id
-        where CAST(wave_productie.data as Date) = CAST(NOW() as Date)
-          and wave_productie.line_productie = 2) as wpwdp
-          group by cod_placa;''')
-      results_linia2_tabel = linia2_tabel.fetchall()
+      linia2_tabel.execute('''SELECT cod_placa, COUNT(*) as nr_buc, FLOOR(60/min_placa) as target
+          FROM (SELECT wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.line_productie
+        FROM wave_productie
+                  INNER JOIN wave_date_placi ON wave_productie.cod_placa_id = wave_date_placi.id
+        WHERE CAST(wave_productie.data AS Date) = CAST(NOW() as Date)
+          AND wave_productie.line_productie = 2) AS productie_actuala
+          GROUP BY cod_placa;''')
+      results_linia2_tabel = linia2_tabel.fetchall()             
 
-      #linia 2 rezultate pentru chart
-      linia2_chart = connection.cursor()
-      linia2_chart.execute('''select cod_placa, min_placa, extract(hour from data) as ora, extract(minute from data) as minute, count(*) as nr_buc
-          from (select wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.line_productie
-        from wave_productie
-                  inner join wave_date_placi on wave_productie.cod_placa_id = wave_date_placi.id
-        where CAST(wave_productie.data as Date) = CAST(NOW() as Date)
-          and wave_productie.line_productie = 2) as wpwdp
-          group by  EXTRACT(HOUR from data), cod_placa ;''')
-      results_linia2_chart = linia2_chart.fetchall()
-
-      j=0 #counter schimbare ora
-      k=0 #counter schimbare jumatate de ora
-      intrari_linia2 = [0]
-      min_lucrate_linia2 = 0
-      for i in results_linia2_chart:
-        if (k==0 and i[4]>30) or (k==1 and i[4]<30):
-          intrari_linia2.append(min_lucrate_linia2)
-        if i[4]<=30:
-              min_lucrate_linia2 += i[1]*i[4]
-              print(min_lucrate_linia2)
-              k=0
-        else:
-              min_lucrate_linia2 += i[1]*i[4]
-              print(min_lucrate_linia2)
-              k=1
-      print(intrari_linia2) 
-                        
-
-      #print(min_lucrate_linia2)
-
-      #LINIA 3 
+      #LINIA 3
       #linia 3 rezultate pentru tabel
       linia3_tabel = connection.cursor()
-      linia3_tabel.execute('''select cod_placa, count(*) as nr_buc
-          from (select wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.line_productie
-        from wave_productie
-                  inner join wave_date_placi on wave_productie.cod_placa_id = wave_date_placi.id
-        where CAST(wave_productie.data as Date) = CAST(NOW() as Date)
-          and wave_productie.line_productie = 3) as wpwdp
-          group by cod_placa;''')
-      results_linia3_tabel = linia3_tabel.fetchall()
-
-      #linia 3 rezultate pentru chart
-      linia3_chart = connection.cursor()
-      linia3_chart.execute('''select cod_placa, min_placa, count(*) as nr_buc
-          from (select wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.line_productie
-        from wave_productie
-                  inner join wave_date_placi on wave_productie.cod_placa_id = wave_date_placi.id
-        where EXTRACT(HOUR FROM wave_productie.data) = EXTRACT(HOUR from now())
-          and wave_productie.line_productie = 3) as wpwdp
-          group by cod_placa;''')
-      results_linia3_chart = linia3_chart.fetchall()
-
-      min_lucrate_linia3 = 0
-      for i in results_linia3_chart:
-            min_lucrate_linia3 += i[1]*i[2]
-
-      print(min_lucrate_linia3)
-
+      linia3_tabel.execute('''SELECT cod_placa, COUNT(*) as nr_buc, FLOOR(60/min_placa) as target
+          FROM (SELECT wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.line_productie
+        FROM wave_productie
+                  INNER JOIN wave_date_placi ON wave_productie.cod_placa_id = wave_date_placi.id
+        WHERE CAST(wave_productie.data AS Date) = CAST(NOW() as Date)
+          AND wave_productie.line_productie = 3) AS productie_actuala
+          GROUP BY cod_placa;''')
+      results_linia3_tabel = linia1_tabel.fetchall()
 
       context = {
-        'linia1_tabel': results_linia1_tabel,
-        'linia1_chart': results_linia1_chart,
-
-        'linia2_tabel': results_linia2_tabel,
-        'linia2_chart': results_linia2_chart,
-
-        'linia3_tabel': results_linia3_tabel,
-        'linia3_chart': results_linia3_chart,
+        'linia1': results_linia1_tabel,
+        'linia2': results_linia2_tabel,
+        'linia3': results_linia3_tabel,
       }
       return render(request, 'wave/home.html', context)
+
+
+def efficency_chart(request):
+  labels={
+    'linia1': [],
+    'linia2': [],
+    'linia3': [],
+  }
+  data={
+    'linia1': [0],
+    'linia2': [0],
+    'linia3': [0],
+  }
+
+  linia1 = connection.cursor()
+  linia1.execute('''SELECT CONCAT(DATE_FORMAT(data, '%H:'), IF('30' > MINUTE(data), '00', '30')) AS 'Hour Interval',
+       SUM(min_placa) AS 'Minutes Worked'
+      FROM (select min_placa,data
+          from (select wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.line_productie
+             from wave_productie
+                inner join wave_date_placi on wave_productie.cod_placa_id = wave_date_placi.id
+            where CAST(wave_productie.data as Date) = CAST(NOW() as Date)
+                and wave_productie.line_productie = 1) as wpwdp) as asd
+              GROUP BY CONCAT(DATE_FORMAT(data, '%H:'), IF('30' > MINUTE(data), '00', '30'));''')
+  results_linia1 = linia1.fetchall()
+
+  for i in results_linia1:
+    labels["linia1"].append(i[0])
+    eficienta = i[1]*100/30
+    data["linia1"].append(eficienta)
+
+  linia2 = connection.cursor()
+  linia2.execute('''SELECT CONCAT(DATE_FORMAT(data, '%H:'), IF('30' > MINUTE(data), '00', '30')) AS 'Hour Interval',
+       SUM(min_placa) AS 'Minutes Worked'
+      FROM (select min_placa,data
+          from (select wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.line_productie
+             from wave_productie
+                inner join wave_date_placi on wave_productie.cod_placa_id = wave_date_placi.id
+            where CAST(wave_productie.data as Date) = CAST(NOW() as Date)
+                and wave_productie.line_productie = 2) as wpwdp) as asd
+              GROUP BY CONCAT(DATE_FORMAT(data, '%H:'), IF('30' > MINUTE(data), '00', '30'));''')
+  results_linia2 = linia2.fetchall()
+
+  for i in results_linia2:
+    labels["linia2"].append(i[0])
+    eficienta = i[1]*100/30
+    data["linia2"].append(eficienta)
+
+  linia3 = connection.cursor()
+  linia3.execute('''SELECT CONCAT(DATE_FORMAT(data, '%H:'), IF('30' > MINUTE(data), '00', '30')) AS 'Hour Interval',
+       SUM(min_placa) AS 'Minutes Worked'
+      FROM (select min_placa,data
+          from (select wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.line_productie
+             from wave_productie
+                inner join wave_date_placi on wave_productie.cod_placa_id = wave_date_placi.id
+            where CAST(wave_productie.data as Date) = CAST(NOW() as Date)
+                and wave_productie.line_productie = 3) as wpwdp) as asd
+              GROUP BY CONCAT(DATE_FORMAT(data, '%H:'), IF('30' > MINUTE(data), '00', '30'));''')
+  results_linia3 = linia3.fetchall()
+
+  for i in results_linia3:
+    labels["linia3"].append(i[0])
+    eficienta = i[1]*100/30
+    data["linia3"].append(eficienta)
+
+  return JsonResponse(data={
+    'labels': labels,
+    'data': data,
+  })
