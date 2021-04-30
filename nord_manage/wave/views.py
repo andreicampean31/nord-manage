@@ -2,9 +2,14 @@ from django.shortcuts import render
 from .models import Productie, Date_Placi
 from django.db import connection
 from django.http import JsonResponse
-
+from nord_manage.settings import EMAIL_HOST_USER
+from django.core.mail import send_mail, EmailMultiAlternatives
+from django.template.loader import get_template
       
 def home(request):
+
+      
+
       #LINIA 1 
       #linia 1 rezultate pentru tabel
       linia1_tabel = connection.cursor()
@@ -39,7 +44,7 @@ def home(request):
         WHERE CAST(wave_productie.data AS Date) = CAST(NOW() as Date)
           AND wave_productie.line_productie = 3) AS productie_actuala
           GROUP BY cod_placa;''')
-      results_linia3_tabel = linia1_tabel.fetchall()
+      results_linia3_tabel = linia3_tabel.fetchall()
 
       context = {
         'linia1': results_linia1_tabel,
@@ -116,3 +121,56 @@ def efficency_chart(request):
     'labels': labels,
     'data': data,
   })
+
+def report_data(request):
+  #LINIA 1 
+  #linia 1 rezultate pentru tabel
+  linia1_tabel = connection.cursor()
+  linia1_tabel.execute('''SELECT cod_placa, COUNT(*) as nr_buc, FLOOR(60/min_placa) as target
+      FROM (SELECT wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.line_productie
+    FROM wave_productie
+              INNER JOIN wave_date_placi ON wave_productie.cod_placa_id = wave_date_placi.id
+    WHERE CAST(wave_productie.data AS Date) = CAST(NOW() as Date)
+      AND wave_productie.line_productie = 1) AS productie_actuala
+      GROUP BY cod_placa;''')
+  results_linia1_tabel = linia1_tabel.fetchall()
+
+  #LINIA 2 
+  #linia 2 rezultate pentru tabel
+  linia2_tabel = connection.cursor()
+  linia2_tabel.execute('''SELECT cod_placa, COUNT(*) as nr_buc, FLOOR(60/min_placa) as target
+      FROM (SELECT wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.line_productie
+    FROM wave_productie
+              INNER JOIN wave_date_placi ON wave_productie.cod_placa_id = wave_date_placi.id
+    WHERE CAST(wave_productie.data AS Date) = CAST(NOW() as Date)
+      AND wave_productie.line_productie = 2) AS productie_actuala
+      GROUP BY cod_placa;''')
+  results_linia2_tabel = linia2_tabel.fetchall()             
+
+  #LINIA 3
+  #linia 3 rezultate pentru tabel
+  linia3_tabel = connection.cursor()
+  linia3_tabel.execute('''SELECT cod_placa, COUNT(*) as nr_buc, FLOOR(60/min_placa) as target
+      FROM (SELECT wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.line_productie
+    FROM wave_productie
+              INNER JOIN wave_date_placi ON wave_productie.cod_placa_id = wave_date_placi.id
+    WHERE CAST(wave_productie.data AS Date) = CAST(NOW() as Date)
+      AND wave_productie.line_productie = 3) AS productie_actuala
+      GROUP BY cod_placa;''')
+  results_linia3_tabel = linia3_tabel.fetchall()
+
+  context = {
+    'linia1': results_linia1_tabel,
+    'linia2': results_linia2_tabel,
+    'linia3': results_linia3_tabel,
+  }
+
+  subject, from_email, to = 'Raport', EMAIL_HOST_USER, 'omegagroup96@gmail.com'
+  text_content = 'Raport orar'
+
+  mail = EmailMultiAlternatives(subject, text_content, from_email, [to])
+  html_template = get_template("wave/report_email.html").render(context)
+  mail.attach_alternative(html_template, "text/html")
+  mail.send()
+  print(test)
+  return 1

@@ -1,0 +1,76 @@
+<html>
+    <head>
+        <style>
+            table {
+              font-family: arial, sans-serif;
+              border-collapse: collapse;
+              width: 50%;
+            }
+            
+            td, th {
+              border: 1px solid #dddddd;
+              text-align: left;
+              padding: 8px;
+            }
+            </style>
+    </head>
+    <body>
+        <h2>Raport Wave ora 10:00 AM</h2>
+
+        <h3>Linia 1</h3>
+        <table>
+            <th>#</th>
+            <th>Cod placa</th>
+            <th>Linia</th>
+            <th>Nr Bucati</th>
+            <th>Target/ora</th>
+            {% for i in linia1%}
+              <tr>
+                <td>1</td>
+                <td>{{ i.0 }}</td>
+                <td>1</td>
+                <td>{{ i.1 }}</td>
+                <td>{{ i.2 }}</td>
+              </tr>
+            {% endfor %}
+        </table>
+        <br>
+        <br>
+        <h3>Linia 2</h3>
+        <table>
+          <th>#</th>
+          <th>Cod placa</th>
+          <th>Linia</th>
+          <th>Nr Bucati</th>
+          <th>Target/ora</th>
+          {% for i in linia2%}
+            <tr>
+              <td>1</td>
+              <td>{{ i.0 }}</td>
+              <td>2</td>
+              <td>{{ i.1 }}</td>
+              <td>{{ i.2 }}</td>
+            </tr>
+          {% endfor %}
+        </table>
+        <br><br>
+        <h3>Linia 3</h3>
+        <table>
+          <th>#</th>
+          <th>Cod placa</th>
+          <th>Linia</th>
+          <th>Nr Bucati</th>
+          <th>Target/ora</th>
+          {% for i in linia3%}
+            <tr>
+              <td>1</td>
+              <td>{{ i.0 }}</td>
+              <td>3</td>
+              <td>{{ i.1 }}</td>
+              <td>{{ i.2 }}</td>
+            </tr>
+          {% endfor %}
+        </table>
+      
+    </body>
+</html>
