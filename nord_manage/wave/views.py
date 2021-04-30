@@ -5,7 +5,9 @@ from django.http import JsonResponse
 from nord_manage.settings import EMAIL_HOST_USER
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.template.loader import get_template
-      
+from django.http import HttpResponse
+import datetime
+
 def home(request):
 
       
@@ -159,18 +161,23 @@ def report_data(request):
       GROUP BY cod_placa;''')
   results_linia3_tabel = linia3_tabel.fetchall()
 
+  now = datetime.datetime.now()
   context = {
     'linia1': results_linia1_tabel,
     'linia2': results_linia2_tabel,
     'linia3': results_linia3_tabel,
+    'ora': now.hour
   }
 
-  subject, from_email, to = 'Raport', EMAIL_HOST_USER, 'omegagroup96@gmail.com'
-  text_content = 'Raport orar'
+  subject = 'Raport orar Wave'
+  from_email = EMAIL_HOST_USER
+  to = 'andreicampean@gmail.com'
 
+  text_content = 'Raport orar Wave'
   mail = EmailMultiAlternatives(subject, text_content, from_email, [to])
   html_template = get_template("wave/report_email.html").render(context)
+
   mail.attach_alternative(html_template, "text/html")
   mail.send()
-  print(test)
-  return 1
+  
+  return HttpResponse(status = 201)
