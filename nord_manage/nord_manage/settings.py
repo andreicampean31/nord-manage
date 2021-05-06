@@ -87,7 +87,7 @@ DATABASES = {
 }
 
 CRONJOBS = [
-    ('*/1 * * * *', 'wave.cron.email_report')
+    ('* */1 * * *', 'wave.cron.email_report')
 ]
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
