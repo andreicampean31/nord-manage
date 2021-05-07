@@ -12,5 +12,5 @@ class Date_Placi(models.Model):
 
 class Productie(models.Model):
     cod_placa = models.ForeignKey(Date_Placi, on_delete=models.CASCADE)
-    line_productie = models.CharField(max_length=2)
-    data = models.DateTimeField(default = timezone.now)
+    linie_productie = models.CharField(max_length=2)
+    data = models.DateTimeField()
