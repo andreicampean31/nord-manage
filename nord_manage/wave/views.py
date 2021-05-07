@@ -6,7 +6,7 @@ from nord_manage.settings import EMAIL_HOST_USER
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.template.loader import get_template
 from django.http import HttpResponse
-import datetime
+from django.utils import timezone
 
 def home(request):
 
@@ -16,11 +16,11 @@ def home(request):
       #linia 1 rezultate pentru tabel
       linia1_tabel = connection.cursor()
       linia1_tabel.execute('''SELECT cod_placa, COUNT(*) as nr_buc, FLOOR(60/min_placa) as target
-          FROM (SELECT wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.line_productie
+          FROM (SELECT wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.linie_productie
         FROM wave_productie
                   INNER JOIN wave_date_placi ON wave_productie.cod_placa_id = wave_date_placi.id
         WHERE CAST(wave_productie.data AS Date) = CAST(NOW() as Date)
-          AND wave_productie.line_productie = 1) AS productie_actuala
+          AND wave_productie.linie_productie = 1) AS productie_actuala
           GROUP BY cod_placa;''')
       results_linia1_tabel = linia1_tabel.fetchall()
 
@@ -28,11 +28,11 @@ def home(request):
       #linia 2 rezultate pentru tabel
       linia2_tabel = connection.cursor()
       linia2_tabel.execute('''SELECT cod_placa, COUNT(*) as nr_buc, FLOOR(60/min_placa) as target
-          FROM (SELECT wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.line_productie
+          FROM (SELECT wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.linie_productie
         FROM wave_productie
                   INNER JOIN wave_date_placi ON wave_productie.cod_placa_id = wave_date_placi.id
         WHERE CAST(wave_productie.data AS Date) = CAST(NOW() as Date)
-          AND wave_productie.line_productie = 2) AS productie_actuala
+          AND wave_productie.linie_productie = 2) AS productie_actuala
           GROUP BY cod_placa;''')
       results_linia2_tabel = linia2_tabel.fetchall()             
 
@@ -40,11 +40,11 @@ def home(request):
       #linia 3 rezultate pentru tabel
       linia3_tabel = connection.cursor()
       linia3_tabel.execute('''SELECT cod_placa, COUNT(*) as nr_buc, FLOOR(60/min_placa) as target
-          FROM (SELECT wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.line_productie
+          FROM (SELECT wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.linie_productie
         FROM wave_productie
                   INNER JOIN wave_date_placi ON wave_productie.cod_placa_id = wave_date_placi.id
         WHERE CAST(wave_productie.data AS Date) = CAST(NOW() as Date)
-          AND wave_productie.line_productie = 3) AS productie_actuala
+          AND wave_productie.linie_productie = 3) AS productie_actuala
           GROUP BY cod_placa;''')
       results_linia3_tabel = linia3_tabel.fetchall()
 
@@ -72,11 +72,11 @@ def efficency_chart(request):
   linia1.execute('''SELECT CONCAT(DATE_FORMAT(data, '%H:'), IF('30' > MINUTE(data), '00', '30')) AS 'Hour Interval',
        SUM(min_placa) AS 'Minutes Worked'
       FROM (select min_placa,data
-          from (select wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.line_productie
+          from (select wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.linie_productie
              from wave_productie
                 inner join wave_date_placi on wave_productie.cod_placa_id = wave_date_placi.id
             where CAST(wave_productie.data as Date) = CAST(NOW() as Date)
-                and wave_productie.line_productie = 1) as wpwdp) as asd
+                and wave_productie.linie_productie = 1) as wpwdp) as asd
               GROUP BY CONCAT(DATE_FORMAT(data, '%H:'), IF('30' > MINUTE(data), '00', '30'));''')
   results_linia1 = linia1.fetchall()
 
@@ -89,11 +89,11 @@ def efficency_chart(request):
   linia2.execute('''SELECT CONCAT(DATE_FORMAT(data, '%H:'), IF('30' > MINUTE(data), '00', '30')) AS 'Hour Interval',
        SUM(min_placa) AS 'Minutes Worked'
       FROM (select min_placa,data
-          from (select wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.line_productie
+          from (select wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.linie_productie
              from wave_productie
                 inner join wave_date_placi on wave_productie.cod_placa_id = wave_date_placi.id
             where CAST(wave_productie.data as Date) = CAST(NOW() as Date)
-                and wave_productie.line_productie = 2) as wpwdp) as asd
+                and wave_productie.linie_productie = 2) as wpwdp) as asd
               GROUP BY CONCAT(DATE_FORMAT(data, '%H:'), IF('30' > MINUTE(data), '00', '30'));''')
   results_linia2 = linia2.fetchall()
 
@@ -106,11 +106,11 @@ def efficency_chart(request):
   linia3.execute('''SELECT CONCAT(DATE_FORMAT(data, '%H:'), IF('30' > MINUTE(data), '00', '30')) AS 'Hour Interval',
        SUM(min_placa) AS 'Minutes Worked'
       FROM (select min_placa,data
-          from (select wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.line_productie
+          from (select wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.linie_productie
              from wave_productie
                 inner join wave_date_placi on wave_productie.cod_placa_id = wave_date_placi.id
             where CAST(wave_productie.data as Date) = CAST(NOW() as Date)
-                and wave_productie.line_productie = 3) as wpwdp) as asd
+                and wave_productie.linie_productie = 3) as wpwdp) as asd
               GROUP BY CONCAT(DATE_FORMAT(data, '%H:'), IF('30' > MINUTE(data), '00', '30'));''')
   results_linia3 = linia3.fetchall()
 
@@ -129,11 +129,11 @@ def report_data(request):
   #linia 1 rezultate pentru tabel
   linia1_tabel = connection.cursor()
   linia1_tabel.execute('''SELECT cod_placa, COUNT(*) as nr_buc, FLOOR(60/min_placa) as target
-      FROM (SELECT wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.line_productie
+      FROM (SELECT wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.linie_productie
     FROM wave_productie
               INNER JOIN wave_date_placi ON wave_productie.cod_placa_id = wave_date_placi.id
     WHERE CAST(wave_productie.data AS Date) = CAST(NOW() as Date)
-      AND wave_productie.line_productie = 1) AS productie_actuala
+      AND wave_productie.linie_productie = 1) AS productie_actuala
       GROUP BY cod_placa;''')
   results_linia1_tabel = linia1_tabel.fetchall()
 
@@ -141,11 +141,11 @@ def report_data(request):
   #linia 2 rezultate pentru tabel
   linia2_tabel = connection.cursor()
   linia2_tabel.execute('''SELECT cod_placa, COUNT(*) as nr_buc, FLOOR(60/min_placa) as target
-      FROM (SELECT wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.line_productie
+      FROM (SELECT wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.linie_productie
     FROM wave_productie
               INNER JOIN wave_date_placi ON wave_productie.cod_placa_id = wave_date_placi.id
     WHERE CAST(wave_productie.data AS Date) = CAST(NOW() as Date)
-      AND wave_productie.line_productie = 2) AS productie_actuala
+      AND wave_productie.linie_productie = 2) AS productie_actuala
       GROUP BY cod_placa;''')
   results_linia2_tabel = linia2_tabel.fetchall()             
 
@@ -153,11 +153,11 @@ def report_data(request):
   #linia 3 rezultate pentru tabel
   linia3_tabel = connection.cursor()
   linia3_tabel.execute('''SELECT cod_placa, COUNT(*) as nr_buc, FLOOR(60/min_placa) as target
-      FROM (SELECT wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.line_productie
+      FROM (SELECT wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.linie_productie
     FROM wave_productie
               INNER JOIN wave_date_placi ON wave_productie.cod_placa_id = wave_date_placi.id
     WHERE CAST(wave_productie.data AS Date) = CAST(NOW() as Date)
-      AND wave_productie.line_productie = 3) AS productie_actuala
+      AND wave_productie.linie_productie = 3) AS productie_actuala
       GROUP BY cod_placa;''')
   results_linia3_tabel = linia3_tabel.fetchall()
 
@@ -180,4 +180,13 @@ def report_data(request):
   mail.attach_alternative(html_template, "text/html")
   mail.send()
   
+  return HttpResponse(status = 201)
+
+def insert_data(request, linie, id_placa):
+  now = timezone.now()
+  print(now)
+  insert_data = Productie(cod_placa_id = id_placa, linie_productie = linie, data = now)
+  insert_data.save()
+  print(linie)
+  print(id_placa)
   return HttpResponse(status = 201)
