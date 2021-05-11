@@ -7,7 +7,7 @@ from django.core.mail import send_mail, EmailMultiAlternatives
 from django.template.loader import get_template
 from django.http import HttpResponse
 from django.utils import timezone
-
+import datetime
 def home(request):
 
       
@@ -171,7 +171,7 @@ def report_data(request):
 
   subject = 'Raport orar Wave'
   from_email = EMAIL_HOST_USER
-  to = 'andreicampean@gmail.com'
+  to = 'omegagroup96@gmail.com'
 
   text_content = 'Raport orar Wave'
   mail = EmailMultiAlternatives(subject, text_content, from_email, [to])
@@ -182,11 +182,14 @@ def report_data(request):
   
   return HttpResponse(status = 201)
 
-def insert_data(request, linie, id_placa):
+def insert_data(request, linie, cod_placa):
   now = timezone.now()
   print(now)
-  insert_data = Productie(cod_placa_id = id_placa, linie_productie = linie, data = now)
+  
+  cod_placa_id = Date_Placi.objects.get(cod_placa = cod_placa)
+  print(cod_placa_id)
+  insert_data = Productie(cod_placa_id = cod_placa_id.id, linie_productie = linie, data = now)
   insert_data.save()
   print(linie)
-  print(id_placa)
+
   return HttpResponse(status = 201)
