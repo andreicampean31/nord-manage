@@ -8,10 +8,8 @@ from django.template.loader import get_template
 from django.http import HttpResponse
 from django.utils import timezone
 import datetime
+
 def home(request):
-
-      
-
       #LINIA 1 
       #linia 1 rezultate pentru tabel
       linia1_tabel = connection.cursor()
@@ -193,3 +191,10 @@ def insert_data(request, linie, cod_placa):
   print(linie)
 
   return HttpResponse(status = 201)
+
+def settings(request):
+  lista_placi = Date_Placi.objects.all()
+  context = {
+    'lista': lista_placi
+  }
+  return render(request, 'wave/settings.html', context )
