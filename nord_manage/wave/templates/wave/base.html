@@ -113,7 +113,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </a>
               <ul class="nav nav-treeview">
                 <li class="nav-item">
-                  <a href="#" class="nav-link active">
+                  <a href="{% url 'wave-home' %}" class="nav-link active">
                     <i class="far fas fa-home"></i>
                     <p>Home</p>
                   </a>
@@ -131,7 +131,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a href="#" class="nav-link">
+                  <a href="{% url 'wave-settings' %}" class="nav-link">
                     <i class="far fas fa-cog"></i>
                     <p>Settings</p>
                   </a>
@@ -151,7 +151,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <div class="container-fluid">
           <div class="row mb-2">
             <div class="col-sm-6">
-              <h1>Home Wave</h1>
+              {% block page_title %} {% endblock page_title %}
             </div>
             <div class="col-sm-6">
               <ol class="breadcrumb float-sm-right">
