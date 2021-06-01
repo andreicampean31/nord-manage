@@ -5,8 +5,8 @@ from django.utils import timezone
 
 class Date_Placi(models.Model):
     cod_placa = models.CharField(max_length=200)
-    min_placa = models.DecimalField(max_digits=3, decimal_places=2)
-
+    min_placa = models.DecimalField(max_digits=3, decimal_places=0)
+    multiplication_factor = models.DecimalField(max_digits=3, decimal_places=0, default=1)
     def __str__(self):
         return self.cod_placa
 

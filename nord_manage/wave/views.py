@@ -13,37 +13,37 @@ def home(request):
       #LINIA 1 
       #linia 1 rezultate pentru tabel
       linia1_tabel = connection.cursor()
-      linia1_tabel.execute('''SELECT cod_placa, COUNT(*) as nr_buc, FLOOR(60/min_placa) as target
-          FROM (SELECT wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.linie_productie
-        FROM wave_productie
-                  INNER JOIN wave_date_placi ON wave_productie.cod_placa_id = wave_date_placi.id
-        WHERE CAST(wave_productie.data AS Date) = CAST(NOW() as Date)
-          AND wave_productie.linie_productie = 1) AS productie_actuala
-          GROUP BY cod_placa;''')
+      linia1_tabel.execute('''SELECT cod_placa, COUNT(*)*multiplication_factor as nr_buc, FLOOR(60/min_placa) as target
+      FROM (SELECT wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_date_placi.multiplication_factor, wave_productie.data, wave_productie.linie_productie
+    FROM wave_productie
+              INNER JOIN wave_date_placi ON wave_productie.cod_placa_id = wave_date_placi.id
+    WHERE CAST(wave_productie.data AS Date) = CAST(NOW() as Date)
+      AND wave_productie.linie_productie = 1) AS productie_actuala
+      GROUP BY cod_placa;''')
       results_linia1_tabel = linia1_tabel.fetchall()
 
       #LINIA 2 
       #linia 2 rezultate pentru tabel
       linia2_tabel = connection.cursor()
-      linia2_tabel.execute('''SELECT cod_placa, COUNT(*) as nr_buc, FLOOR(60/min_placa) as target
-          FROM (SELECT wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.linie_productie
-        FROM wave_productie
-                  INNER JOIN wave_date_placi ON wave_productie.cod_placa_id = wave_date_placi.id
-        WHERE CAST(wave_productie.data AS Date) = CAST(NOW() as Date)
-          AND wave_productie.linie_productie = 2) AS productie_actuala
-          GROUP BY cod_placa;''')
+      linia2_tabel.execute('''SELECT cod_placa, COUNT(*)*multiplication_factor as nr_buc, FLOOR(60/min_placa) as target
+      FROM (SELECT wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_date_placi.multiplication_factor, wave_productie.data, wave_productie.linie_productie
+    FROM wave_productie
+              INNER JOIN wave_date_placi ON wave_productie.cod_placa_id = wave_date_placi.id
+    WHERE CAST(wave_productie.data AS Date) = CAST(NOW() as Date)
+      AND wave_productie.linie_productie = 2) AS productie_actuala
+      GROUP BY cod_placa;''')
       results_linia2_tabel = linia2_tabel.fetchall()             
 
       #LINIA 3
       #linia 3 rezultate pentru tabel
       linia3_tabel = connection.cursor()
-      linia3_tabel.execute('''SELECT cod_placa, COUNT(*) as nr_buc, FLOOR(60/min_placa) as target
-          FROM (SELECT wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.linie_productie
-        FROM wave_productie
-                  INNER JOIN wave_date_placi ON wave_productie.cod_placa_id = wave_date_placi.id
-        WHERE CAST(wave_productie.data AS Date) = CAST(NOW() as Date)
-          AND wave_productie.linie_productie = 3) AS productie_actuala
-          GROUP BY cod_placa;''')
+      linia3_tabel.execute('''SELECT cod_placa, COUNT(*)*multiplication_factor as nr_buc, FLOOR(60/min_placa) as target
+      FROM (SELECT wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_date_placi.multiplication_factor, wave_productie.data, wave_productie.linie_productie
+    FROM wave_productie
+              INNER JOIN wave_date_placi ON wave_productie.cod_placa_id = wave_date_placi.id
+    WHERE CAST(wave_productie.data AS Date) = CAST(NOW() as Date)
+      AND wave_productie.linie_productie = 3) AS productie_actuala
+      GROUP BY cod_placa;''')
       results_linia3_tabel = linia3_tabel.fetchall()
 
       context = {
@@ -126,8 +126,8 @@ def report_data(request):
   #LINIA 1 
   #linia 1 rezultate pentru tabel
   linia1_tabel = connection.cursor()
-  linia1_tabel.execute('''SELECT cod_placa, COUNT(*) as nr_buc, FLOOR(60/min_placa) as target
-      FROM (SELECT wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.linie_productie
+  linia1_tabel.execute('''SELECT cod_placa, COUNT(*)*multiplication_factor as nr_buc, FLOOR(60/min_placa) as target
+      FROM (SELECT wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_date_placi.multiplication_factor, wave_productie.data, wave_productie.linie_productie
     FROM wave_productie
               INNER JOIN wave_date_placi ON wave_productie.cod_placa_id = wave_date_placi.id
     WHERE CAST(wave_productie.data AS Date) = CAST(NOW() as Date)
@@ -138,8 +138,8 @@ def report_data(request):
   #LINIA 2 
   #linia 2 rezultate pentru tabel
   linia2_tabel = connection.cursor()
-  linia2_tabel.execute('''SELECT cod_placa, COUNT(*) as nr_buc, FLOOR(60/min_placa) as target
-      FROM (SELECT wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.linie_productie
+  linia2_tabel.execute('''SELECT cod_placa, COUNT(*)*multiplication_factor as nr_buc, FLOOR(60/min_placa) as target
+      FROM (SELECT wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_date_placi.multiplication_factor, wave_productie.data, wave_productie.linie_productie
     FROM wave_productie
               INNER JOIN wave_date_placi ON wave_productie.cod_placa_id = wave_date_placi.id
     WHERE CAST(wave_productie.data AS Date) = CAST(NOW() as Date)
@@ -150,8 +150,8 @@ def report_data(request):
   #LINIA 3
   #linia 3 rezultate pentru tabel
   linia3_tabel = connection.cursor()
-  linia3_tabel.execute('''SELECT cod_placa, COUNT(*) as nr_buc, FLOOR(60/min_placa) as target
-      FROM (SELECT wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.linie_productie
+  linia3_tabel.execute('''SELECT cod_placa, COUNT(*)*multiplication_factor as nr_buc, FLOOR(60/min_placa) as target
+      FROM (SELECT wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_date_placi.multiplication_factor, wave_productie.data, wave_productie.linie_productie
     FROM wave_productie
               INNER JOIN wave_date_placi ON wave_productie.cod_placa_id = wave_date_placi.id
     WHERE CAST(wave_productie.data AS Date) = CAST(NOW() as Date)
