@@ -5,9 +5,10 @@ from django.http import JsonResponse
 from nord_manage.settings import EMAIL_HOST_USER
 from django.core.mail import send_mail, EmailMultiAlternatives
 from django.template.loader import get_template
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.utils import timezone
 import datetime
+from .forms import DatePlaciUpdateForm
 
 def home(request):
       #LINIA 1 
@@ -197,4 +198,25 @@ def settings(request):
   context = {
     'lista': lista_placi
   }
-  return render(request, 'wave/settings.html', context )
+  print(context)
+  return render(request, 'wave/settings.html', context)
+
+def date_placi_update(request):
+  if request.method == 'POST':
+    form = DatePlaciUpdateForm(request.POST)
+    
+    if form.is_valid():
+      cod_placa = form.cleaned_data.get('cod_placa')
+      min_placa = form.cleaned_data.get('min_placa')
+      factor = form.cleaned_data.get('multiplication_factor')
+      print(cod_placa + " " + min_placa + " " + factor)
+
+      
+
+      Date_Placi.objects.filter(cod_placa = cod_placa).update(min_placa = min_placa, multiplication_factor = factor)
+      
+      return HttpResponseRedirect('/wave/settings')
+  else:
+    form = DatePlaciUpdateForm()
+    
+  return HttpResponse(status=201)
