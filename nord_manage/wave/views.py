@@ -8,7 +8,7 @@ from django.template.loader import get_template
 from django.http import HttpResponse, HttpResponseRedirect
 from django.utils import timezone
 import datetime
-from .forms import DatePlaciUpdateForm
+from .forms import DatePlaciForm
 
 def home(request):
       #LINIA 1 
@@ -203,7 +203,7 @@ def settings(request):
 
 def date_placi_update(request):
   if request.method == 'POST':
-    form = DatePlaciUpdateForm(request.POST)
+    form = DatePlaciForm(request.POST)
     
     if form.is_valid():
       cod_placa = form.cleaned_data.get('cod_placa')
@@ -211,12 +211,35 @@ def date_placi_update(request):
       factor = form.cleaned_data.get('multiplication_factor')
       print(cod_placa + " " + min_placa + " " + factor)
 
-      
-
       Date_Placi.objects.filter(cod_placa = cod_placa).update(min_placa = min_placa, multiplication_factor = factor)
       
       return HttpResponseRedirect('/wave/settings')
   else:
-    form = DatePlaciUpdateForm()
+    form = DatePlaciForm()
     
-  return HttpResponse(status=201)
+  return HttpResponse(status=404)
+
+def date_placi_delete(request, cod_placa):
+  print(cod_placa)
+
+  Date_Placi.objects.filter(cod_placa = cod_placa).delete()
+  return HttpResponseRedirect('/wave/settings')
+
+def date_placi_add(request):
+  if request.method == 'POST':
+    form = DatePlaciForm(request.POST)
+
+    if form.is_valid():
+      cod_placa = form.cleaned_data.get('cod_placa')
+      min_placa = form.cleaned_data.get('min_placa')
+      factor = form.cleaned_data.get('multiplication_factor')
+
+      insert_code = Date_Placi(cod_placa = cod_placa, min_placa = min_placa, multiplication_factor = factor)
+      insert_code.save()
+      
+      return HttpResponseRedirect('/wave/settings')
+  else:
+    form = DatePlaciForm()
+  
+  return HttpResponse(status = 404)
+  

@@ -16,7 +16,7 @@
               role="tab" aria-controls="custom-tabs-one-home" aria-selected="true">Basic</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" id="custom-tabs-one-profile-tab" data-toggle="pill" href="#custom-tabs-one-profile"
+            <a class="nav-link" id="date-placi-tab" data-toggle="pill" href="#custom-tabs-one-profile"
               role="tab" aria-controls="custom-tabs-one-profile" aria-selected="false">Date placi</a>
           </li>
           <li class="nav-item">
@@ -48,7 +48,9 @@
               <div class="card">
 
                 <div class="card-body">
-                  <table id="example1" class="table table-bordered  table-hover">
+                  
+                  <table id="example1" class="table table-bordered table-hover">
+                    <a class = "btn btn-primary add" data-toggle="modal" data-target="#addModal" type="button"> ADD </a>
                     <thead>
                       <tr>
                         <th>#</th>
@@ -62,13 +64,13 @@
                     <tbody>
                       {% for i in lista %}
                       <tr>
-                        <td>{{ i.id }}</td>
+                        <td></td>
                         <td>{{ i.cod_placa }}</td>
                         <td>{{ i.min_placa }}</td>
                         <td>{{ i.multiplication_factor }}</td>
                         <td>
                           <a href="#" class = "btn btn-success edit"> EDIT </a>
-                          <a href="#" class = "btn btn-danger edit"> DELETE </a>
+                          <a href="#" action="" class = "btn btn-danger delete" id = "delete-button"> DELETE </a>
                         </td>
                       </tr>
                       {% endfor %}
@@ -106,17 +108,55 @@
 </div>
 </div>
 
-<!-- modal -->
+<!-- EDIT modal -->
 <div class="modal fade" id="editModal">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">Default Modal</h4>
+        <h4 class="modal-title">EDIT</h4>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <form action="" method="post" id="editForm">
+        <div class="modal-body">
+          {%csrf_token%}
+
+          <div class="form-group">
+            <label for="cod_placa">Cod placa</label>
+            <input type="text" class="form-control" id="cod_placa" placeholder="cod_placa" name="cod_placa" disabled>
+          </div>
+          <div class="form-group">
+            <label for="min_placa">Norma</label>
+            <input type="text" class="form-control" id="min_placa" placeholder="min_placa" name="min_placa">
+          </div>
+          <div class="form-group">
+            <label for="multiplication_factor">Factor multiplicare</label>
+            <input type="text" class="form-control" id="multiplication_factor" placeholder="multiplication_factor", name="multiplication_factor">
+          </div>
+
+        </div>     
+        <div class="modal-footer justify-content-between">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <input class="btn btn-primary" type="submit" value="OK">
+        </div>
+      </form> 
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+  <!-- ADD modal -->
+<div class="modal fade" id="addModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Add new code</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form action="{% url 'date-placi-add' %}" method="post" id="addForm">
         <div class="modal-body">
           {%csrf_token%}
 
@@ -142,6 +182,7 @@
     </div>
     <!-- /.modal-content -->
   </div>
+</div>
   <!-- /.modal-dialog -->
   {% endblock content %}
 
@@ -179,27 +220,42 @@
         console.log(data[2]);
         $('#multiplication_factor').val(data[3]);
         console.log(data[3]);
-
+        
         $('#editForm').attr('action', "{% url 'date-placi-update' %}");
         $('#editModal').modal('show');
         
       })
+      table.on('click','.delete', function () {
+        $tr = $(this).closest('tr');
+        if ($($tr).hasClass('child')) {
+          $tr = $tr.prev('.parent');
+        }
+
+        var data = table.row($tr).data();
+        console.log(data);
+
+        $('#cod_placa').val(data[1]);
+        console.log(data[1]);
+        $('#min_placa').val(data[2]);
+        console.log(data[2]);
+        $('#multiplication_factor').val(data[3]);
+        console.log(data[3]);
+        
+        var url = "{% url 'date-placi-delete' 999 %}".replace(999, data[1]);
+        $('#delete-button').attr('href', url);
+      })
+
     })
-
-
   </script>
   <script>
     $(function () {
       var mytable = $("#example1").DataTable();
-
 
       mytable({
         "responsive": true, "lengthChange": false, "autoWidth": false,
           "buttons": ["excel", "csv", "print"],
             "pageLength": 3
       }.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)'));
-
-
 
       $('#example1.1').DataTable({
         "paging": true,
@@ -211,7 +267,16 @@
         "responsive": true,
       });
 
-
     });
   </script>
+  <script>
+    var table = document.getElementsByTagName('table')[0],
+    rows = table.getElementsByTagName('tr'),
+    text = 'textContent' in document ? 'textContent' : 'innerText';
+
+    for (var i = 1, len = rows.length; i < len; i++) {
+      rows[i].children[0][text] = i + rows[i].children[0][text];
+    }
+  </script>
+
   {% endblock page_specific_scripts %}
