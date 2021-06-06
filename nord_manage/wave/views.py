@@ -216,11 +216,11 @@ def date_placi_update(request):
       return HttpResponseRedirect('/wave/settings')
   else:
     form = DatePlaciForm()
-    
+  
   return HttpResponse(status=404)
 
 def date_placi_delete(request, cod_placa):
-  print(cod_placa)
+  print("aici")
 
   Date_Placi.objects.filter(cod_placa = cod_placa).delete()
   return HttpResponseRedirect('/wave/settings')

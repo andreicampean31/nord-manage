@@ -16,8 +16,8 @@
               role="tab" aria-controls="custom-tabs-one-home" aria-selected="true">Basic</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" id="date-placi-tab" data-toggle="pill" href="#custom-tabs-one-profile"
-              role="tab" aria-controls="custom-tabs-one-profile" aria-selected="false">Date placi</a>
+            <a class="nav-link" id="date-placi-tab" data-toggle="pill" href="#custom-tabs-one-profile" role="tab"
+              aria-controls="custom-tabs-one-profile" aria-selected="false">Date placi</a>
           </li>
           <li class="nav-item">
             <a class="nav-link" id="custom-tabs-one-messages-tab" data-toggle="pill" href="#custom-tabs-one-messages"
@@ -44,39 +44,122 @@
           </div>
           <div class="tab-pane fade" id="custom-tabs-one-profile" role="tabpanel"
             aria-labelledby="custom-tabs-one-profile-tab">
-            <div class="col-6">
-              <div class="card">
+            <div class="row">
+              <div class="col-12">
+                <div class="card">
+                  <div class="card-body">
+                    <table id="example1" class="table table-bordered table-hover">
+                      <a class="btn btn-primary add" data-toggle="modal" data-target="#addModal" type="button"> ADD </a>
+                      <thead>
+                        <tr>
+                          <th>Cod placa</th>
+                          <th>Norma</th>
+                          <th>Factor</th>
+                          <th>Edit</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for i in lista %}
+                        <tr>
+                          <td>{{ i.cod_placa }}</td>
+                          <td>{{ i.min_placa }}</td>
+                          <td>{{ i.multiplication_factor }}</td>
+                          <td>
+                            <a href="#" class="btn btn-success edit" data-toggle="modal" data-target="#editModal"
+                              type="button"> EDIT </a>
+                            <a href="#" class="btn btn-danger delete" id="delete-button" data-toggle="modal"
+                              data-target="#confirmDeleteModal"> DELETE </a>
+                          </td>
+                        </tr>
+                        {% endfor %}
 
-                <div class="card-body">
-                  
-                  <table id="example1" class="table table-bordered table-hover">
-                    <a class = "btn btn-primary add" data-toggle="modal" data-target="#addModal" type="button"> ADD </a>
-                    <thead>
-                      <tr>
-                        <th>#</th>
-                        <th>Cod placa</th>
-                        <th>Norma</th>
-                        <th>Factor</th>
-                        <th>Edit</th>
-                        
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {% for i in lista %}
-                      <tr>
-                        <td></td>
-                        <td>{{ i.cod_placa }}</td>
-                        <td>{{ i.min_placa }}</td>
-                        <td>{{ i.multiplication_factor }}</td>
-                        <td>
-                          <a href="#" class = "btn btn-success edit"> EDIT </a>
-                          <a href="#" action="" class = "btn btn-danger delete" id = "delete-button"> DELETE </a>
-                        </td>
-                      </tr>
-                      {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-4">
+                <div class="card">
+                  <div class="card-body">
+                    <table id="barcodesTableL1" class="table table-bordered table-hover">
+                      <a onclick="printFnc('#barcodesTableL1')" class="btn btn-primary printBtn" type="button"> PRINT
+                      </a>
+                      <thead>
+                        <tr>
+                          <th>Cod placa</th>
+                          <th>Barcode L1</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for i in lista %}
+                        <tr>
+                          <td>{{ i.cod_placa }}</td>
+                          <td>
+                            <svg class="barcode" jsbarcode-value="L1-{{i.cod_placa}}" jsbarcode-width="1"
+                              jsbarcode-height="100"></svg>
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
 
-                    </tbody>
-                  </table>
+              <div class="col-4">
+                <div class="card">
+                  <div class="card-body">
+                    <table id="barcodesTableL2" class="table table-bordered table-hover">
+                      <a onclick="printFnc('#barcodesTableL2')" class="btn btn-primary printBtn" type="button"> PRINT
+                      </a>
+                      <thead>
+                        <tr>
+                          <th>Cod placa</th>
+                          <th>Barcode L2</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for i in lista %}
+                        <tr>
+                          <td>{{ i.cod_placa }}</td>
+                          <td>
+                            <svg class="barcode" jsbarcode-value="L2-{{i.cod_placa}}" jsbarcode-width="1"
+                              jsbarcode-height="100"></svg>
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="card">
+                  <div class="card-body">
+                    <table id="barcodesTableL3" class="table table-bordered table-hover">
+                      <a onclick="printFnc('#barcodesTableL3')" class="btn btn-primary printBtn" type="button"> PRINT
+                      </a>
+                      <thead>
+                        <tr>
+                          <th>Cod placa</th>
+                          <th>Barcode L3</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for i in lista %}
+                        <tr>
+                          <td>{{ i.cod_placa }}</td>
+                          <td>
+                            <svg class="barcode" jsbarcode-value="L3-{{i.cod_placa}}" jsbarcode-width="1"
+                              jsbarcode-height="100"></svg>
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>
@@ -87,7 +170,8 @@
           aria-labelledby="custom-tabs-one-messages-tab">
           Morbi turpis dolor, vulputate vitae felis non, tincidunt congue mauris. Phasellus volutpat augue id mi
           placerat mollis. Vivamus faucibus eu massa eget condimentum. Fusce nec hendrerit sem, ac tristique nulla.
-          Integer vestibulum orci odio. Cras nec augue ipsum. Suspendisse ut velit condimentum, mattis urna a, malesuada
+          Integer vestibulum orci odio. Cras nec augue ipsum. Suspendisse ut velit condimentum, mattis urna a,
+          malesuada
           nunc. Curabitur eleifend facilisis velit finibus tristique. Nam vulputate, eros non luctus efficitur, ipsum
           odio volutpat massa, sit amet sollicitudin est libero sed ipsum. Nulla lacinia, ex vitae gravida fermentum,
           lectus ipsum gravida arcu, id fermentum metus arcu vel metus. Curabitur eget sem eu risus tincidunt eleifend
@@ -124,7 +208,7 @@
 
           <div class="form-group">
             <label for="cod_placa">Cod placa</label>
-            <input type="text" class="form-control" id="cod_placa" placeholder="cod_placa" name="cod_placa" disabled>
+            <input type="text" class="form-control" id="cod_placa" placeholder="cod_placa" name="cod_placa">
           </div>
           <div class="form-group">
             <label for="min_placa">Norma</label>
@@ -132,21 +216,22 @@
           </div>
           <div class="form-group">
             <label for="multiplication_factor">Factor multiplicare</label>
-            <input type="text" class="form-control" id="multiplication_factor" placeholder="multiplication_factor", name="multiplication_factor">
+            <input type="text" class="form-control" id="multiplication_factor" placeholder="multiplication_factor" ,
+              name="multiplication_factor">
           </div>
 
-        </div>     
+        </div>
         <div class="modal-footer justify-content-between">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
           <input class="btn btn-primary" type="submit" value="OK">
         </div>
-      </form> 
+      </form>
     </div>
     <!-- /.modal-content -->
   </div>
   <!-- /.modal-dialog -->
 </div>
-  <!-- ADD modal -->
+<!-- ADD modal -->
 <div class="modal fade" id="addModal">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -170,113 +255,145 @@
           </div>
           <div class="form-group">
             <label for="multiplication_factor">Factor multiplicare</label>
-            <input type="text" class="form-control" id="multiplication_factor" placeholder="multiplication_factor", name="multiplication_factor">
+            <input type="text" class="form-control" id="multiplication_factor" placeholder="multiplication_factor" ,
+              name="multiplication_factor">
           </div>
 
-        </div>     
+        </div>
         <div class="modal-footer justify-content-between">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
           <input class="btn btn-primary" type="submit" value="OK">
         </div>
-      </form> 
+      </form>
     </div>
     <!-- /.modal-content -->
   </div>
 </div>
+<!-- /.modal-dialog -->
+<div class="modal fade" id="confirmDeleteModal">
+  <div class="modal-dialog">
+    <div class="modal-content bg-danger">
+      <div class="modal-header">
+        <h4 class="modal-title">ATENTIE</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete this record?</p>
+      </div>
+      <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
+        <a href="" id="deleteConfirm" type="button" class="btn btn-outline-light">Delete</a>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
   <!-- /.modal-dialog -->
-  {% endblock content %}
+</div>
+<!-- /.modal -->
+{% endblock content %}
 
-  {% block page_specific_scripts %}
-  <script src="{% static 'wave/plugins/datatables/jquery.dataTables.min.js' %}"></script>
-  <script src="{% static 'wave/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
-  <script src="{% static 'wave/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
-  <script src="{% static 'wave/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
-  <script src="{% static 'wave/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
-  <script src="{% static 'wave/plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
-  <script src="{% static 'wave/plugins/jszip/jszip.min.js' %}"></script>
-  <script src="{% static 'wave/plugins/pdfmake/pdfmake.min.js' %}"></script>
-  <script src="{% static 'wave/plugins/pdfmake/vfs_fonts.js' %}"></script>
-  <script src="{% static 'wave/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
-  <script src="{% static 'wave/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
-  <script src="{% static 'wave/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
+{% block page_specific_scripts %}
+<script src="{% static 'wave/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'wave/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'wave/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'wave/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+<script src="{% static 'wave/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'wave/plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'wave/plugins/jszip/jszip.min.js' %}"></script>
+<script src="{% static 'wave/plugins/pdfmake/pdfmake.min.js' %}"></script>
+<script src="{% static 'wave/plugins/pdfmake/vfs_fonts.js' %}"></script>
+<script src="{% static 'wave/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'wave/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'wave/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.4/dist/JsBarcode.all.min.js"></script>
+
+<script>
 
 
-  <script>
-    $(document).ready(function () {
-      var table = $('#example1').DataTable();
+  $(document).ready(function () {
 
-      table.on('click', '.edit', function () {
-        $tr = $(this).closest('tr');
-        if ($($tr).hasClass('child')) {
-          $tr = $tr.prev('.parent');
-        }
+    var settings = {
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      "buttons": ["excel", "csv", "print"],
+      "pageLength": 10
+    };
+    var mytable = $('#example1').DataTable(settings).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 
-        var data = table.row($tr).data();
-        console.log(data);
+    $('#example1.1').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": true,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
 
-        $('#cod_placa').val(data[1]);
-        console.log(data[1]);
-        $('#min_placa').val(data[2]);
-        console.log(data[2]);
-        $('#multiplication_factor').val(data[3]);
-        console.log(data[3]);
-        
-        $('#editForm').attr('action', "{% url 'date-placi-update' %}");
-        $('#editModal').modal('show');
-        
-      })
-      table.on('click','.delete', function () {
-        $tr = $(this).closest('tr');
-        if ($($tr).hasClass('child')) {
-          $tr = $tr.prev('.parent');
-        }
+    var table = $('#example1').DataTable();
 
-        var data = table.row($tr).data();
-        console.log(data);
+    table.on('click', '.edit', function () {
+      $tr = $(this).closest('tr');
+      if ($($tr).hasClass('child')) {
+        $tr = $tr.prev('.parent');
+      }
 
-        $('#cod_placa').val(data[1]);
-        console.log(data[1]);
-        $('#min_placa').val(data[2]);
-        console.log(data[2]);
-        $('#multiplication_factor').val(data[3]);
-        console.log(data[3]);
-        
-        var url = "{% url 'date-placi-delete' 999 %}".replace(999, data[1]);
-        $('#delete-button').attr('href', url);
-      })
+      var data = table.row($tr).data();
+      console.log(data);
 
-    })
-  </script>
-  <script>
-    $(function () {
-      var mytable = $("#example1").DataTable();
+      $('#cod_placa').val(data[1]);
+      console.log(data[1]);
+      $('#min_placa').val(data[2]);
+      console.log(data[2]);
+      $('#multiplication_factor').val(data[3]);
+      console.log(data[3]);
 
-      mytable({
-        "responsive": true, "lengthChange": false, "autoWidth": false,
-          "buttons": ["excel", "csv", "print"],
-            "pageLength": 3
-      }.buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)'));
-
-      $('#example1.1').DataTable({
-        "paging": true,
-        "lengthChange": false,
-        "searching": true,
-        "ordering": true,
-        "info": true,
-        "autoWidth": false,
-        "responsive": true,
-      });
+      $('#editForm').attr('action', "{% url 'date-placi-update' %}");
+      $('#editModal').modal('show');
 
     });
-  </script>
-  <script>
-    var table = document.getElementsByTagName('table')[0],
+
+    table.on('click', '.delete', function () {
+      $tr = $(this).closest('tr');
+      if ($($tr).hasClass('child')) {
+        $tr = $tr.prev('.parent');
+      }
+
+      var data = table.row($tr).data();
+      console.log(data);
+
+      $('#cod_placa').val(data[1]);
+      console.log(data[1]);
+
+
+      var url = "{% url 'date-placi-delete' 999 %}".replace(999, data[1]);
+      $('#deleteConfirm').attr('href', url);
+    });
+
+  });
+</script>
+
+<script>
+  var table = document.getElementsByTagName('table')[0],
     rows = table.getElementsByTagName('tr'),
     text = 'textContent' in document ? 'textContent' : 'innerText';
 
-    for (var i = 1, len = rows.length; i < len; i++) {
-      rows[i].children[0][text] = i + rows[i].children[0][text];
-    }
-  </script>
+  for (var i = 1, len = rows.length; i < len; i++) {
+    rows[i].children[0][text] = i + rows[i].children[0][text];
+  }
+</script>
+<script>
+  function printFnc(table) {
 
-  {% endblock page_specific_scripts %}
+    const newWin = window.open();
+    newWin.document.write(document.querySelector(table).outerHTML);
+    newWin.print();
+    newWin.close();
+  };
+
+  $(document).ready(function () {
+    JsBarcode(".barcode").init();
+  });
+</script>
+{% endblock page_specific_scripts %}
