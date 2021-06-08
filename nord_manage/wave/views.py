@@ -194,7 +194,7 @@ def insert_data(request, linie, cod_placa):
   return HttpResponse(status = 201)
 
 def settings(request):
-  lista_placi = Date_Placi.objects.all()
+  lista_placi = Date_Placi.objects.order_by('cod_placa')
   context = {
     'lista': lista_placi
   }

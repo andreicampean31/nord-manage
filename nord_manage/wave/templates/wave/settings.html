@@ -52,6 +52,7 @@
                       <a class="btn btn-primary add" data-toggle="modal" data-target="#addModal" type="button"> ADD </a>
                       <thead>
                         <tr>
+                          <th>#</th>
                           <th>Cod placa</th>
                           <th>Norma</th>
                           <th>Factor</th>
@@ -61,6 +62,7 @@
                       <tbody>
                         {% for i in lista %}
                         <tr>
+                          <td></td>
                           <td>{{ i.cod_placa }}</td>
                           <td>{{ i.min_placa }}</td>
                           <td>{{ i.multiplication_factor }}</td>
@@ -319,6 +321,7 @@
       "buttons": ["excel", "csv", "print"],
       "pageLength": 10
     };
+
     var mytable = $('#example1').DataTable(settings).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
 
     $('#example1.1').DataTable({
@@ -394,6 +397,7 @@
 
   $(document).ready(function () {
     JsBarcode(".barcode").init();
+
   });
 </script>
 {% endblock page_specific_scripts %}
