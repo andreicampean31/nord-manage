@@ -1,5 +1,7 @@
+from typing import DefaultDict
 from django.shortcuts import render
 from .models import Productie, Date_Placi
+from django.db.models import Count, F
 from django.db import connection
 from django.http import JsonResponse
 from nord_manage.settings import EMAIL_HOST_USER
@@ -9,50 +11,53 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.utils import timezone
 import datetime
 from .forms import DatePlaciForm
+from math import floor
 
 def home(request):
-      #LINIA 1 
-      #linia 1 rezultate pentru tabel
-      linia1_tabel = connection.cursor()
-      linia1_tabel.execute('''SELECT cod_placa, COUNT(*)*multiplication_factor as nr_buc, FLOOR(60/min_placa) as target
-      FROM (SELECT wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_date_placi.multiplication_factor, wave_productie.data, wave_productie.linie_productie
-    FROM wave_productie
-              INNER JOIN wave_date_placi ON wave_productie.cod_placa_id = wave_date_placi.id
-    WHERE CAST(wave_productie.data AS Date) = CAST(NOW() as Date)
-      AND wave_productie.linie_productie = 1) AS productie_actuala
-      GROUP BY cod_placa;''')
-      results_linia1_tabel = linia1_tabel.fetchall()
-
-      #LINIA 2 
-      #linia 2 rezultate pentru tabel
-      linia2_tabel = connection.cursor()
-      linia2_tabel.execute('''SELECT cod_placa, COUNT(*)*multiplication_factor as nr_buc, FLOOR(60/min_placa) as target
-      FROM (SELECT wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_date_placi.multiplication_factor, wave_productie.data, wave_productie.linie_productie
-    FROM wave_productie
-              INNER JOIN wave_date_placi ON wave_productie.cod_placa_id = wave_date_placi.id
-    WHERE CAST(wave_productie.data AS Date) = CAST(NOW() as Date)
-      AND wave_productie.linie_productie = 2) AS productie_actuala
-      GROUP BY cod_placa;''')
-      results_linia2_tabel = linia2_tabel.fetchall()             
-
-      #LINIA 3
-      #linia 3 rezultate pentru tabel
-      linia3_tabel = connection.cursor()
-      linia3_tabel.execute('''SELECT cod_placa, COUNT(*)*multiplication_factor as nr_buc, FLOOR(60/min_placa) as target
-      FROM (SELECT wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_date_placi.multiplication_factor, wave_productie.data, wave_productie.linie_productie
-    FROM wave_productie
-              INNER JOIN wave_date_placi ON wave_productie.cod_placa_id = wave_date_placi.id
-    WHERE CAST(wave_productie.data AS Date) = CAST(NOW() as Date)
-      AND wave_productie.linie_productie = 3) AS productie_actuala
-      GROUP BY cod_placa;''')
-      results_linia3_tabel = linia3_tabel.fetchall()
-
+      numar_linii_productie = 3
       context = {
-        'linia1': results_linia1_tabel,
-        'linia2': results_linia2_tabel,
-        'linia3': results_linia3_tabel,
+        'linia1': None,
+        'linia2': None,
+        'linia3': None,
+        'numar_linii_productie': range(1, numar_linii_productie+1)
       }
-      return render(request, 'wave/home.html', context)
+      for linia in range(0, numar_linii_productie):
+        today = datetime.date.today()
+
+        today_entries = Productie.objects.filter(data__date=today, linie_productie=linia+1).values('cod_placa__cod_placa', 'multi_factor').annotate(count=Count('cod_placa'), total=Count('cod_placa')*F('multi_factor')).order_by('cod_placa_id')
+
+        coduri_placi=[None] * len(today_entries)
+        total_count=[0] * len(today_entries)
+
+        for i in today_entries:
+          cod_placa = i['cod_placa__cod_placa']
+          total = i['total']
+
+          for j in range(0, len(today_entries)):
+            if coduri_placi[j] == cod_placa:
+              total_count[j] += total
+              break
+            else:
+              if(coduri_placi[j] == None):
+                coduri_placi[j] = cod_placa
+                total_count[j] += total
+                break
+
+        final_array = [None] * len(coduri_placi)
+
+        for i in range(0, len(final_array)):
+          
+          target = Date_Placi.objects.filter(cod_placa = coduri_placi[i]).values('min_placa')
+
+          final_array[i] = {
+            'cod_placa': coduri_placi[i],
+            'total': total_count[i],
+            'target': floor(60/target[0]['min_placa'])
+            }
+
+        context['linia' + str(linia+1)] = final_array
+
+      return render(request, 'wave/home.html', context=context)
 
 
 def efficency_chart(request):
@@ -159,7 +164,7 @@ def report_data(request):
       AND wave_productie.linie_productie = 3) AS productie_actuala
       GROUP BY cod_placa;''')
   results_linia3_tabel = linia3_tabel.fetchall()
-
+  print(results_linia1_tabel)
   now = datetime.datetime.now()
   context = {
     'linia1': results_linia1_tabel,
@@ -183,13 +188,11 @@ def report_data(request):
 
 def insert_data(request, linie, cod_placa):
   now = timezone.now()
-  print(now)
   
-  cod_placa_id = Date_Placi.objects.get(cod_placa = cod_placa)
-  print(cod_placa_id)
-  insert_data = Productie(cod_placa_id = cod_placa_id.id, linie_productie = linie, data = now)
+  placa_info = Date_Placi.objects.get(cod_placa = cod_placa)
+
+  insert_data = Productie(cod_placa_id = placa_info.id, linie_productie = linie, data = now, multi_factor = placa_info.multiplication_factor)
   insert_data.save()
-  print(linie)
 
   return HttpResponse(status = 201)
 

@@ -9,6 +9,7 @@
 
 {% block page_title %} <h1>Home - Wave</h1> {% endblock page_title %}
 {% block content %}
+
 <div class="card card-primary ">
   <div class="card-header">
     <h3 class="card-title">
@@ -65,14 +66,13 @@
             <tbody>
               {% for i in linia1 %}
               <tr>
+                <td></td>
+                <td>{{i.cod_placa}}</td>
                 <td>1</td>
-                <td>{{ i.0 }}</td>
-                <td>1</td>
-                <td>{{ i.1 }}</td>
-                <td>{{ i.2 }}</td>
+                <td>{{i.total}}</td>
+                <td>{{i.target}}</td>
               </tr>
               {% endfor %}
-
             </tbody>
           </table>
         </div>
@@ -102,13 +102,12 @@
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
               <i class="fas fa-minus"></i>
             </button>
-
           </div>
         </div>
         <div class="card-body">
           <div class="chart">
             <canvas id="areaChart2" data-url="{% url 'efficency-chart' %}"
-              style="min-height: 350px; height: 350px; max-height: 350px; max-width: 100%;"></canvas>
+              style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
           </div>
         </div>
         <!-- /.card-body -->
@@ -141,14 +140,13 @@
             <tbody>
               {% for i in linia2 %}
               <tr>
+                <td></td>
+                <td>{{i.cod_placa}}</td>
                 <td>1</td>
-                <td>{{ i.0 }}</td>
-                <td>1</td>
-                <td>{{ i.1 }}</td>
-                <td>{{ i.2 }}</td>
+                <td>{{i.total}}</td>
+                <td>{{ i.target }}</td>
               </tr>
               {% endfor %}
-
             </tbody>
           </table>
         </div>
@@ -194,7 +192,7 @@
     <div class="col-6">
       <div class="card card-info">
         <div class="card-header">
-          <h3 class="card-title">Total productie linia 3</h3>
+          <h3 class="card-title">Total productie linia {{linia}}</h3>
           <div class="card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
               <i class="fas fa-minus"></i>
@@ -216,14 +214,13 @@
             <tbody>
               {% for i in linia3 %}
               <tr>
+                <td></td>
+                <td>{{i.cod_placa}}</td>
                 <td>1</td>
-                <td>{{ i.0 }}</td>
-                <td>1</td>
-                <td>{{ i.1 }}</td>
-                <td>{{ i.2 }}</td>
+                <td>{{i.total}}</td>
+                <td>{{ i.target }}</td>
               </tr>
               {% endfor %}
-
             </tbody>
           </table>
         </div>
@@ -235,6 +232,7 @@
   </div>
   <!-- /.row -->
 </div>
+
 
 {% endblock content %}
 
@@ -373,7 +371,7 @@
     $.ajax({
       url: $efficencyChart.data("url"),
       success: function (data) {
-        
+
         var areaChartCanvas = $('#areaChart1').get(0).getContext('2d')
 
         var areaChartData = {
@@ -455,7 +453,7 @@
     $.ajax({
       url: $efficencyChart.data("url"),
       success: function (data) {
-        
+
         var areaChartCanvas = $('#areaChart2').get(0).getContext('2d')
 
         var areaChartData = {
@@ -537,7 +535,7 @@
     $.ajax({
       url: $efficencyChart.data("url"),
       success: function (data) {
-        
+
         var areaChartCanvas = $('#areaChart3').get(0).getContext('2d')
 
         var areaChartData = {
