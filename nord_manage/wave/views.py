@@ -149,7 +149,6 @@ def report_data(request):
 
     today_entries = Productie.objects.filter(data__hour=now.hour-1, linie_productie=linia+1).values('cod_placa__cod_placa', 'multi_factor').annotate(count=Count('cod_placa'), total=Count('cod_placa')*F('multi_factor')).order_by('cod_placa_id')
 
-    print(now.strftime('%H:%M:%S'))
     coduri_placi=[None] * len(today_entries)
     total_count=[0] * len(today_entries)
 
@@ -183,9 +182,6 @@ def report_data(request):
         }
 
     context_last_hour['linia' + str(linia+1)] = final_array
-  print(context_last_hour)
-  print("-----------")
-  print(context_total)
 
   subject = 'Raport Wave ' + now.strftime('%H:%M')
   from_email = EMAIL_HOST_USER
@@ -216,7 +212,6 @@ def settings(request):
   context = {
     'lista': lista_placi
   }
-  print(context)
   return render(request, 'wave/settings.html', context)
 
 def date_placi_update(request):
@@ -227,7 +222,6 @@ def date_placi_update(request):
       cod_placa = form.cleaned_data.get('cod_placa')
       min_placa = form.cleaned_data.get('min_placa')
       factor = form.cleaned_data.get('multiplication_factor')
-      print(cod_placa + " " + min_placa + " " + factor)
 
       Date_Placi.objects.filter(cod_placa = cod_placa).update(min_placa = min_placa, multiplication_factor = factor)
       
@@ -238,9 +232,8 @@ def date_placi_update(request):
   return HttpResponse(status=404)
 
 def date_placi_delete(request, cod_placa):
-  print("aici")
-
   Date_Placi.objects.filter(cod_placa = cod_placa).delete()
+  
   return HttpResponseRedirect('/wave/settings')
 
 def date_placi_add(request):
