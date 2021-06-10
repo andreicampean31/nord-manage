@@ -13,54 +13,55 @@ import datetime
 from .forms import DatePlaciForm
 from math import floor
 
+def day_total(numar_linii_productie):
+  numar_linii_productie = 3
+  context = {
+    'linia1': None,
+    'linia2': None,
+    'linia3': None,
+  }
+  for linia in range(0, numar_linii_productie):
+    today = datetime.date.today()
+
+    today_entries = Productie.objects.filter(data__date=today, linie_productie=linia+1).values('cod_placa__cod_placa', 'multi_factor').annotate(count=Count('cod_placa'), total=Count('cod_placa')*F('multi_factor')).order_by('cod_placa_id')
+
+    coduri_placi=[None] * len(today_entries)
+    total_count=[0] * len(today_entries)
+
+    for i in today_entries:
+      cod_placa = i['cod_placa__cod_placa']
+      total = i['total']
+
+      for j in range(0, len(today_entries)):
+        if coduri_placi[j] == cod_placa:
+          total_count[j] += total
+          break
+        else:
+          if coduri_placi[j] == None :
+            coduri_placi[j] = cod_placa
+            total_count[j] += total
+            break
+
+    coduri_placi_cleaned = list(filter(None, coduri_placi))
+    total_count_cleaned = list(filter(None, total_count))
+    
+    final_array = [None] * len(coduri_placi_cleaned)
+    
+    for i in range(0, len(final_array)):
+      
+      target = Date_Placi.objects.filter(cod_placa = coduri_placi_cleaned[i]).values('min_placa')
+
+      final_array[i] = {
+        'cod_placa': coduri_placi_cleaned[i],
+        'total': total_count_cleaned[i],
+        'target': floor(60/target[0]['min_placa'])
+        }
+
+    context['linia' + str(linia+1)] = final_array
+  return context
+
 def home(request):
-      numar_linii_productie = 3
-      context = {
-        'linia1': None,
-        'linia2': None,
-        'linia3': None,
-      }
-      for linia in range(0, numar_linii_productie):
-        today = datetime.date.today()
-
-        today_entries = Productie.objects.filter(data__date=today, linie_productie=linia+1).values('cod_placa__cod_placa', 'multi_factor').annotate(count=Count('cod_placa'), total=Count('cod_placa')*F('multi_factor')).order_by('cod_placa_id')
-
-        coduri_placi=[None] * len(today_entries)
-        total_count=[0] * len(today_entries)
-
-        for i in today_entries:
-          cod_placa = i['cod_placa__cod_placa']
-          total = i['total']
-
-          for j in range(0, len(today_entries)):
-            if coduri_placi[j] == cod_placa:
-              total_count[j] += total
-              break
-            else:
-              if coduri_placi[j] == None :
-                coduri_placi[j] = cod_placa
-                total_count[j] += total
-                break
-
-        coduri_placi_cleaned = list(filter(None, coduri_placi))
-        total_count_cleaned = list(filter(None, total_count))
-        
-        final_array = [None] * len(coduri_placi_cleaned)
-        
-        for i in range(0, len(final_array)):
-          
-          target = Date_Placi.objects.filter(cod_placa = coduri_placi_cleaned[i]).values('min_placa')
-
-          final_array[i] = {
-            'cod_placa': coduri_placi_cleaned[i],
-            'total': total_count_cleaned[i],
-            'target': floor(60/target[0]['min_placa'])
-            }
-
-        context['linia' + str(linia+1)] = final_array
-
-      return render(request, 'wave/home.html', context=context)
-
+  return render(request, 'wave/home.html', context=day_total(3))
 
 def efficency_chart(request):
   labels={
@@ -131,24 +132,24 @@ def efficency_chart(request):
   })
 
 def report_data(request):
-  #LINIA 1 
-  #linia 1 rezultate pentru tabel
-  
-
+  numar_linii_productie = 3
   now = datetime.datetime.now()
 
-  #today queries
-  numar_linii_productie = 3
-  context = {
+  context_total = day_total(numar_linii_productie)
+
+  context_last_hour = {
     'linia1': None,
     'linia2': None,
     'linia3': None,
+    'ora_actuala': now.strftime('%H:%M'),
+    'interval': str(now.hour-1) + ':00' + ' - ' + now.strftime('%H:' + '00'),
   }
+
   for linia in range(0, numar_linii_productie):
-    today = datetime.date.today()
 
-    today_entries = Productie.objects.filter(data__date=today, linie_productie=linia+1).values('cod_placa__cod_placa', 'multi_factor').annotate(count=Count('cod_placa'), total=Count('cod_placa')*F('multi_factor')).order_by('cod_placa_id')
+    today_entries = Productie.objects.filter(data__hour=now.hour-1, linie_productie=linia+1).values('cod_placa__cod_placa', 'multi_factor').annotate(count=Count('cod_placa'), total=Count('cod_placa')*F('multi_factor')).order_by('cod_placa_id')
 
+    print(now.strftime('%H:%M:%S'))
     coduri_placi=[None] * len(today_entries)
     total_count=[0] * len(today_entries)
 
@@ -161,44 +162,44 @@ def report_data(request):
           total_count[j] += total
           break
         else:
-          if(coduri_placi[j] == None):
+          if coduri_placi[j] == None :
             coduri_placi[j] = cod_placa
             total_count[j] += total
             break
 
-    final_array = [None] * len(coduri_placi)
-
+    coduri_placi_cleaned = list(filter(None, coduri_placi))
+    total_count_cleaned = list(filter(None, total_count))
+    
+    final_array = [None] * len(coduri_placi_cleaned)
+    
     for i in range(0, len(final_array)):
       
-      target = Date_Placi.objects.filter(cod_placa = coduri_placi[i]).values('min_placa')
+      target = Date_Placi.objects.filter(cod_placa = coduri_placi_cleaned[i]).values('min_placa')
 
       final_array[i] = {
-        'cod_placa': coduri_placi[i],
-        'total': total_count[i],
+        'cod_placa': coduri_placi_cleaned[i],
+        'total': total_count_cleaned[i],
         'target': floor(60/target[0]['min_placa'])
         }
 
-    context['linia' + str(linia+1)] = final_array
+    context_last_hour['linia' + str(linia+1)] = final_array
+  print(context_last_hour)
+  print("-----------")
+  print(context_total)
 
-  context = {
-    'linia1': results_linia1_tabel,
-    'linia2': results_linia2_tabel,
-    'linia3': results_linia3_tabel,
-    'ora': now.hour
-  }
-
-  subject = 'Raport orar Wave'
+  subject = 'Raport Wave ' + now.strftime('%H:%M')
   from_email = EMAIL_HOST_USER
-  to = 'omegagroup96@gmail.com'
+  to = 'andreicampean@gmail.com'
 
   text_content = 'Raport orar Wave'
   mail = EmailMultiAlternatives(subject, text_content, from_email, [to])
-  html_template = get_template("wave/report_email.html").render(context)
+  html_template = get_template("wave/report_email.html").render({'total':context_total, 'last_hour': context_last_hour})
 
   mail.attach_alternative(html_template, "text/html")
   mail.send()
   
   return HttpResponse(status = 201)
+  #return render(request, 'wave/report_email.html', context= {'total':context_total, 'last_hour': context_last_hour})
 
 def insert_data(request, linie, cod_placa):
   now = timezone.now()
