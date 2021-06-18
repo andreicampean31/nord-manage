@@ -253,4 +253,7 @@ def date_placi_add(request):
     form = DatePlaciForm()
   
   return HttpResponse(status = 404)
+
+def custom_reports(request):
+  return render(request, 'wave/reports.html')
   

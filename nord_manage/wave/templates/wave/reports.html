@@ -1,0 +1,139 @@
+{% extends "wave/base.html" %}
+{% load static %}
+{% block specific_plugins_css %}
+<!-- Bootstrap4 Duallistbox -->
+<link rel="stylesheet" href="{% static 'wave/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css' %}">
+<!-- daterange picker -->
+<link rel="stylesheet" href="{% static 'wave/plugins/daterangepicker/daterangepicker.css' %}">
+<!-- Tempusdominus Bootstrap 4 -->
+<link rel="stylesheet"
+  href="{% static 'wave/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}">
+{% endblock specific_plugins_css %}
+
+{% block page_title %} <h1>Reports - Wave</h1> {% endblock page_title %}
+
+{% block content %}
+<div class="card card-default">
+  <div class="card-header">
+    <h3 class="card-title">Bootstrap Duallistbox</h3>
+
+    <div class="card-tools">
+      <button type="button" class="btn btn-tool" data-card-widget="collapse">
+        <i class="fas fa-minus"></i>
+      </button>
+      <button type="button" class="btn btn-tool" data-card-widget="remove">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  </div>
+  <!-- /.card-header -->
+  <div class="card-body">
+
+    <div class="row">
+      <div class="col-6">
+        <div class="form-group">
+          <form id="demoform" action="/12" method="post">
+            {%csrf_token%}
+            <select multiple="multiple" size="10" name="duallistbox_demo1[]" title="duallistbox_demo1[]">
+              <option value="option1">Option 1</option>
+              <option value="option2">Option 2</option>
+              <option value="option3" selected="selected">Option 3</option>
+              <option value="option4">Option 4</option>
+              <option value="option5">Option 5</option>
+              <option value="option6" selected="selected">Option 6</option>
+              <option value="option7">Option 7</option>
+              <option value="option8">Option 8</option>
+              <option value="option9">Option 9</option>
+              <option value="option0">Option 10</option>
+            </select>
+        </div>
+      </div>
+      <br>
+
+      <div class="col-6">
+        <!-- Date range -->
+        <div class="form-group">
+          <label>Date range:</label>
+
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text">
+                <i class="far fa-calendar-alt"></i>
+              </span>
+            </div>
+            <input type="text" class="form-control float-right" id="reservation">
+          </div>
+          <!-- /.input group -->
+        </div>
+        <!-- /.form group -->
+      </div>
+      <button type="submit" class="btn btn-default btn-block">Submit data</button>
+      </form>
+    </div>
+    <!-- /.form-group -->
+
+    <!-- /.col -->
+  </div>
+  <!-- /.row -->
+</div>
+<!-- /.card-body -->
+<div class="card-footer">
+  Visit <a href="https://github.com/istvan-ujjmeszaros/bootstrap-duallistbox#readme">Bootstrap Duallistbox</a> for
+  more examples and information about
+  the plugin.
+</div>
+</div>
+<!-- /.card -->
+{% endblock content %}
+
+{% block page_specific_scripts %}
+<!-- date-range-picker -->
+<script src="{% static 'wave/plugins/daterangepicker/daterangepicker.js' %}"></script>
+<!-- Bootstrap4 Duallistbox -->
+<script src="{% static 'wave/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js' %}"></script>
+<script src="{% static 'wave/plugins/moment/moment.min.js' %}"></script>
+
+
+<script>
+  //Bootstrap Duallistbox
+  $('.duallistbox').bootstrapDualListbox()
+
+  var demo1 = $('select[name="duallistbox_demo1[]"]').bootstrapDualListbox();
+
+  $("#demoform").submit(function () {
+    values = $('[name="duallistbox_demo1[]"]').val();
+    console.log(values);
+  });
+
+
+</script>
+<script>
+  $('#reservation').daterangepicker()
+  //Date range picker with time picker
+  $('#reservationtime').daterangepicker({
+    timePicker: true,
+    timePickerIncrement: 30,
+    locale: {
+      format: 'MM/DD/YYYY hh:mm A'
+    }
+  })
+  //Date range as a button
+  $('#daterange-btn').daterangepicker(
+    {
+      ranges: {
+        'Today': [moment(), moment()],
+        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+        'This Month': [moment().startOf('month'), moment().endOf('month')],
+        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+      },
+      startDate: moment().subtract(29, 'days'),
+      endDate: moment()
+    },
+    function (start, end) {
+      $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'))
+    }
+  )
+</script>
+{% endblock page_specific_scripts %}

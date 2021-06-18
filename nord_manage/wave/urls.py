@@ -9,5 +9,6 @@ urlpatterns = [
     path('settings/', views.settings, name = 'wave-settings'),
     path('settings/date-placi-update/', views.date_placi_update, name = 'date-placi-update'),
     path('settings/date-placi-delete/<cod_placa>/', views.date_placi_delete, name = 'date-placi-delete'),
-    path('settings/date-placi-add/', views.date_placi_add, name='date-placi-add')
+    path('settings/date-placi-add/', views.date_placi_add, name='date-placi-add'),
+    path('reports/', views.custom_reports, name='wave-custom-reports'),
 ]
