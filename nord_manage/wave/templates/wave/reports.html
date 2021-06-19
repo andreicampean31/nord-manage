@@ -8,91 +8,138 @@
 <!-- Tempusdominus Bootstrap 4 -->
 <link rel="stylesheet"
   href="{% static 'wave/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}">
+<link rel="stylesheet" href="{% static 'wave/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %} ">
+<link rel="stylesheet" href="{% static 'wave/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %} ">
+<link rel="stylesheet" href="{% static 'wave/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
 {% endblock specific_plugins_css %}
 
 {% block page_title %} <h1>Reports - Wave</h1> {% endblock page_title %}
 
 {% block content %}
-<div class="card card-default">
-  <div class="card-header">
-    <h3 class="card-title">Bootstrap Duallistbox</h3>
+<div class="row">
+  <div class="col-6">
+    <div class="card card-default">
+      <div class="card-header">
+        <h3 class="card-title">Custom Report Creator</h3>
 
-    <div class="card-tools">
-      <button type="button" class="btn btn-tool" data-card-widget="collapse">
-        <i class="fas fa-minus"></i>
-      </button>
-      <button type="button" class="btn btn-tool" data-card-widget="remove">
-        <i class="fas fa-times"></i>
-      </button>
-    </div>
-  </div>
-  <!-- /.card-header -->
-  <div class="card-body">
-
-    <div class="row">
-      <div class="col-6">
+        <div class="card-tools">
+          <button type="button" class="btn btn-tool" data-card-widget="collapse">
+            <i class="fas fa-minus"></i>
+          </button>
+          <button type="button" class="btn btn-tool" data-card-widget="remove">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+      <!-- /.card-header -->
+      <div class="card-body">
         <div class="form-group">
           <form id="demoform" action="/12" method="post">
             {%csrf_token%}
+            <label>Selecteaza codurile de placa:</label>
             <select multiple="multiple" size="10" name="duallistbox_demo1[]" title="duallistbox_demo1[]">
-              <option value="option1">Option 1</option>
-              <option value="option2">Option 2</option>
-              <option value="option3" selected="selected">Option 3</option>
-              <option value="option4">Option 4</option>
-              <option value="option5">Option 5</option>
-              <option value="option6" selected="selected">Option 6</option>
-              <option value="option7">Option 7</option>
-              <option value="option8">Option 8</option>
-              <option value="option9">Option 9</option>
-              <option value="option0">Option 10</option>
+              {% for i in lista %}
+                <option value="{{i.cod_placa}}">{{i.cod_placa}}</option>
+              {% endfor %}
             </select>
-        </div>
-      </div>
-      <br>
+            </br>
+            <!-- Date range -->
+            <label>Date range:</label>
 
-      <div class="col-6">
-        <!-- Date range -->
-        <div class="form-group">
-          <label>Date range:</label>
-
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <span class="input-group-text">
-                <i class="far fa-calendar-alt"></i>
-              </span>
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">
+                  <i class="far fa-calendar-alt"></i>
+                </span>
+              </div>
+              <input type="text" name="date" class="form-control float-right" id="reservation">
             </div>
-            <input type="text" class="form-control float-right" id="reservation">
-          </div>
-          <!-- /.input group -->
+            </br>
+            <input type="submit" value="SUBMIT" class="btn btn-primary btn-block">
+          </form>
         </div>
-        <!-- /.form group -->
       </div>
-      <button type="submit" class="btn btn-default btn-block">Submit data</button>
-      </form>
     </div>
-    <!-- /.form-group -->
-
-    <!-- /.col -->
   </div>
-  <!-- /.row -->
+  <div class="col-6">
+
+    <!-- AREA CHART -->
+    <div class="card card-info">
+      <div class="card-header">
+        <h3 class="card-title">Results</h3>
+
+        <div class="card-tools">
+          <button type="button" class="btn btn-tool" data-card-widget="collapse">
+            <i class="fas fa-minus"></i>
+          </button>
+        </div>
+      </div>
+      <div class="card-body">
+        <table id="example1" class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Cod placa</th>
+              <th>Linia</th>
+              <th>Nr Bucati</th>
+              <th>Target/ora</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for i in linia1 %}
+            <tr>
+              <td></td>
+              <td>{{i.cod_placa}}</td>
+              <td>1</td>
+              <td>{{i.total}}</td>
+              <td>{{i.target}}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        </br>
+        </br>
+        <label>Grafic</label>
+        <div class="chart">
+          <canvas id="areaChart1" data-url="{% url 'efficency-chart' %}"
+            style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+        </div>
+
+      </div>
+      <!-- /.card-body -->
+    </div>
+
+  </div>
 </div>
-<!-- /.card-body -->
-<div class="card-footer">
-  Visit <a href="https://github.com/istvan-ujjmeszaros/bootstrap-duallistbox#readme">Bootstrap Duallistbox</a> for
-  more examples and information about
-  the plugin.
-</div>
-</div>
-<!-- /.card -->
+
+
+<!-- /.row -->
+
+
 {% endblock content %}
 
 {% block page_specific_scripts %}
 <!-- date-range-picker -->
-<script src="{% static 'wave/plugins/daterangepicker/daterangepicker.js' %}"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <!-- Bootstrap4 Duallistbox -->
 <script src="{% static 'wave/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js' %}"></script>
-<script src="{% static 'wave/plugins/moment/moment.min.js' %}"></script>
-
+<!-- DataTables  & Plugins -->
+<script src="{% static 'wave/plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'wave/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'wave/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'wave/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+<script src="{% static 'wave/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'wave/plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'wave/plugins/jszip/jszip.min.js' %}"></script>
+<script src="{% static 'wave/plugins/pdfmake/pdfmake.min.js' %}"></script>
+<script src="{% static 'wave/plugins/pdfmake/vfs_fonts.js' %}"></script>
+<script src="{% static 'wave/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'wave/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'wave/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
+<!-- ChartJS -->
+<script src="{% static 'wave/plugins/chart.js/Chart.min.js' %}"></script>
 
 <script>
   //Bootstrap Duallistbox
@@ -105,35 +152,107 @@
     console.log(values);
   });
 
+  $('#reservation').daterangepicker()
+
+</script>
+
+<script>
+  $(function () {
+    /* ChartJS
+     * -------
+     * Here we will create a few charts using ChartJS
+     */
+
+    //--------------
+    //- AREA CHART -
+    //--------------
+
+    // Get context with jQuery - using jQuery's .get() method.
+    var $efficencyChart = $("#areaChart1");
+    $.ajax({
+      url: $efficencyChart.data("url"),
+      success: function (data) {
+
+        var areaChartCanvas = $('#areaChart1').get(0).getContext('2d')
+
+        var areaChartData = {
+          labels: data.labels["linia1"],
+          datasets: [
+            {
+              label: 'Eficienta',
+              lineTension: 0,
+              steppedLine: '',
+              backgroundColor: '',
+              borderColor: 'rgba(60,141,188,0.8)',
+              pointRadius: true,
+              pointColor: '#3b8bba',
+              pointStrokeColor: 'rgba(60,141,188,1)',
+              pointHighlightFill: '#fff',
+              pointHighlightStroke: 'rgba(60,141,188,1)',
+              data: data.data["linia1"],
+            }],
+        }
+
+        var areaChartOptions = {
+          maintainAspectRatio: false,
+          responsive: true,
+          legend: {
+            display: false
+          },
+          scales: {
+            xAxes: [{
+              gridLines: {
+                display: true,
+              }
+            }],
+            yAxes: [{
+              ticks: {
+                min: 0,
+                max: 300
+              },
+              gridLines: {
+                display: true,
+              }
+            }]
+          },
+          drawHorizontalLine: {
+            lineY: [100, 100],
+            lineColor: "rgba(50, 155, 255, 0.85)",
+            text: '',
+            textPosition: 360,
+            textFont: '18px sans-serif',
+            textColor: "rgba(50, 155, 255, 0.85)"
+          }
+        }
+
+        // This will get the first returned node in the jQuery collection.
+        new Chart(areaChartCanvas, {
+          type: 'line',
+          data: areaChartData,
+          options: areaChartOptions
+        })
+      }
+    })
+
+  })
 
 </script>
 <script>
-  $('#reservation').daterangepicker()
-  //Date range picker with time picker
-  $('#reservationtime').daterangepicker({
-    timePicker: true,
-    timePickerIncrement: 30,
-    locale: {
-      format: 'MM/DD/YYYY hh:mm A'
-    }
-  })
-  //Date range as a button
-  $('#daterange-btn').daterangepicker(
-    {
-      ranges: {
-        'Today': [moment(), moment()],
-        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-        'This Month': [moment().startOf('month'), moment().endOf('month')],
-        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-      },
-      startDate: moment().subtract(29, 'days'),
-      endDate: moment()
-    },
-    function (start, end) {
-      $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'))
-    }
-  )
+  $(function () {
+    $("#example1").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      "buttons": ["excel", "csv", "print"],
+      "pageLength": 3
+    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+    $('#example1.1').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": true,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+  });
 </script>
 {% endblock page_specific_scripts %}

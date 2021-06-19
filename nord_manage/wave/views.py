@@ -255,5 +255,10 @@ def date_placi_add(request):
   return HttpResponse(status = 404)
 
 def custom_reports(request):
-  return render(request, 'wave/reports.html')
+  lista_placi = Date_Placi.objects.order_by('cod_placa').values('cod_placa')
+  context = {
+    'lista': lista_placi
+  }
+  print(context)
+  return render(request, 'wave/reports.html', context)
   
