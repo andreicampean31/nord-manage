@@ -11,4 +11,5 @@ urlpatterns = [
     path('settings/date-placi-delete/<cod_placa>/', views.date_placi_delete, name = 'date-placi-delete'),
     path('settings/date-placi-add/', views.date_placi_add, name='date-placi-add'),
     path('reports/', views.custom_reports, name='wave-custom-reports'),
+    path('reports/results', views.custom_reports_result, name='custom-reports-results')
 ]

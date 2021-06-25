@@ -34,17 +34,17 @@
       <!-- /.card-header -->
       <div class="card-body">
         <div class="form-group">
-          <form id="demoform" action="/12" method="post">
+          <form id="demoform" action="{% url 'custom-reports-results' %}" method="post">
             {%csrf_token%}
-            <label>Selecteaza codurile de placa:</label>
-            <select multiple="multiple" size="10" name="duallistbox_demo1[]" title="duallistbox_demo1[]">
+            <label for="lista_coduri">Selecteaza codurile de placa:</label>
+            <select multiple="multiple" size="10" name="lista_coduri" title="lista_coduri" id="lista_coduri">
               {% for i in lista %}
                 <option value="{{i.cod_placa}}">{{i.cod_placa}}</option>
               {% endfor %}
             </select>
             </br>
             <!-- Date range -->
-            <label>Date range:</label>
+            <label for="date_range">Date range:</label>
 
             <div class="input-group">
               <div class="input-group-prepend">
@@ -52,7 +52,7 @@
                   <i class="far fa-calendar-alt"></i>
                 </span>
               </div>
-              <input type="text" name="date" class="form-control float-right" id="reservation">
+              <input type="text" name="date_range" class="form-control float-right" id="date_range">
             </div>
             </br>
             <input type="submit" value="SUBMIT" class="btn btn-primary btn-block">
@@ -145,14 +145,15 @@
   //Bootstrap Duallistbox
   $('.duallistbox').bootstrapDualListbox()
 
-  var demo1 = $('select[name="duallistbox_demo1[]"]').bootstrapDualListbox();
+  var demo1 = $('select[name="lista_coduri"]').bootstrapDualListbox();
 
-  $("#demoform").submit(function () {
-    values = $('[name="duallistbox_demo1[]"]').val();
-    console.log(values);
+
+
+  $('#date_range').daterangepicker({
+    locale: {
+      format: 'DD/MM/YYYY'
+    }
   });
-
-  $('#reservation').daterangepicker()
 
 </script>
 

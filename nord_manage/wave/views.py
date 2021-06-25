@@ -10,7 +10,7 @@ from django.template.loader import get_template
 from django.http import HttpResponse, HttpResponseRedirect
 from django.utils import timezone
 import datetime
-from .forms import DatePlaciForm
+from .forms import DatePlaciForm, CustomReportForm
 from math import floor
 
 def day_total(numar_linii_productie):
@@ -259,6 +259,18 @@ def custom_reports(request):
   context = {
     'lista': lista_placi
   }
-  print(context)
   return render(request, 'wave/reports.html', context)
   
+def custom_reports_result(request):
+  if request.method == 'POST':
+    form = CustomReportForm(request.POST)
+    x = request.POST.get('lista_coduri')
+    print(x)
+    if form.is_valid():
+      lista_coduri = form.cleaned_data.get('lista_coduri')
+      date_range = form.cleaned_data.get('date_range')
+
+      print(lista_coduri)
+      print(date_range)
+
+      return HttpResponse(status = 200)
