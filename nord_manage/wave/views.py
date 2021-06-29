@@ -13,34 +13,23 @@ import datetime
 from .forms import DatePlaciForm, CustomReportForm
 from math import floor
 
-def day_total(numar_linii_productie):
-  numar_linii_productie = 3
-  context = {
-    'linia1': None,
-    'linia2': None,
-    'linia3': None,
-  }
-  for linia in range(0, numar_linii_productie):
-    today = datetime.date.today()
+def count_total_productie(entries):
+  coduri_placi=[None] * len(entries)
+  total_count=[0] * len(entries)
 
-    today_entries = Productie.objects.filter(data__date=today, linie_productie=linia+1).values('cod_placa__cod_placa', 'multi_factor').annotate(count=Count('cod_placa'), total=Count('cod_placa')*F('multi_factor')).order_by('cod_placa_id')
+  for i in entries:
+    cod_placa = i['cod_placa__cod_placa']
+    total = i['total']
 
-    coduri_placi=[None] * len(today_entries)
-    total_count=[0] * len(today_entries)
-
-    for i in today_entries:
-      cod_placa = i['cod_placa__cod_placa']
-      total = i['total']
-
-      for j in range(0, len(today_entries)):
-        if coduri_placi[j] == cod_placa:
+    for j in range(0, len(entries)):
+      if coduri_placi[j] == cod_placa:
+        total_count[j] += total
+        break
+      else:
+        if coduri_placi[j] == None :
+          coduri_placi[j] = cod_placa
           total_count[j] += total
           break
-        else:
-          if coduri_placi[j] == None :
-            coduri_placi[j] = cod_placa
-            total_count[j] += total
-            break
 
     coduri_placi_cleaned = list(filter(None, coduri_placi))
     total_count_cleaned = list(filter(None, total_count))
@@ -60,8 +49,20 @@ def day_total(numar_linii_productie):
     context['linia' + str(linia+1)] = final_array
   return context
 
+def home_today_total(numar_linii_productie):
+  numar_linii_productie = 3
+  
+  for linia in range(0, numar_linii_productie):
+    today = datetime.date.today()
+
+    today_entries = Productie.objects.filter(data__date=today, linie_productie=linia+1).values('cod_placa__cod_placa', 'multi_factor').annotate(count=Count('cod_placa'), total=Count('cod_placa')*F('multi_factor')).order_by('cod_placa_id')
+
+    context = count_total_productie(today_entries)
+    
+  return context
+
 def home(request):
-  return render(request, 'wave/home.html', context=day_total(3))
+  return render(request, 'wave/home.html', context=home_today_total(3))
 
 def efficency_chart(request):
   labels={
@@ -264,13 +265,37 @@ def custom_reports(request):
 def custom_reports_result(request):
   if request.method == 'POST':
     form = CustomReportForm(request.POST)
-    x = request.POST.get('lista_coduri')
-    print(x)
+    
+    
     if form.is_valid():
-      lista_coduri = form.cleaned_data.get('lista_coduri')
+      lista_coduri = request.POST.getlist('lista_coduri')
       date_range = form.cleaned_data.get('date_range')
+      
+      i=0
+      str_start_date = ''
+      str_end_date = ''
+      while i<23:
+        if(date_range[i] != ' ' or date_range[i] != '-'):
+          if i<10:
+            str_start_date = str_start_date + date_range[i]
+          elif i>=13:
+            str_end_date = str_end_date + date_range[i]
+        i+=1
 
-      print(lista_coduri)
-      print(date_range)
+      str_start_date = str_start_date + ' 00:00:00'
+      str_end_date = str_end_date + ' 23:59:59'
+      print(str_start_date)
+      print(str_end_date)
+
+      start_date = datetime.datetime.strptime(str_start_date, '%d/%m/%Y %H:%M:%S').strftime('%Y-%m-%d %H:%M:%S')
+      end_date = datetime.datetime.strptime(str_end_date, '%d/%m/%Y %H:%M:%S').strftime('%Y-%m-%d %H:%M:%S')
+      print(start_date)
+      print(end_date)
+
+
+      raport = Productie.objects.filter(data__gte=start_date, data__lte=end_date).values('cod_placa__cod_placa', 'multi_factor').annotate(count=Count('cod_placa'), total=Count('cod_placa')*F('multi_factor')).order_by('cod_placa_id')
+      print(raport)
+      #print(lista_coduri)
+      #print(date_range)
 
       return HttpResponse(status = 200)

@@ -7,5 +7,4 @@ class DatePlaciForm(forms.Form):
 
 class CustomReportForm(forms.Form):
 
-    #lista_coduri = forms.MultipleChoiceField(label = 'lista_coduri')
     date_range = forms.CharField(label = 'date_range')
