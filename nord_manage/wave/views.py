@@ -16,7 +16,8 @@ from math import floor
 def count_total_productie(entries):
   coduri_placi=[None] * len(entries)
   total_count=[0] * len(entries)
-
+  #print(entries)
+  final_array = [None]
   for i in entries:
     cod_placa = i['cod_placa__cod_placa']
     total = i['total']
@@ -45,24 +46,27 @@ def count_total_productie(entries):
         'total': total_count_cleaned[i],
         'target': floor(60/target[0]['min_placa'])
         }
+  #print(final_array)
+  return final_array
 
-    context['linia' + str(linia+1)] = final_array
-  return context
-
-def home_today_total(numar_linii_productie):
+def today_total(numar_linii_productie):
   numar_linii_productie = 3
-  
+  context = {
+    'linia1': None,
+    'linia2': None,
+    'linia3': None
+  }
   for linia in range(0, numar_linii_productie):
     today = datetime.date.today()
 
     today_entries = Productie.objects.filter(data__date=today, linie_productie=linia+1).values('cod_placa__cod_placa', 'multi_factor').annotate(count=Count('cod_placa'), total=Count('cod_placa')*F('multi_factor')).order_by('cod_placa_id')
 
-    context = count_total_productie(today_entries)
+    context['linia' + str(linia+1)] = count_total_productie(today_entries)
     
   return context
 
 def home(request):
-  return render(request, 'wave/home.html', context=home_today_total(3))
+  return render(request, 'wave/home.html', context=today_total(3))
 
 def efficency_chart(request):
   labels={
@@ -136,7 +140,7 @@ def report_data(request):
   numar_linii_productie = 3
   now = datetime.datetime.now()
 
-  context_total = day_total(numar_linii_productie)
+  context_total = today_total(numar_linii_productie)
 
   context_last_hour = {
     'linia1': None,
@@ -284,18 +288,23 @@ def custom_reports_result(request):
 
       str_start_date = str_start_date + ' 00:00:00'
       str_end_date = str_end_date + ' 23:59:59'
-      print(str_start_date)
-      print(str_end_date)
 
       start_date = datetime.datetime.strptime(str_start_date, '%d/%m/%Y %H:%M:%S').strftime('%Y-%m-%d %H:%M:%S')
       end_date = datetime.datetime.strptime(str_end_date, '%d/%m/%Y %H:%M:%S').strftime('%Y-%m-%d %H:%M:%S')
-      print(start_date)
-      print(end_date)
 
+      entries = Productie.objects.filter(cod_placa_id__cod_placa__in=lista_coduri, data__gte=start_date, data__lte=end_date).values('cod_placa__cod_placa', 'multi_factor').annotate(count=Count('cod_placa'), total=Count('cod_placa')*F('multi_factor')).order_by('cod_placa_id')
+      
+      custom_report = count_total_productie(entries)
+      lista_placi = Date_Placi.objects.order_by('cod_placa').values('cod_placa')
 
-      raport = Productie.objects.filter(data__gte=start_date, data__lte=end_date).values('cod_placa__cod_placa', 'multi_factor').annotate(count=Count('cod_placa'), total=Count('cod_placa')*F('multi_factor')).order_by('cod_placa_id')
-      print(raport)
-      #print(lista_coduri)
-      #print(date_range)
+      if custom_report != [None]:
+        context = {
+          'lista': lista_placi,
+          'result': custom_report
+        }
+      else:
+        context = {
+          'lista': lista_placi
+        }
 
-      return HttpResponse(status = 200)
+      return render(request, 'wave/reports.html', context)
