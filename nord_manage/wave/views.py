@@ -258,16 +258,11 @@ def date_placi_update(request):
 
 
 def date_placi_delete(request, cod_placa):
-    coduri_folosite = Productie.objects.values(
-        'cod_placa_id__cod_placa').order_by('cod_placa')
-    print(coduri_folosite)
-
-    for i in coduri_folosite:
-        if i['cod_placa_id__cod_placa'] == cod_placa:
-            print("cod1!")
-            return HttpResponseRedirect('/wave/settings/#errorDelete')
-        else:
-            Date_Placi.objects.filter(cod_placa=cod_placa).delete()
+    
+    if Productie.objects.filter(cod_placa_id__cod_placa = cod_placa).exists():
+        return HttpResponseRedirect('/wave/settings/#errorDelete')
+    else:
+        Date_Placi.objects.filter(cod_placa=cod_placa).delete()
 
     return HttpResponseRedirect('/wave/settings')
 
