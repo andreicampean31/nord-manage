@@ -321,6 +321,28 @@
   <!-- /.modal-dialog -->
 </div>
 <!-- /.modal -->
+
+<div class="modal fade" id="error">
+  <div class="modal-dialog">
+    <div class="modal-content bg-danger">
+      <div class="modal-header">
+        <h4 class="modal-title">Danger Modal</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p></p>
+      </div>
+      <div class="modal-footer justify-content-between">
+        <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
 {% endblock content %}
 
 {% block page_specific_scripts %}
@@ -425,6 +447,21 @@
   $(document).ready(function () {
     JsBarcode(".barcode").init();
 
+  });
+</script>
+
+<script>
+  $(document).ready(function() {
+    if (window.location.href.indexOf("#errorAdd") > -1) {
+      var message = 'Acest cod exista deja in baza de date!';
+      $('#error').find('.modal-body p').text(message);
+      $('#error').modal('show');
+    }
+    else if (window.location.href.indexOf("#errorDelete") > -1) {
+      var message = 'Acest cod are inregistrari in productie, nu poate fi sters!';
+      $('#error').find('.modal-body p').text(message);
+      $('#error').modal('show');
+    }
   });
 </script>
 {% endblock page_specific_scripts %}

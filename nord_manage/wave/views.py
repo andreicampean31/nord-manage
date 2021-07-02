@@ -46,7 +46,7 @@ def count_total_productie(entries):
         'total': total_count_cleaned[i],
         'target': floor(60/target[0]['min_placa'])
         }
-  #print(final_array)
+  print(final_array)
   return final_array
 
 def today_total(numar_linii_productie):
@@ -237,7 +237,15 @@ def date_placi_update(request):
   return HttpResponse(status=404)
 
 def date_placi_delete(request, cod_placa):
-  Date_Placi.objects.filter(cod_placa = cod_placa).delete()
+  coduri_folosite = Productie.objects.values('cod_placa_id__cod_placa').order_by('cod_placa')
+  print(coduri_folosite)
+
+  for i in coduri_folosite:
+    if i['cod_placa_id__cod_placa'] == cod_placa:
+      print("cod1!")
+      return HttpResponseRedirect('/wave/settings/#errorDelete')
+    else:
+      Date_Placi.objects.filter(cod_placa = cod_placa).delete()
   
   return HttpResponseRedirect('/wave/settings')
 
@@ -249,6 +257,12 @@ def date_placi_add(request):
       cod_placa = form.cleaned_data.get('cod_placa')
       min_placa = form.cleaned_data.get('min_placa')
       factor = form.cleaned_data.get('multiplication_factor')
+
+      coduri_existente = Date_Placi.objects.all().values('cod_placa')
+
+      for i in coduri_existente:
+        if i['cod_placa'] == cod_placa:
+          return HttpResponseRedirect('/wave/settings/#errorAdd')
 
       insert_code = Date_Placi(cod_placa = cod_placa, min_placa = min_placa, multiplication_factor = factor)
       insert_code.save()

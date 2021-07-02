@@ -65,13 +65,15 @@
             </thead>
             <tbody>
               {% for i in linia1 %}
-              <tr>
-                <td></td>
-                <td>{{i.cod_placa}}</td>
-                <td>1</td>
-                <td>{{i.total}}</td>
-                <td>{{i.target}}</td>
-              </tr>
+                {% if i != None %}
+                  <tr>
+                    <td></td>
+                    <td>{{i.cod_placa}}</td>
+                    <td>1</td>
+                    <td>{{i.total}}</td>
+                    <td>{{ i.target }}</td>
+                  </tr>
+                {% endif %}
               {% endfor %}
             </tbody>
           </table>
@@ -139,6 +141,7 @@
             </thead>
             <tbody>
               {% for i in linia2 %}
+              {% if i != None %}
               <tr>
                 <td></td>
                 <td>{{i.cod_placa}}</td>
@@ -146,6 +149,7 @@
                 <td>{{i.total}}</td>
                 <td>{{ i.target }}</td>
               </tr>
+              {% endif %}
               {% endfor %}
             </tbody>
           </table>
@@ -213,13 +217,15 @@
             </thead>
             <tbody>
               {% for i in linia3 %}
-              <tr>
-                <td></td>
-                <td>{{i.cod_placa}}</td>
-                <td>1</td>
-                <td>{{i.total}}</td>
-                <td>{{ i.target }}</td>
-              </tr>
+                {% if i != None %}
+                  <tr>
+                    <td></td>
+                    <td>{{i.cod_placa}}</td>
+                    <td>1</td>
+                    <td>{{i.total}}</td>
+                    <td>{{ i.target }}</td>
+                  </tr>
+                {% endif %}
               {% endfor %}
             </tbody>
           </table>
