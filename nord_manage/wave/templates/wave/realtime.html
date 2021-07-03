@@ -86,7 +86,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 {% for i in linia1 %}
                 {% if i != None %}
                 <tr>
-                  <td></td>
+                  <td>{{forloop.counter}}</td>
                   <td>{{i.cod_placa}}</td>
                   <td>1</td>
                   <td>{{i.total}}</td>
@@ -162,7 +162,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 {% for i in linia2 %}
                 {% if i != None %}
                 <tr>
-                  <td></td>
+                  <td>{{forloop.counter}}</td>
                   <td>{{i.cod_placa}}</td>
                   <td>1</td>
                   <td>{{i.total}}</td>
@@ -238,7 +238,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 {% for i in linia3 %}
                 {% if i != None %}
                 <tr>
-                  <td></td>
+                  <td>{{forloop.counter}}</td>
                   <td>{{i.cod_placa}}</td>
                   <td>1</td>
                   <td>{{i.total}}</td>
