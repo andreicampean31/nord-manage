@@ -214,8 +214,7 @@ def report_data(request):
     mail.attach_alternative(html_template, "text/html")
     mail.send()
 
-    return HttpResponse(status=201)
-    # return render(request, 'wave/report_email.html', context= {'total':context_total, 'last_hour': context_last_hour})
+    return HttpResponseRedirect('/wave')
 
 
 def insert_data(request, linie, cod_placa):

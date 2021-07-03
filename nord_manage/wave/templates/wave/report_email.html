@@ -49,13 +49,15 @@
           <th>Nr Bucati</th>
           <th>Target/ora</th>
           {% for i in last_hour.linia1%}
+          {% if i != None %}
           <tr>
-            <td>1</td>
+            <td>{{forloop.counter}}</td>
             <td>{{i.cod_placa}}</td>
             <td>1</td>
             <td>{{ i.total }}</td>
             <td>{{ i.target }}</td>
           </tr>
+          {% endif %}
           {% endfor %}
         </table>
         <br>
@@ -68,13 +70,15 @@
           <th>Nr Bucati</th>
           <th>Target/ora</th>
           {% for i in last_hour.linia2%}
+          {% if i != None %}
           <tr>
-            <td>1</td>
+            <td>{{forloop.counter}}</td>
             <td>{{ i.cod_placa }}</td>
             <td>2</td>
             <td>{{ i.total }}</td>
             <td>{{ i.target }}</td>
           </tr>
+          {% endif %}
           {% endfor %}
         </table>
         <br><br>
@@ -86,13 +90,15 @@
           <th>Nr Bucati</th>
           <th>Target/ora</th>
           {% for i in last_hour.linia3 %}
+          {% if i != None %}
           <tr>
-            <td>1</td>
+            <td>{{forloop.counter}}</td>
             <td>{{ i.cod_placa }}</td>
             <td>3</td>
             <td>{{ i.total }}</td>
             <td>{{ i.target }}</td>
           </tr>
+          {% endif %}
           {% endfor %}
         </table>
       </div>
@@ -111,13 +117,15 @@
           <th>Nr Bucati</th>
           <th>Target/ora</th>
           {% for i in total.linia1%}
+          {% if i != None %}
           <tr>
-            <td>1</td>
+            <td>{{forloop.counter}}</td>
             <td>{{i.cod_placa}}</td>
             <td>1</td>
             <td>{{ i.total }}</td>
             <td>{{ i.target }}</td>
           </tr>
+          {% endif %}
           {% endfor %}
         </table>
         <br>
@@ -130,13 +138,15 @@
           <th>Nr Bucati</th>
           <th>Target/ora</th>
           {% for i in total.linia2%}
+          {% if i != None %}
           <tr>
-            <td>1</td>
+            <td>{{forloop.counter}}</td>
             <td>{{ i.cod_placa }}</td>
             <td>2</td>
             <td>{{ i.total }}</td>
             <td>{{ i.target }}</td>
           </tr>
+          {% endif %}
           {% endfor %}
         </table>
         <br><br>
@@ -148,13 +158,15 @@
           <th>Nr Bucati</th>
           <th>Target/ora</th>
           {% for i in total.linia3 %}
+          {% if i != None %}
           <tr>
-            <td>1</td>
+            <td>{{forloop.counter}}</td>
             <td>{{ i.cod_placa }}</td>
             <td>3</td>
             <td>{{ i.total }}</td>
             <td>{{ i.target }}</td>
           </tr>
+          {% endif %}
           {% endfor %}
         </table>
       </div>

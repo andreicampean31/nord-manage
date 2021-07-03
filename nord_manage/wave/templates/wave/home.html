@@ -7,14 +7,14 @@
 <link rel="stylesheet" href="{% static 'wave/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
 {% endblock specific_plugins_css %}
 
-{% block page_title %} <h1>Home - Wave</h1> {% endblock page_title %}
+{% block page_title %} <h1>Home - Wave</h1> <a href="{% url 'wave-hour-report' %}" class="btn btn-app bg-info" type="button"> <i class="fas fa-paper-plane"></i> Send email</a>{% endblock page_title %}
 {% block content %}
 
 <div class="card card-primary ">
   <div class="card-header">
     <h3 class="card-title">
       <i class="far fa-chart-bar"></i>
-      Linia 1
+      Linia 1 
     </h3>
   </div>
   <div class="row">
@@ -65,15 +65,15 @@
             </thead>
             <tbody>
               {% for i in linia1 %}
-                {% if i != None %}
-                  <tr>
-                    <td>{{forloop.counter}}</td>
-                    <td>{{i.cod_placa}}</td>
-                    <td>1</td>
-                    <td>{{i.total}}</td>
-                    <td>{{ i.target }}</td>
-                  </tr>
-                {% endif %}
+              {% if i != None %}
+              <tr>
+                <td>{{forloop.counter}}</td>
+                <td>{{i.cod_placa}}</td>
+                <td>1</td>
+                <td>{{i.total}}</td>
+                <td>{{ i.target }}</td>
+              </tr>
+              {% endif %}
               {% endfor %}
             </tbody>
           </table>
@@ -217,15 +217,15 @@
             </thead>
             <tbody>
               {% for i in linia3 %}
-                {% if i != None %}
-                  <tr>
-                    <td>{{forloop.counter}}</td>
-                    <td>{{i.cod_placa}}</td>
-                    <td>1</td>
-                    <td>{{i.total}}</td>
-                    <td>{{ i.target }}</td>
-                  </tr>
-                {% endif %}
+              {% if i != None %}
+              <tr>
+                <td>{{forloop.counter}}</td>
+                <td>{{i.cod_placa}}</td>
+                <td>1</td>
+                <td>{{i.total}}</td>
+                <td>{{ i.target }}</td>
+              </tr>
+              {% endif %}
               {% endfor %}
             </tbody>
           </table>
@@ -267,16 +267,16 @@
       "responsive": true, "lengthChange": false, "autoWidth": false,
       "buttons": [
         {
-        extend: "excel",
-        title: 'Raport_Wave_'+now.getDate()+'-'+(now.getMonth()+1)+'-'+now.getFullYear()+'_'+now.getHours()+'-'+now.getMinutes()+'_Linia-1',
+          extend: "excel",
+          title: 'Raport_Wave_' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + '_' + now.getHours() + '-' + now.getMinutes() + '_Linia-1',
         },
         {
-        extend: "csv",
-        title: 'Raport_Wave_'+now.getDate()+'-'+(now.getMonth()+1)+'-'+now.getFullYear()+'_'+now.getHours()+'-'+now.getMinutes()+'_Linia-1',
+          extend: "csv",
+          title: 'Raport_Wave_' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + '_' + now.getHours() + '-' + now.getMinutes() + '_Linia-1',
         },
         {
-        extend: "print",
-        title: 'Raport_Wave_'+now.getDate()+'-'+(now.getMonth()+1)+'-'+now.getFullYear()+'_'+now.getHours()+'-'+now.getMinutes()+'_Linia-1',
+          extend: "print",
+          title: 'Raport_Wave_' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + '_' + now.getHours() + '-' + now.getMinutes() + '_Linia-1',
         }
       ],
       "pageLength": 3
@@ -300,16 +300,16 @@
       "responsive": true, "lengthChange": false, "autoWidth": false,
       "buttons": [
         {
-        extend: "excel",
-        title: 'Raport_Wave_'+now.getDate()+'-'+(now.getMonth()+1)+'-'+now.getFullYear()+'_'+now.getHours()+'-'+now.getMinutes()+'_Linia-2',
+          extend: "excel",
+          title: 'Raport_Wave_' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + '_' + now.getHours() + '-' + now.getMinutes() + '_Linia-2',
         },
         {
-        extend: "csv",
-        title: 'Raport_Wave_'+now.getDate()+'-'+(now.getMonth()+1)+'-'+now.getFullYear()+'_'+now.getHours()+'-'+now.getMinutes()+'_Linia-2',
+          extend: "csv",
+          title: 'Raport_Wave_' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + '_' + now.getHours() + '-' + now.getMinutes() + '_Linia-2',
         },
         {
-        extend: "print",
-        title: 'Raport_Wave_'+now.getDate()+'-'+(now.getMonth()+1)+'-'+now.getFullYear()+'_'+now.getHours()+'-'+now.getMinutes()+'_Linia-2',
+          extend: "print",
+          title: 'Raport_Wave_' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + '_' + now.getHours() + '-' + now.getMinutes() + '_Linia-2',
         }
       ],
       "pageLength": 3
@@ -333,16 +333,16 @@
       "responsive": true, "lengthChange": false, "autoWidth": false,
       "buttons": [
         {
-        extend: "excel",
-        title: 'Raport_Wave_'+now.getDate()+'-'+(now.getMonth()+1)+'-'+now.getFullYear()+'_'+now.getHours()+'-'+now.getMinutes()+'_Linia-3',
+          extend: "excel",
+          title: 'Raport_Wave_' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + '_' + now.getHours() + '-' + now.getMinutes() + '_Linia-3',
         },
         {
-        extend: "csv",
-        title: 'Raport_Wave_'+now.getDate()+'-'+(now.getMonth()+1)+'-'+now.getFullYear()+'_'+now.getHours()+'-'+now.getMinutes()+'_Linia-3',
+          extend: "csv",
+          title: 'Raport_Wave_' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + '_' + now.getHours() + '-' + now.getMinutes() + '_Linia-3',
         },
         {
-        extend: "print",
-        title: 'Raport_Wave_'+now.getDate()+'-'+(now.getMonth()+1)+'-'+now.getFullYear()+'_'+now.getHours()+'-'+now.getMinutes()+'_Linia-3',
+          extend: "print",
+          title: 'Raport_Wave_' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + '_' + now.getHours() + '-' + now.getMinutes() + '_Linia-3',
         }
       ],
       "pageLength": 3
