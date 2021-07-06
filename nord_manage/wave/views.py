@@ -314,13 +314,13 @@ def custom_reports_result(request):
             while i < 23:
                 if(date_range[i] != ' ' or date_range[i] != '-'):
                     if i < 10:
-                        str_start_date = str_start_date + date_range[i]
+                        str_start_date +=  date_range[i]
                     elif i >= 13:
-                        str_end_date = str_end_date + date_range[i]
+                        str_end_date += date_range[i]
                 i += 1
 
-            str_start_date = str_start_date + ' 00:00:00'
-            str_end_date = str_end_date + ' 23:59:59'
+            str_start_date += ' 00:00:00'
+            str_end_date += ' 23:59:59'
 
             start_date = datetime.datetime.strptime(
                 str_start_date, '%d/%m/%Y %H:%M:%S').strftime('%Y-%m-%d %H:%M:%S')
@@ -334,14 +334,27 @@ def custom_reports_result(request):
             lista_placi = Date_Placi.objects.order_by(
                 'cod_placa').values('cod_placa')
 
+            date_range = ''
+            date_range += str_start_date[0:10]
+            date_range += ' - '
+            date_range += str_end_date[0:10]
+
+            if str_start_date[0:10] == str_end_date[0:10]:
+                date_range = str_start_date[0:10]
+
+            print(date_range)
+            now = datetime.datetime.now()
+            print(now)
             if custom_report != [None]:
                 context = {
                     'lista': lista_placi,
-                    'result': custom_report
+                    'result': custom_report,
+                    'interval': date_range
                 }
             else:
                 context = {
-                    'lista': lista_placi
+                    'lista': lista_placi,
+                    'interval': date_range
                 }
 
             return render(request, 'wave/reports.html', context)

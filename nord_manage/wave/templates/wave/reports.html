@@ -39,7 +39,7 @@
             <label for="lista_coduri">Selecteaza codurile de placa:</label>
             <select multiple="multiple" size="10" name="lista_coduri" title="lista_coduri" id="lista_coduri">
               {% for i in lista %}
-                <option value="{{i.cod_placa}}">{{i.cod_placa}}</option>
+              <option value="{{i.cod_placa}}">{{i.cod_placa}}</option>
               {% endfor %}
             </select>
             </br>
@@ -86,14 +86,14 @@
           </thead>
           <tbody>
             {% if result != None %}
-              {% for i in result %}
-              <tr>
-                <td>{{forloop.counter}}</td>
-                <td>{{i.cod_placa}}</td>
-                <td>{{i.total}}</td>
-                <td>{{i.target}}</td>
-              </tr>
-              {% endfor %}
+            {% for i in result %}
+            <tr>
+              <td>{{forloop.counter}}</td>
+              <td>{{i.cod_placa}}</td>
+              <td>{{i.total}}</td>
+              <td>{{i.target}}</td>
+            </tr>
+            {% endfor %}
             {% endif %}
           </tbody>
         </table>
@@ -141,8 +141,6 @@
 
   var demo1 = $('select[name="lista_coduri"]').bootstrapDualListbox();
 
-
-
   $('#date_range').daterangepicker({
     locale: {
       format: 'DD/MM/YYYY'
@@ -153,9 +151,43 @@
 
 <script>
   $(function () {
+    var now = new Date();
+    var dd = String(now.getDate()).padStart(2, '0');
+    var mm = String(now.getMonth() + 1).padStart(2, '0');
+    var yyyy = now.getFullYear();
+    var hh = now.getHours();
+    if(hh<10){
+      hh = ("0" + hh).slice(-2);
+    }
+    var min = now.getMinutes();
+    if(min<10){
+      min = ("0" + mm).slice(-2);
+    }
+    
+
+    now_title = dd + '/' + mm + '/' + yyyy + ' ' + hh + ':' + min;
+    now_filename = dd + '-' + mm + '-' + yyyy + ' ' + hh + '-' + min;
+    console.log(now_filename);
+
     $("#example1").DataTable({
       "responsive": true, "lengthChange": false, "autoWidth": false,
-      "buttons": ["excel", "csv", "print"],
+      "buttons": [
+        {
+          extend: "excel",
+          title: 'Ora realizare: ' + now_title + ' --- {% if interval|length > 10 %}Interval raport: {{ interval }} {% else %} Data raport: {{interval}} {% endif %}',
+          filename: 'Raport_Wave_' + now_filename,
+        },
+        {
+          extend: "csv",
+          title: 'Ora realizare: ' + now_title + ' --- {% if interval|length > 10 %} Interval raport: {{ interval }} {% else %} Data raport: {{interval}} {%endif %}',
+          filename: 'Raport_Wave_' + now_filename,
+        },
+        {
+          extend: "print",
+          title: 'Ora realizare: ' + now_title + ' --- {% if interval|length > 10 %}Interval raport: {{ interval }} {% else %} Data raport: {{interval}} {%endif %}',
+          filename: 'Raport_Wave_' + now_filename,
+        }
+      ],
       "pageLength": 3
     }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
     $('#example1.1').DataTable({
