@@ -61,8 +61,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
             <li class="nav-item menu-open">
-              {% with url_name=request.resolver_match.url_name %}
-              <a href="#" class="nav-link {% if url_name == 'wave-home' %}active{% endif %}">
+              {% with url_name=request.path %}
+              <a href="#" class="nav-link {% if url_name >= '/wave/' %}active{% endif %}">
                 <i class="nav-icon fas fas fa-syringe"></i>
                 <p>
                   Wave
