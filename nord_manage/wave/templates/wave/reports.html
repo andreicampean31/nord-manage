@@ -11,6 +11,8 @@
 <link rel="stylesheet" href="{% static 'wave/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %} ">
 <link rel="stylesheet" href="{% static 'wave/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %} ">
 <link rel="stylesheet" href="{% static 'wave/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+<!-- iCheck for checkboxes and radio inputs -->
+<link rel="stylesheet" href="{% static 'wave/plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}">
 {% endblock specific_plugins_css %}
 
 {% block page_title %} <h1>Reports - Wave</h1> {% endblock page_title %}
@@ -36,6 +38,19 @@
         <div class="form-group">
           <form id="demoform" action="{% url 'custom-reports-results' %}" method="post">
             {%csrf_token%}
+            <label>Tip Raport</label> </br>
+            <div class="icheck-primary d-inline">
+              <input type="radio" id="radioSplit" name="Tip" value="split" checked onclick="deactivateLineSelection()" >
+              <label for="radioSplit">
+                Impartit pe linii
+              </label>
+            </div>
+            <div class="icheck-primary d-inline">
+              <input type="radio" id="radioTotal" value="total" name="Tip" onclick="deactivateLineSelection()">
+              <label for="radioTotal">
+                Total
+              </label>
+            </div> </br></br>
             <label for="lista_coduri">Selecteaza codurile de placa:</label>
             <select multiple="multiple" size="10" name="lista_coduri" title="lista_coduri" id="lista_coduri">
               {% for i in lista %}
@@ -43,6 +58,28 @@
               {% endfor %}
             </select>
             </br>
+            <label >Selecteaza liniile:</label> </br>
+            <div class="icheck-primary d-inline">
+              <input type="checkbox" id="checkboxL1" value="1" name="linia">
+              <label for="checkboxL1">
+                Linia 1
+              </label>
+            </div>
+            </br>
+            <div class="icheck-primary d-inline">
+              <input type="checkbox" id="checkboxL2" value="2" name="linia">
+              <label for="checkboxL2">
+                Linia 2
+              </label>
+            </div>
+            </br>
+            <div class="icheck-primary d-inline">
+              <input type="checkbox" id="checkboxL3" value="3" name="linia">
+              <label for="checkboxL3">
+                Linia 3
+              </label>
+            </div>
+            </br></br>
             <!-- Date range -->
             <label for="date_range">Date range:</label>
 
@@ -55,6 +92,9 @@
               <input type="text" name="date_range" class="form-control float-right" id="date_range">
             </div>
             </br>
+
+            </br></br>
+
             <input type="submit" value="SUBMIT" class="btn btn-primary btn-block">
           </form>
         </div>
@@ -63,7 +103,6 @@
   </div>
   <div class="col-6">
 
-    <!-- AREA CHART -->
     <div class="card card-info">
       <div class="card-header">
         <h3 class="card-title">Results</h3>
@@ -82,6 +121,9 @@
               <th>Cod placa</th>
               <th>Nr Bucati</th>
               <th>Target/ora</th>
+              {% if tip == 1 %}
+              <th>Linia</th>
+              {% endif %}
             </tr>
           </thead>
           <tbody>
@@ -92,6 +134,10 @@
               <td>{{i.cod_placa}}</td>
               <td>{{i.total}}</td>
               <td>{{i.target}}</td>
+              {% if tip == 1 %}
+              <td>{{i.linia}}</td>
+              {% endif %}
+
             </tr>
             {% endfor %}
             {% endif %}
@@ -156,14 +202,14 @@
     var mm = String(now.getMonth() + 1).padStart(2, '0');
     var yyyy = now.getFullYear();
     var hh = now.getHours();
-    if(hh<10){
+    if (hh < 10) {
       hh = ("0" + hh).slice(-2);
     }
     var min = now.getMinutes();
-    if(min<10){
+    if (min < 10) {
       min = ("0" + mm).slice(-2);
     }
-    
+
 
     now_title = dd + '/' + mm + '/' + yyyy + ' ' + hh + ':' + min;
     now_filename = dd + '-' + mm + '-' + yyyy + ' ' + hh + '-' + min;
@@ -188,7 +234,7 @@
           filename: 'Raport_Wave_' + now_filename,
         }
       ],
-      "pageLength": 3
+      "pageLength": 20
     }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
     $('#example1.1').DataTable({
       "paging": true,
@@ -200,5 +246,19 @@
       "responsive": true,
     });
   });
+</script>
+<script>
+  function deactivateLineSelection() {
+
+    if (document.getElementById('radioTotal').checked) {
+      document.getElementById('checkboxL1').disabled = true;
+      document.getElementById('checkboxL2').disabled = true;
+      document.getElementById('checkboxL3').disabled = true;
+    } else {
+      document.getElementById('checkboxL1').disabled = false;
+      document.getElementById('checkboxL2').disabled = false;
+      document.getElementById('checkboxL3').disabled = false;
+    }
+  }
 </script>
 {% endblock page_specific_scripts %}

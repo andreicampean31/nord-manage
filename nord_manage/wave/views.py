@@ -22,7 +22,7 @@ def count_total_productie(entries, tip_interogare):
     # print(entries)
     final_array = [None]
     for i in entries:
-        
+
         cod_placa = i['cod_placa__cod_placa']
         total = i['total']
         linie = i['linie_productie']
@@ -48,13 +48,13 @@ def count_total_productie(entries, tip_interogare):
             target = Date_Placi.objects.filter(
                 cod_placa=coduri_placi_cleaned[k]).values('min_placa')
             if tip_interogare == 'today':
-                first = Productie.objects.filter(cod_placa_id__cod_placa=coduri_placi_cleaned[k], data__date=today, linie_productie = linie).values(
+                first = Productie.objects.filter(cod_placa_id__cod_placa=coduri_placi_cleaned[k], data__date=today, linie_productie=linie).values(
                     'data__hour', 'data__minute', 'cod_placa_id__cod_placa').first()
 
-                last = Productie.objects.filter(cod_placa_id__cod_placa=coduri_placi_cleaned[k], data__date=today, linie_productie = linie).values(
+                last = Productie.objects.filter(cod_placa_id__cod_placa=coduri_placi_cleaned[k], data__date=today, linie_productie=linie).values(
                     'data__hour', 'data__minute', 'cod_placa_id__cod_placa').last()
 
-                last_code = Productie.objects.filter(data__date=today, linie_productie = linie).values(
+                last_code = Productie.objects.filter(data__date=today, linie_productie=linie).values(
                     'cod_placa_id__cod_placa').last()
 
                 if last_code['cod_placa_id__cod_placa'] == coduri_placi_cleaned[k]:
@@ -73,12 +73,12 @@ def count_total_productie(entries, tip_interogare):
                     'cod_placa': coduri_placi_cleaned[k],
                     'total': total_count_cleaned[k],
                     'target': floor(60/target[0]['min_placa']),
+                    'linia': linie
                 }
     return final_array
 
 
 def today_total(numar_linii_productie):
-    numar_linii_productie = 3
     context = {
         'linia1': None,
         'linia2': None,
@@ -90,7 +90,8 @@ def today_total(numar_linii_productie):
         today_entries = Productie.objects.filter(data__date=today, linie_productie=linia+1).values('cod_placa__cod_placa', 'multi_factor', 'linie_productie').annotate(
             count=Count('cod_placa'), total=Count('cod_placa')*F('multi_factor')).order_by('cod_placa_id')
 
-        context['linia' + str(linia+1)] = count_total_productie(today_entries, 'today')
+        context['linia' + str(linia+1)
+                ] = count_total_productie(today_entries, 'today')
 
     return context
 
@@ -330,6 +331,9 @@ def custom_reports_result(request):
 
         if form.is_valid():
             lista_coduri = request.POST.getlist('lista_coduri')
+            lista_linii = request.POST.getlist('linia')
+            tip_raport = request.POST.get('Tip')
+
             date_range = form.cleaned_data.get('date_range')
 
             i = 0
@@ -351,34 +355,43 @@ def custom_reports_result(request):
             end_date = datetime.datetime.strptime(
                 str_end_date, '%d/%m/%Y %H:%M:%S').strftime('%Y-%m-%d %H:%M:%S')
 
-            entries = Productie.objects.filter(cod_placa_id__cod_placa__in=lista_coduri, data__gte=start_date, data__lte=end_date).values(
-                'cod_placa__cod_placa', 'multi_factor', 'linie_productie').annotate(count=Count('cod_placa'), total=Count('cod_placa')*F('multi_factor')).order_by('cod_placa_id')
+            custom_report= []
 
-            custom_report = count_total_productie(entries, 'raport')
+            if tip_raport == 'split':
+                tip_raport = 1
+                for linia in lista_linii:
+                    entries = Productie.objects.filter(cod_placa_id__cod_placa__in=lista_coduri, data__gte=start_date, data__lte=end_date, linie_productie=linia).values(
+                        'cod_placa__cod_placa', 'multi_factor', 'linie_productie').annotate(count=Count('cod_placa'), total=Count('cod_placa')*F('multi_factor')).order_by('cod_placa_id')    
+
+                    custom_report += count_total_productie(entries, 'raport')
+
+            elif tip_raport == 'total':
+                tip_raport = 2
+                entries = Productie.objects.filter(cod_placa_id__cod_placa__in=lista_coduri, data__gte=start_date, data__lte=end_date).values(
+                    'cod_placa__cod_placa', 'multi_factor', 'linie_productie').annotate(count=Count('cod_placa'), total=Count('cod_placa')*F('multi_factor')).order_by('cod_placa_id')
+                custom_report += count_total_productie(entries, 'raport')
+
             lista_placi = Date_Placi.objects.order_by(
-                'cod_placa').values('cod_placa')
-
+                        'cod_placa').values('cod_placa')
             date_range = ''
             date_range += str_start_date[0:10]
             date_range += ' - '
             date_range += str_end_date[0:10]
-
+            
             if str_start_date[0:10] == str_end_date[0:10]:
                 date_range = str_start_date[0:10]
 
-            print(date_range)
-            now = datetime.datetime.now()
-            print(now)
-            if custom_report != [None]:
-                context = {
-                    'lista': lista_placi,
-                    'result': custom_report,
-                    'interval': date_range
-                }
-            else:
-                context = {
-                    'lista': lista_placi,
-                    'interval': date_range
-                }
-
+                if custom_report != [None]:
+                    context = {
+                        'lista': lista_placi,
+                        'result': custom_report,
+                        'interval': date_range,
+                        'tip': tip_raport
+                    }
+                else:
+                    context = {
+                        'lista': lista_placi,
+                        'interval': date_range
+                    }
+            print(context)
             return render(request, 'wave/reports.html', context)

@@ -6,5 +6,4 @@ class DatePlaciForm(forms.Form):
     multiplication_factor = forms.CharField(label = 'multiplication_factor', max_length=100)
 
 class CustomReportForm(forms.Form):
-
     date_range = forms.CharField(label = 'date_range')
