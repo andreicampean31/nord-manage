@@ -61,17 +61,19 @@
                 <th>Linia</th>
                 <th>Nr Bucati</th>
                 <th>Target/ora</th>
+                <th>Interval</th>
               </tr>
             </thead>
             <tbody>
               {% for i in linia1 %}
               {% if i != None %}
-              <tr>
+              <tr class='{% if i.last == 1 %} table-success {% endif %}'>
                 <td>{{forloop.counter}}</td>
                 <td>{{i.cod_placa}}</td>
                 <td>1</td>
                 <td>{{i.total}}</td>
                 <td>{{ i.target }}</td>
+                <td>{{ i.interval}}</td>
               </tr>
               {% endif %}
               {% endfor %}
@@ -137,17 +139,19 @@
                 <th>Linia</th>
                 <th>Nr Bucati</th>
                 <th>Target/ora</th>
+                <th>Interval</th>
               </tr>
             </thead>
             <tbody>
               {% for i in linia2 %}
               {% if i != None %}
-              <tr>
+              <tr class='{% if i.last == 1 %} table-success {% endif %}'>
                 <td>{{forloop.counter}}</td>
                 <td>{{i.cod_placa}}</td>
                 <td>1</td>
                 <td>{{i.total}}</td>
                 <td>{{ i.target }}</td>
+                <td>{{ i.interval}}</td>
               </tr>
               {% endif %}
               {% endfor %}
@@ -213,17 +217,19 @@
                 <th>Linia</th>
                 <th>Nr Bucati</th>
                 <th>Target/ora</th>
+                <th>Interval</th>
               </tr>
             </thead>
             <tbody>
               {% for i in linia3 %}
               {% if i != None %}
-              <tr>
+              <tr class='{% if i.last == 1 %} table-success {% endif %}'>
                 <td>{{forloop.counter}}</td>
                 <td>{{i.cod_placa}}</td>
                 <td>1</td>
                 <td>{{i.total}}</td>
                 <td>{{ i.target }}</td>
+                <td>{{ i.interval}}</td>
               </tr>
               {% endif %}
               {% endfor %}

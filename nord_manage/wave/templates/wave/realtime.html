@@ -85,7 +85,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               <tbody>
                 {% for i in linia1 %}
                 {% if i != None %}
-                <tr>
+                <tr class='{% if i.last == 1 %} table-success {% endif %}'>
                   <td>{{forloop.counter}}</td>
                   <td>{{i.cod_placa}}</td>
                   <td>1</td>
@@ -161,7 +161,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               <tbody>
                 {% for i in linia2 %}
                 {% if i != None %}
-                <tr>
+                <tr class='{% if i.last == 1 %} table-success {% endif %}'>
                   <td>{{forloop.counter}}</td>
                   <td>{{i.cod_placa}}</td>
                   <td>1</td>
@@ -237,7 +237,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
               <tbody>
                 {% for i in linia3 %}
                 {% if i != None %}
-                <tr>
+                <tr class='{% if i.last == 1 %} table-success {% endif %}'>
                   <td>{{forloop.counter}}</td>
                   <td>{{i.cod_placa}}</td>
                   <td>1</td>

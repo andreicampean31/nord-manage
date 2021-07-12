@@ -14,14 +14,18 @@ from .forms import DatePlaciForm, CustomReportForm
 from math import floor
 
 
-def count_total_productie(entries):
+def count_total_productie(entries, tip_interogare):
+    today = datetime.date.today()
+    now = datetime.datetime.now()
     coduri_placi = [None] * len(entries)
     total_count = [0] * len(entries)
     # print(entries)
     final_array = [None]
     for i in entries:
+        
         cod_placa = i['cod_placa__cod_placa']
         total = i['total']
+        linie = i['linie_productie']
 
         for j in range(0, len(entries)):
             if coduri_placi[j] == cod_placa:
@@ -38,17 +42,38 @@ def count_total_productie(entries):
 
         final_array = [None] * len(coduri_placi_cleaned)
 
-        for i in range(0, len(final_array)):
+        for k in range(0, len(final_array)):
+            last_code_used = 0
 
             target = Date_Placi.objects.filter(
-                cod_placa=coduri_placi_cleaned[i]).values('min_placa')
+                cod_placa=coduri_placi_cleaned[k]).values('min_placa')
+            if tip_interogare == 'today':
+                first = Productie.objects.filter(cod_placa_id__cod_placa=coduri_placi_cleaned[k], data__date=today, linie_productie = linie).values(
+                    'data__hour', 'data__minute', 'cod_placa_id__cod_placa').first()
 
-            final_array[i] = {
-                'cod_placa': coduri_placi_cleaned[i],
-                'total': total_count_cleaned[i],
-                'target': floor(60/target[0]['min_placa'])
-            }
-    print(final_array)
+                last = Productie.objects.filter(cod_placa_id__cod_placa=coduri_placi_cleaned[k], data__date=today, linie_productie = linie).values(
+                    'data__hour', 'data__minute', 'cod_placa_id__cod_placa').last()
+
+                last_code = Productie.objects.filter(data__date=today, linie_productie = linie).values(
+                    'cod_placa_id__cod_placa').last()
+
+                if last_code['cod_placa_id__cod_placa'] == coduri_placi_cleaned[k]:
+                    last_code_used = 1
+
+                final_array[k] = {
+                    'cod_placa': coduri_placi_cleaned[k],
+                    'total': total_count_cleaned[k],
+                    'target': floor(60/target[0]['min_placa']),
+                    'interval': str(first['data__hour']) + ':' + str(first['data__minute']) + ' - ' + str(last['data__hour']) + ':' + str(last['data__minute']),
+                    'last': last_code_used
+                }
+
+            elif tip_interogare == 'raport':
+                final_array[k] = {
+                    'cod_placa': coduri_placi_cleaned[k],
+                    'total': total_count_cleaned[k],
+                    'target': floor(60/target[0]['min_placa']),
+                }
     return final_array
 
 
@@ -62,10 +87,10 @@ def today_total(numar_linii_productie):
     for linia in range(0, numar_linii_productie):
         today = datetime.date.today()
 
-        today_entries = Productie.objects.filter(data__date=today, linie_productie=linia+1).values('cod_placa__cod_placa', 'multi_factor').annotate(
+        today_entries = Productie.objects.filter(data__date=today, linie_productie=linia+1).values('cod_placa__cod_placa', 'multi_factor', 'linie_productie').annotate(
             count=Count('cod_placa'), total=Count('cod_placa')*F('multi_factor')).order_by('cod_placa_id')
 
-        context['linia' + str(linia+1)] = count_total_productie(today_entries)
+        context['linia' + str(linia+1)] = count_total_productie(today_entries, 'today')
 
     return context
 
@@ -101,7 +126,6 @@ def efficency_chart(request):
                 and wave_productie.linie_productie = 1) as wpwdp) as asd
               GROUP BY CONCAT(DATE_FORMAT(data, '%H:'), IF('30' > MINUTE(data), '00', '30'));''')
     results_linia1 = sorted(linia1.fetchall())
-
 
     for i in results_linia1:
         labels["linia1"].append(i[0])
@@ -165,7 +189,7 @@ def report_data(request):
     for linia in range(0, numar_linii_productie):
 
         today_entries = Productie.objects.filter(data__hour=now.hour-1, linie_productie=linia+1).values(
-            'cod_placa__cod_placa', 'multi_factor').annotate(count=Count('cod_placa'), total=Count('cod_placa')*F('multi_factor')).order_by('cod_placa_id')
+            'cod_placa__cod_placa', 'multi_factor', 'linie_productie').annotate(count=Count('cod_placa'), total=Count('cod_placa')*F('multi_factor')).order_by('cod_placa_id')
 
         coduri_placi = [None] * len(today_entries)
         total_count = [0] * len(today_entries)
@@ -257,8 +281,8 @@ def date_placi_update(request):
 
 
 def date_placi_delete(request, cod_placa):
-    
-    if Productie.objects.filter(cod_placa_id__cod_placa = cod_placa).exists():
+
+    if Productie.objects.filter(cod_placa_id__cod_placa=cod_placa).exists():
         return HttpResponseRedirect('/wave/settings/#errorDelete')
     else:
         Date_Placi.objects.filter(cod_placa=cod_placa).delete()
@@ -314,7 +338,7 @@ def custom_reports_result(request):
             while i < 23:
                 if(date_range[i] != ' ' or date_range[i] != '-'):
                     if i < 10:
-                        str_start_date +=  date_range[i]
+                        str_start_date += date_range[i]
                     elif i >= 13:
                         str_end_date += date_range[i]
                 i += 1
@@ -328,9 +352,9 @@ def custom_reports_result(request):
                 str_end_date, '%d/%m/%Y %H:%M:%S').strftime('%Y-%m-%d %H:%M:%S')
 
             entries = Productie.objects.filter(cod_placa_id__cod_placa__in=lista_coduri, data__gte=start_date, data__lte=end_date).values(
-                'cod_placa__cod_placa', 'multi_factor').annotate(count=Count('cod_placa'), total=Count('cod_placa')*F('multi_factor')).order_by('cod_placa_id')
+                'cod_placa__cod_placa', 'multi_factor', 'linie_productie').annotate(count=Count('cod_placa'), total=Count('cod_placa')*F('multi_factor')).order_by('cod_placa_id')
 
-            custom_report = count_total_productie(entries)
+            custom_report = count_total_productie(entries, 'raport')
             lista_placi = Date_Placi.objects.order_by(
                 'cod_placa').values('cod_placa')
 
