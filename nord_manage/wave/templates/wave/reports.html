@@ -124,6 +124,8 @@
               {% if tip == 1 %}
               <th>Linia</th>
               {% endif %}
+              <th>Durata</th>
+              <th>Norma</th>
             </tr>
           </thead>
           <tbody>
@@ -137,7 +139,8 @@
               {% if tip == 1 %}
               <td>{{i.linia}}</td>
               {% endif %}
-
+              <td>{{i.durata}}</td>
+              <td>{{i.norma}}</td>
             </tr>
             {% endfor %}
             {% endif %}
