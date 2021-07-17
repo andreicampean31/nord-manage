@@ -367,24 +367,22 @@ def custom_reports_result(request):
                 str_start_date, '%d/%m/%Y %H:%M:%S')
             last_date = datetime.datetime.strptime(
                 str_end_date, '%d/%m/%Y %H:%M:%S')
-            
+
             if tip_raport == 'split':
-                tip_raport=1
+                tip_raport = 1
                 lungime = 0
                 for linia in lista_linii:
-                    entries=Productie.objects.filter(cod_placa_id__cod_placa__in=lista_coduri, data__gte=start_date, data__lte=end_date, linie_productie=linia).values(
+                    entries = Productie.objects.filter(cod_placa_id__cod_placa__in=lista_coduri, data__gte=start_date, data__lte=end_date, linie_productie=linia).values(
                         'cod_placa__cod_placa', 'multi_factor', 'linie_productie').annotate(total=Count('cod_placa')*F('multi_factor')).order_by('cod_placa_id')
 
                     custom_report += count_total_productie(entries, 'raport')
-                    print(custom_report)
-                    print(len(custom_report))
-            
+
                     for j in range(lungime, len(custom_report)):
-                        custom_report[j]['durata'] = datetime.timedelta(hours=0)
-                    
+                        custom_report[j]['durata'] = datetime.timedelta(
+                            hours=0)
+
                     lungime = len(custom_report)
                     for date in date_loop(first_date, last_date + datetime.timedelta(days=1)):
-                        print(date)
                         for k in range(0, len(entries)):
                             first_entry = Productie.objects.filter(cod_placa_id__cod_placa=entries[k]['cod_placa__cod_placa'], data__date=date).values(
                                 'cod_placa_id__cod_placa', 'data').first()
@@ -396,14 +394,28 @@ def custom_reports_result(request):
                                 for j in range(0, len(custom_report)):
                                     if custom_report[j]['cod_placa'] == entries[k]['cod_placa__cod_placa'] and custom_report[j]['linia'] == linia:
                                         custom_report[j]['durata'] += durata
-                                        print("durata=")
-                                        print(durata)
+                                        
 
                     for j in range(0, len(custom_report)):
-                        custom_report[j]['norma'] = str(
-                            (custom_report[j]['total']*datetime.timedelta(minutes=60))/custom_report[j]['target']).split(".")[0]
-                        custom_report[j]['durata'] = str(
-                            custom_report[j]['durata']).split(".")[0]
+                        custom_report[j]['norma'] = (
+                        custom_report[j]['total']*datetime.timedelta(minutes=60))/custom_report[j]['target']
+
+                        if custom_report[j]['durata'].total_seconds()*1000 >= 1000:
+                            print(custom_report[j]['cod_placa'])
+                            print(custom_report[j]['durata'])
+                            custom_report[j]['eficienta'] = ((custom_report[j]['norma'].total_seconds()/3600)*100)/(custom_report[j]['durata'].total_seconds()/3600)
+                        else:
+                            print(custom_report[j]['cod_placa'])
+                            print(custom_report[j]['durata'])
+                            custom_report[j]['eficienta'] = 0
+                            
+                for i in custom_report:                    
+                    i['eficienta'] = str(
+                        round(i['eficienta'], 2)) + "%"
+                    i['norma'] = str(
+                        i['norma']).split(".")[0]
+                    i['durata'] = str(
+                        i['durata']).split(".")[0]
 
             elif tip_raport == 'total':
                 tip_raport = 2
@@ -411,7 +423,6 @@ def custom_reports_result(request):
                     'cod_placa__cod_placa', 'multi_factor', 'linie_productie').annotate(total=Count('cod_placa')*F('multi_factor')).order_by('cod_placa_id')
 
                 custom_report += count_total_productie(entries, 'raport')
-
 
                 for j in range(0, len(custom_report)):
                     custom_report[j]['durata'] = datetime.timedelta(hours=0)
@@ -431,31 +442,45 @@ def custom_reports_result(request):
                                     custom_report[j]['durata'] += durata
 
                 for j in range(0, len(custom_report)):
-                    custom_report[j]['norma'] = str(
-                        (custom_report[j]['total']*datetime.timedelta(minutes=60))/custom_report[j]['target']).split(".")[0]
-                    custom_report[j]['durata'] = str(
+                    custom_report[j]['norma'] = (custom_report[j]['total']*datetime.timedelta(minutes=60))/custom_report[j]['target']
+
+                    if custom_report[j]['durata'].total_seconds()*1000 >= 1000:
+                        print(custom_report[j]['cod_placa'])
+                        print(custom_report[j]['durata'])
+                        custom_report[j]['eficienta']=((custom_report[j]['norma'].total_seconds()/3600)*100)/(custom_report[j]['durata'].total_seconds()/3600)
+                    else:
+                        print(custom_report[j]['cod_placa'])
+                        print(custom_report[j]['durata'])
+                        custom_report[j]['eficienta'] = 0
+
+                    custom_report[j]['eficienta']=str(round(custom_report[j]['eficienta'],2)) + "%"
+                    custom_report[j]['norma']=str(
+                        custom_report[j]['norma']).split(".")[0]
+                    custom_report[j]['durata']=str(
                         custom_report[j]['durata']).split(".")[0]
 
-            lista_placi = Date_Placi.objects.order_by(
+                    #print(custom_report[j]['eficienta'])
+
+            lista_placi=Date_Placi.objects.order_by(
                 'cod_placa').values('cod_placa')
 
-            date_range = ''
+            date_range=''
             date_range += str_start_date[0:10]
             date_range += ' - '
             date_range += str_end_date[0:10]
 
             if str_start_date[0:10] == str_end_date[0:10]:
-                date_range = str_start_date[0:10]
+                date_range=str_start_date[0:10]
 
             if custom_report != [None]:
-                context = {
+                context={
                     'lista': lista_placi,
                     'result': custom_report,
                     'interval': date_range,
                     'tip': tip_raport
                 }
             else:
-                context = {
+                context={
                     'lista': lista_placi,
                     'interval': date_range
                 }
