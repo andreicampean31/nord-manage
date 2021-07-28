@@ -130,8 +130,9 @@
             </tr>
           </thead>
           <tbody>
-            {% if result != None %}
+            
             {% for i in result %}
+            {% if i != None %}
             <tr>
               <td>{{forloop.counter}}</td>
               <td>{{i.cod_placa}}</td>
@@ -144,8 +145,9 @@
               <td>{{i.norma}}</td>
               <td>{{i.eficienta}}</td>
             </tr>
-            {% endfor %}
             {% endif %}
+            {% endfor %}
+            
           </tbody>
         </table>
         </br>
