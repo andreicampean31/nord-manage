@@ -1,0 +1,177 @@
+<html>
+
+<head>
+  <style>
+    table {
+      font-family: arial, sans-serif;
+      border-collapse: collapse;
+      width: 50%;
+    }
+
+    td,
+    th {
+      border: 1px solid #dddddd;
+      text-align: left;
+
+    }
+
+    .column {
+      float: left;
+      width: 49%;
+      border: 1px solid #dddddd;
+      margin: 5px
+    }
+
+    /* Clear floats after the columns */
+    .row:after {
+      content: "";
+      display: table;
+      clear: both;
+    }
+
+    .content {
+      margin: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="row">
+    <div class="column">
+      <div class="content">
+        <h2>Raport Wave interval orar: {{last_hour.interval}}</h2>
+
+        <h3>Linia 1</h3>
+        <table>
+          <th>#</th>
+          <th>Cod placa</th>
+          <th>Linia</th>
+          <th>Nr Bucati</th>
+          <th>Target/ora</th>
+          {% for i in last_hour.linia1%}
+          {% if i != None %}
+          <tr>
+            <td>{{forloop.counter}}</td>
+            <td>{{i.cod_placa}}</td>
+            <td>1</td>
+            <td>{{ i.total }}</td>
+            <td>{{ i.target }}</td>
+          </tr>
+          {% endif %}
+          {% endfor %}
+        </table>
+        <br>
+        <br>
+        <h3>Linia 2</h3>
+        <table>
+          <th>#</th>
+          <th>Cod placa</th>
+          <th>Linia</th>
+          <th>Nr Bucati</th>
+          <th>Target/ora</th>
+          {% for i in last_hour.linia2%}
+          {% if i != None %}
+          <tr>
+            <td>{{forloop.counter}}</td>
+            <td>{{ i.cod_placa }}</td>
+            <td>2</td>
+            <td>{{ i.total }}</td>
+            <td>{{ i.target }}</td>
+          </tr>
+          {% endif %}
+          {% endfor %}
+        </table>
+        <br><br>
+        <h3>Linia 3</h3>
+        <table>
+          <th>#</th>
+          <th>Cod placa</th>
+          <th>Linia</th>
+          <th>Nr Bucati</th>
+          <th>Target/ora</th>
+          {% for i in last_hour.linia3 %}
+          {% if i != None %}
+          <tr>
+            <td>{{forloop.counter}}</td>
+            <td>{{ i.cod_placa }}</td>
+            <td>3</td>
+            <td>{{ i.total }}</td>
+            <td>{{ i.target }}</td>
+          </tr>
+          {% endif %}
+          {% endfor %}
+        </table>
+      </div>
+    </div>
+    <div class="column">
+      <div class="content">
+
+
+        <h2>Raport Wave total pana la ora {{last_hour.ora_actuala}}</h2>
+
+        <h3>Linia 1</h3>
+        <table>
+          <th>#</th>
+          <th>Cod placa</th>
+          <th>Linia</th>
+          <th>Nr Bucati</th>
+          <th>Target/ora</th>
+          {% for i in total.linia1%}
+          {% if i != None %}
+          <tr>
+            <td>{{forloop.counter}}</td>
+            <td>{{i.cod_placa}}</td>
+            <td>1</td>
+            <td>{{ i.total }}</td>
+            <td>{{ i.target }}</td>
+          </tr>
+          {% endif %}
+          {% endfor %}
+        </table>
+        <br>
+        <br>
+        <h3>Linia 2</h3>
+        <table>
+          <th>#</th>
+          <th>Cod placa</th>
+          <th>Linia</th>
+          <th>Nr Bucati</th>
+          <th>Target/ora</th>
+          {% for i in total.linia2%}
+          {% if i != None %}
+          <tr>
+            <td>{{forloop.counter}}</td>
+            <td>{{ i.cod_placa }}</td>
+            <td>2</td>
+            <td>{{ i.total }}</td>
+            <td>{{ i.target }}</td>
+          </tr>
+          {% endif %}
+          {% endfor %}
+        </table>
+        <br><br>
+        <h3>Linia 3</h3>
+        <table>
+          <th>#</th>
+          <th>Cod placa</th>
+          <th>Linia</th>
+          <th>Nr Bucati</th>
+          <th>Target/ora</th>
+          {% for i in total.linia3 %}
+          {% if i != None %}
+          <tr>
+            <td>{{forloop.counter}}</td>
+            <td>{{ i.cod_placa }}</td>
+            <td>3</td>
+            <td>{{ i.total }}</td>
+            <td>{{ i.target }}</td>
+          </tr>
+          {% endif %}
+          {% endfor %}
+        </table>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

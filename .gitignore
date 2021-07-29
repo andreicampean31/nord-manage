@@ -6104,3 +6104,5 @@ django_env/lib/python3.8/site-packages/PyMySQL-1.0.2.dist-info/LICENSE
 django_env/lib/python3.8/site-packages/PyMySQL-1.0.2.dist-info/METADATA
 django_env/lib/python3.8/site-packages/PyMySQL-1.0.2.dist-info/RECORD
 django_env/lib/python3.8/site-packages/PyMySQL-1.0.2.dist-info/top_level.txt
+
+.vscode/
