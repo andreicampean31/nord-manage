@@ -18,3 +18,4 @@ urlpatterns = [
          name='custom-reports-results'),
     path('realtimeview/', views.realtimeview, name='wave-realtimeview')
 ]
+
