@@ -3,4 +3,5 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='defecte-home'),
+    path('import/', views.import_defecte, name='defecte-import' )
 ]

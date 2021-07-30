@@ -60,9 +60,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
           <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
             <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
-            <li class="nav-item menu-open">
-              {% with url_name=request.path %}
-              <a href="#" class="nav-link {% if url_name >= '/wave/' %}active{% endif %}">
+            {% with url_name=request.path %}
+            <li class="nav-item menu-{% if '/wave/' in url_name %}open{% endif %}">
+              
+              <a href="#" class="nav-link {% if '/wave/' in url_name %}active{% endif %}">
                 <i class="nav-icon fas fas fa-syringe"></i>
                 <p>
                   Wave
@@ -96,9 +97,37 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     <p>Settings</p>
                   </a>
                 </li>
-                {% endwith %}
+                
               </ul>
             </li>
+            {% endwith %}
+            {% with url_name=request.path %}
+            <li class="nav-item menu-{% if '/defecte/' in url_name %}open{% endif %}">
+              <a href="#" class="nav-link {% if '/defecte/' in url_name %}active{% endif %}">
+                <i class="fas fa-bug"></i>
+                <p>
+                  Defecte
+                  <i class="right fas fa-angle-left"></i>
+                </p>
+              </a>
+              {% endwith %}
+              <ul class="nav nav-treeview">
+                {% with url_name=request.resolver_match.url_name %}
+                <li class="nav-item">
+                  <a href="{% url 'defecte-home' %}" class="nav-link {% if url_name == 'defecte-home' %}active{% endif %}">
+                    <i class="far fas fa-home"></i>
+                    <p>Home</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="{% url 'defecte-import' %}" class="nav-link {% if url_name == 'defecte-import' %}active{% endif %}">
+                    <i class="fas fa-file-import"></i>
+                    <p>Import</p>
+                  </a>
+                </li>
+              </ul>
+            </li>
+            {% endwith %}
           </ul>
         </nav>
         <!-- /.sidebar-menu -->
