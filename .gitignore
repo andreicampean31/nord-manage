@@ -6054,12 +6054,6 @@ django_env/lib/python3.8/site-packages/wheel-0.34.2.dist-info/METADATA
 django_env/lib/python3.8/site-packages/wheel-0.34.2.dist-info/RECORD
 django_env/lib/python3.8/site-packages/wheel-0.34.2.dist-info/top_level.txt
 django_env/lib/python3.8/site-packages/wheel-0.34.2.dist-info/WHEEL
-nord_manage/manage.py
-nord_manage/nord_manage/__init__.py
-nord_manage/nord_manage/asgi.py
-nord_manage/nord_manage/settings.py
-nord_manage/nord_manage/urls.py
-nord_manage/nord_manage/wsgi.py
 django_env/lib/python3.8/site-packages/PyMySQL-1.0.2.dist-info/WHEEL
 django_env/lib/python3.8/site-packages/pip/__pycache__/__main__.cpython-38.pyc
 django_env/lib/python3.8/site-packages/pip/_internal/commands/__pycache__/list.cpython-38.pyc
