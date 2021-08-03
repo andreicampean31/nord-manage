@@ -4,7 +4,7 @@ class Date_Placi(models.Model):
     cod_placa = models.CharField(max_length=200)
 
 class Defecte(models.Model):
-    data = models.DateTimeField()
+    data = models.DateField()
     cod_placa = models.ForeignKey(Date_Placi, on_delete=models.CASCADE)
     barcode = models.CharField(max_length=200)
     step_fail = models.CharField(max_length=200)

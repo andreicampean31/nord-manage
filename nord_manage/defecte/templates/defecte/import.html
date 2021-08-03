@@ -51,24 +51,27 @@
                         <!-- step 1-->
                         <div id="upload-part" class="content" role="tabpanel" aria-labelledby="upload-part-trigger">
                             <div class="form-group">
-                                <label for="exampleInputFile">File input</label>
-                                <div class="input-group">
-                                    <div class="custom-file">
-                                        <input type="file" class="form-control" id="exampleInputFile">
+                                <label for="InputFile">File input</label>
+                                <form id="upload-form" method="POST">
+                                    {% csrf_token %}
+                                    <div class="input-group">
+                                        <div class="custom-file">
+                                            <input type="file" class="form-control" id="InputFile">
 
-                                        <label class="custom-file-label" for="exampleInputFile">Choose file</label>
+                                            <label class="custom-file-label" for="InputFile">Choose file</label>
+                                        </div>
+                                        <div class="input-group-append">
+                                            <input type="submit" class="input-group-text" value="Upload">
+                                        </div>
                                     </div>
-                                    <div class="input-group-append">
-                                        <span class="input-group-text">Upload</span>
-                                    </div>
-                                </div>
+                                </form>
                             </div>
                             <button class="btn btn-primary" onclick="stepper.next()">Next</button>
                         </div>
                         <!-- step 2-->
                         <div id="edit-part" class="content" role="tabpanel" aria-labelledby="edit-part-trigger">
                             <div class="form-group">
-                                <label for="exampleInputFile">Edit Data</label>
+                                <label for="table1">Edit Data</label>
                                 <div class="col-12">
                                     <table id="table1" class="table table-bordered table-striped">
                                         <thead>
@@ -89,10 +92,54 @@
                                                 <th>Commessa</th>
                                                 <th>Prodotte in</th>
                                                 <th>Voci generiche</th>
+                                                <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-
+                                            <tr>
+                                                <td></td>
+                                                <td>2</td>
+                                                <td>3</td>
+                                                <td>4</td>
+                                                <td>5</td>
+                                                <td>6</td>
+                                                <td>7</td>
+                                                <td>8</td>
+                                                <td>9</td>
+                                                <td>10</td>
+                                                <td>11</td>
+                                                <td>12</td>
+                                                <td>13</td>
+                                                <td>14</td>
+                                                <td>15</td>
+                                                <td>16</td>
+                                                <td>
+                                                    <a href="#" class="btn btn-success edit" data-toggle="modal"
+                                                        data-target="#editModal" type="button"> EDIT </a>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td>2</td>
+                                                <td>3</td>
+                                                <td>4</td>
+                                                <td>5</td>
+                                                <td>6</td>
+                                                <td>7</td>
+                                                <td>8</td>
+                                                <td>9</td>
+                                                <td>10</td>
+                                                <td>11</td>
+                                                <td>12</td>
+                                                <td>13</td>
+                                                <td>14</td>
+                                                <td>15</td>
+                                                <td>16</td>
+                                                <td>
+                                                    <a href="#" class="btn btn-success edit" data-toggle="modal"
+                                                        data-target="#editModal" type="button"> EDIT </a>
+                                                </td>
+                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>
@@ -102,38 +149,8 @@
                             <button class="btn btn-primary" onclick="stepper.next()">Next</button>
                         </div>
                         <!-- step 3-->
-                        <div id="import-part" class="content" role="tabpanel"
-                            aria-labelledby="import-part-trigger">
-                            <div class="form-group">
-                                <label for="exampleInputFile">Check & Import</label>
-                                <div class="col-12">
-                                    <table id="table2" class="table table-bordered table-striped">
-                                        <thead>
-                                            <tr>
-                                                <th>#</th>
-                                                <th>Data</th>
-                                                <th>Product Code</th>
-                                                <th>Barcode</th>
-                                                <th>Step-Fail</th>
-                                                <th>Defect</th>
-                                                <th>Problem</th>
-                                                <th>Component Phase Reference</th>
-                                                <th>Action Performed</th>
-                                                <th>Functional Test</th>
-                                                <th>Security Test</th>
-                                                <th>smd/pth</th>
-                                                <th>Cod Scheda</th>
-                                                <th>Commessa</th>
-                                                <th>Prodotte in</th>
-                                                <th>Voci generiche</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
+                        <div id="import-part" class="content" role="tabpanel" aria-labelledby="import-part-trigger">
 
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
                             <button class="btn btn-primary" onclick="stepper.previous()">Previous</button>
                             <button type="submit" class="btn btn-primary">Import</button>
                         </div>
@@ -150,7 +167,101 @@
     </div>
 </div>
 <!-- /.row -->
+<!-- EDIT modal -->
+<div class="modal fade" id="editModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">EDIT</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="" method="post" id="editForm">
+                <div class="modal-body">
+                    {%csrf_token%}
 
+                    <div class="form-group">
+                        <label for="data">Data</label>
+                        <input type="text" class="form-control" id="data" placeholder="data" name="data" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="code">Product Code</label>
+                        <input type="text" class="form-control" id="code" placeholder="code" name="code" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="barcode">Barcode</label>
+                        <input type="text" class="form-control" id="barcode" placeholder="barcode" , name="barcode"
+                            disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="step-fail">Step-fail</label>
+                        <input type="text" class="form-control" id="step-fail" placeholder="step-fail" ,
+                            name="step-fail" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="defect">Defect</label>
+                        <input type="text" class="form-control" id="defect" placeholder="defect" , name="defect">
+                    </div>
+                    <div class="form-group">
+                        <label for="problem">Problem</label>
+                        <input type="text" class="form-control" id="problem" placeholder="problem" , name="problem">
+                    </div>
+                    <div class="form-group">
+                        <label for="comp-ph-ref">Component Phase Reference</label>
+                        <input type="text" class="form-control" id="comp-ph-ref" placeholder="comp-ph-ref" ,
+                            name="comp-ph-ref">
+                    </div>
+                    <div class="form-group">
+                        <label for="action-perf">Action Performed</label>
+                        <input type="text" class="form-control" id="action-perf" placeholder="action-perf" ,
+                            name="action_perf">
+                    </div>
+                    <div class="form-group">
+                        <label for="func-test">Functional Test</label>
+                        <input type="text" class="form-control" id="func-test" placeholder="func-test" ,
+                            name="func-test">
+                    </div>
+                    <div class="form-group">
+                        <label for="sec-test">Security Test</label>
+                        <input type="text" class="form-control" id="sec-test" placeholder="sec-test" , name="sec-test">
+                    </div>
+                    <div class="form-group">
+                        <label for="tip-comp">Smd/Pth</label>
+                        <input type="text" class="form-control" id="tip-comp" placeholder="tip-comp" , name="tip-comp">
+                    </div>
+                    <div class="form-group">
+                        <label for="cod-scheda">Cod Scheda</label>
+                        <input type="text" class="form-control" id="cod-scheda" placeholder="cod-scheda" ,
+                            name="cod-scheda">
+                    </div>
+                    <div class="form-group">
+                        <label for="commessa">Commessa</label>
+                        <input type="text" class="form-control" id="commessa" placeholder="commessa" , name="commessa">
+                    </div>
+                    <div class="form-group">
+                        <label for="prodotte-in">Prodotte in</label>
+                        <input type="text" class="form-control" id="prodotte-in" placeholder="prodotte-in" ,
+                            name="prodotte-in">
+                    </div>
+                    <div class="form-group">
+                        <label for="voci-gene">Voci generiche</label>
+                        <input type="text" class="form-control" id="voci-gene" placeholder="voci-gene" ,
+                            name="voci-gene">
+                    </div>
+
+
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <input class="btn btn-primary" type="submit" value="OK">
+                </div>
+            </form>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
 
 {% endblock content %}
 
@@ -193,7 +304,8 @@
                 }
             ],
             "pageLength": 3,
-            "scrollX": true
+            "scrollX": true,
+
         }).buttons().container().appendTo('#table1_wrapper .col-md-6:eq(0)');
         $('#table1.1').DataTable({
             "paging": true,
@@ -204,38 +316,51 @@
             "autoWidth": false,
             "responsive": true,
         });
-    });
-</script>
-<script>
-    $(function () {
-        var now = new Date();
-        $("#table2").DataTable({
-            "responsive": true, "lengthChange": false, "autoWidth": false,
-            "buttons": [
-                {
-                    extend: "excel",
-                    title: 'Raport_Wave_' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + '_' + now.getHours() + '-' + now.getMinutes() + '_Linia-1',
-                },
-                {
-                    extend: "csv",
-                    title: 'Raport_Wave_' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + '_' + now.getHours() + '-' + now.getMinutes() + '_Linia-1',
-                },
-                {
-                    extend: "print",
-                    title: 'Raport_Wave_' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + '_' + now.getHours() + '-' + now.getMinutes() + '_Linia-1',
-                }
-            ],
-            "pageLength": 3,
-            "scrollX": true
-        }).buttons().container().appendTo('#table2_wrapper .col-md-6:eq(0)');
-        $('#table2.1').DataTable({
-            "paging": true,
-            "lengthChange": false,
-            "searching": true,
-            "ordering": true,
-            "info": true,
-            "autoWidth": false,
-            "responsive": true,
+        var table = $('#table1').DataTable();
+        table.on('click', '.edit', function () {
+            $tr = $(this).closest('tr');
+            if ($($tr).hasClass('child')) {
+                $tr = $tr.prev('.parent');
+            }
+
+            var data = table.row($tr).data();
+            console.log(data);
+
+            $('#data').val(data[1]);
+            console.log(data[1]);
+            $('#code').val(data[2]);
+            console.log(data[2]);
+            $('#barcode').val(data[3]);
+            console.log(data[4]);
+            $('#step-fail').val(data[4]);
+            console.log(data[5]);
+            $('#defect').val(data[5]);
+            console.log(data[6]);
+            $('#problem').val(data[6]);
+            console.log(data[7]);
+            $('#comp-ph-ref').val(data[7]);
+            console.log(data[8]);
+            $('#action-perf').val(data[8]);
+            console.log(data[9]);
+            $('#func-test').val(data[9]);
+            console.log(data[10]);
+            $('#sec-test').val(data[10]);
+            console.log(data[11]);
+            $('#tip-comp').val(data[11]);
+            console.log(data[12]);
+            $('#cod-scheda').val(data[12]);
+            console.log(data[13]);
+            $('#commessa').val(data[13]);
+            console.log(data[14]);
+            $('#prodotte-in').val(data[14]);
+            console.log(data[15]);
+            $('#voci-gene').val(data[15]);
+            console.log(data[16]);
+
+
+            //$('#editForm').attr('action', "{% url 'date-placi-update' %}");
+            //$('#editModal').modal('show');
+
         });
     });
 </script>
@@ -252,4 +377,31 @@
     });
 </script>
 
+<script>
+    $(document).on('submit', '#upload-form', function (e) {
+        e.preventDefault();
+
+        $.ajax({
+            type: 'POST',
+            //url: "upload/",
+            data: {
+                file: $('#InputFile').val(),
+                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+            },
+            success: function (data) {
+                alert(data);
+            }
+        })
+
+    })
+</script>
+<script>
+    var table = document.getElementsByTagName('table')[0],
+      rows = table.getElementsByTagName('tr'),
+      text = 'textContent' in document ? 'textContent' : 'innerText';
+  
+    for (var i = 1, len = rows.length; i < len; i++) {
+      rows[i].children[0][text] = i + rows[i].children[0][text];
+    }
+  </script>
 {% endblock page_specific_scripts %}
