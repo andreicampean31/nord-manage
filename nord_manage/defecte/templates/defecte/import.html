@@ -357,10 +357,33 @@
             $('#voci-gene').val(data[15]);
             console.log(data[16]);
 
+            $(document).on('submit', '#editForm', function (e) {
+                e.preventDefault();
 
-            //$('#editForm').attr('action', "{% url 'date-placi-update' %}");
-            //$('#editModal').modal('show');
+                $.ajax({
+                    type: 'POST',
+                    //url: "update/",
+                    data: {
+                        defect: $('#defect').val(),
+                        problem: $('#problem').val(),
+                        comp_ph_ref: $('#comp-ph-ref').val(),
+                        action: $('#action-perf').val(),
+                        func_test: $('#func-test').val(),
+                        sec_test: $('#sec-test').val(),
+                        tip_comp: $('#tip-comp').val(),
+                        cod_scheda: $('#cod-scheda').val(),
+                        comm: $('#commessa').val(),
+                        prodotte_in: $('#prodotte-in').val(),
+                        voci_gene: $('#voci-gene').val(),
+                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
+                    },
+                    success: function (data) {
+                        $('#editModal').modal('hide');
+                        console.log(data)
+                    }
+                })
 
+            })
         });
     });
 </script>
@@ -397,11 +420,11 @@
 </script>
 <script>
     var table = document.getElementsByTagName('table')[0],
-      rows = table.getElementsByTagName('tr'),
-      text = 'textContent' in document ? 'textContent' : 'innerText';
-  
+        rows = table.getElementsByTagName('tr'),
+        text = 'textContent' in document ? 'textContent' : 'innerText';
+
     for (var i = 1, len = rows.length; i < len; i++) {
-      rows[i].children[0][text] = i + rows[i].children[0][text];
+        rows[i].children[0][text] = i + rows[i].children[0][text];
     }
-  </script>
+</script>
 {% endblock page_specific_scripts %}
