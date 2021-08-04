@@ -72,7 +72,7 @@
                         <div id="edit-part" class="content" role="tabpanel" aria-labelledby="edit-part-trigger">
                             <div class="form-group">
                                 <label for="table1">Edit Data</label>
-                                <div class="col-12">
+                                <div class="col-12" style="overflow:scroll;">
                                     <table id="table1" class="table table-bordered table-striped">
                                         <thead>
                                             <tr>
@@ -95,51 +95,7 @@
                                                 <th>Action</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td></td>
-                                                <td>2</td>
-                                                <td>3</td>
-                                                <td>4</td>
-                                                <td>5</td>
-                                                <td>6</td>
-                                                <td>7</td>
-                                                <td>8</td>
-                                                <td>9</td>
-                                                <td>10</td>
-                                                <td>11</td>
-                                                <td>12</td>
-                                                <td>13</td>
-                                                <td>14</td>
-                                                <td>15</td>
-                                                <td>16</td>
-                                                <td>
-                                                    <a href="#" class="btn btn-success edit" data-toggle="modal"
-                                                        data-target="#editModal" type="button"> EDIT </a>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td></td>
-                                                <td>2</td>
-                                                <td>3</td>
-                                                <td>4</td>
-                                                <td>5</td>
-                                                <td>6</td>
-                                                <td>7</td>
-                                                <td>8</td>
-                                                <td>9</td>
-                                                <td>10</td>
-                                                <td>11</td>
-                                                <td>12</td>
-                                                <td>13</td>
-                                                <td>14</td>
-                                                <td>15</td>
-                                                <td>16</td>
-                                                <td>
-                                                    <a href="#" class="btn btn-success edit" data-toggle="modal"
-                                                        data-target="#editModal" type="button"> EDIT </a>
-                                                </td>
-                                            </tr>
+                                        <tbody id="table1-body">
                                         </tbody>
                                     </table>
                                 </div>
@@ -304,7 +260,7 @@
                 }
             ],
             "pageLength": 3,
-            "scrollX": true,
+            "fixedHeader": true,
 
         }).buttons().container().appendTo('#table1_wrapper .col-md-6:eq(0)');
         $('#table1.1').DataTable({
@@ -392,7 +348,6 @@
     document.addEventListener('DOMContentLoaded', function () {
         window.stepper = new Stepper(document.querySelector('.bs-stepper'))
     })
-
 </script>
 <script>
     $(function () {
@@ -404,18 +359,80 @@
     $(document).on('submit', '#upload-form', function (e) {
         e.preventDefault();
 
+        var file = $('#InputFile').get(0).files[0];
+        console.log(file)
+
+        var data = new FormData();
+        data.append("file", file)
+
         $.ajax({
             type: 'POST',
-            //url: "upload/",
-            data: {
-                file: $('#InputFile').val(),
-                csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-            },
+            url: "upload/",
+            encType: "multipart/form-data",
+            data: data,
+            contentType: false,
+            processData: false,
             success: function (data) {
-                alert(data);
-            }
-        })
+                console.log(data);
+                json = JSON.parse(data);
+                sessionStorage.setItem('DATA', JSON.stringify(json["DATA"]));
+                sessionStorage.setItem('CODE', JSON.stringify(json["PRODUCT CODE"]));
+                sessionStorage.setItem('BARCODE', JSON.stringify(json["BARCODE"]));
+                sessionStorage.setItem('PHASE', JSON.stringify(json["PHASE"]));
+                sessionStorage.setItem('DEFECT', JSON.stringify(json["DEFECT"]));
+                sessionStorage.setItem('PROBLEM', JSON.stringify(json["PROBLEM"]));
+                sessionStorage.setItem('COMP-PH-REF', JSON.stringify(json[" COMPONENT PHASE REFERENCE"]));
+                sessionStorage.setItem('ACT-PERF', JSON.stringify(json["ACTION PERFORMED"]));
+                sessionStorage.setItem('FUNC-TEST', JSON.stringify(json["FUNCTIONAL TEST"]));
+                sessionStorage.setItem('SEC-TEST', JSON.stringify(json["SECURITY TEST"]));
 
+                //console.log(Object.keys(JSON.parse(sessionStorage.getItem('DATA'))).length);
+
+
+
+                //console.log(JSON.parse(sessionStorage.getItem('DATA'))[i]);
+                //console.log(JSON.parse(sessionStorage.getItem('CODE'))[i]);
+                //console.log(JSON.parse(sessionStorage.getItem('BARCODE'))[i]);
+                //console.log(JSON.parse(sessionStorage.getItem('PHASE'))[i]);
+                //console.log(JSON.parse(sessionStorage.getItem('DEFECT'))[i]);
+                //console.log(JSON.parse(sessionStorage.getItem('PROBLEM'))[i]);
+                //console.log(JSON.parse(sessionStorage.getItem('COMP-PH-REF'))[i]);
+                //console.log(JSON.parse(sessionStorage.getItem('ACT-PERF'))[i]);
+                //console.log(JSON.parse(sessionStorage.getItem('FUNC-TEST'))[i]);
+                //console.log(JSON.parse(sessionStorage.getItem('SEC-TEST'))[i]);
+            }
+        });
+
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        setInterval(function () {
+            $.ajax({
+                success: function () {
+                    var length = Object.keys(JSON.parse(sessionStorage.getItem('DATA'))).length;
+                    $("#table1-body").empty();
+                    for (var i = 0; i < length; i++) {
+                        var col1 = "<tr><td></td>";
+                        var col2 = "<td>" + JSON.parse(sessionStorage.getItem('DATA'))[i].slice(0, 10) + "</td>";
+                        var col3 = "<td>" + JSON.parse(sessionStorage.getItem('CODE'))[i] + "</td>";
+                        var col4 = "<td>" + JSON.parse(sessionStorage.getItem('CODE'))[i] + "</td>";
+                        var col5 = "<td>" + JSON.parse(sessionStorage.getItem('BARCODE'))[i] + "</td>";
+                        var col6 = "<td>" + JSON.parse(sessionStorage.getItem('PHASE'))[i] + "</td>";
+                        var col7 = "<td>" + JSON.parse(sessionStorage.getItem('DEFECT'))[i] + "</td>";
+                        var col8 = "<td>" + JSON.parse(sessionStorage.getItem('PROBLEM'))[i] + "</td>";
+                        var col9 = "<td>" + JSON.parse(sessionStorage.getItem('COMP-PH-REF'))[i] + "</td>";
+                        var col10 = "<td>" + JSON.parse(sessionStorage.getItem('ACT-PERF'))[i] + "</td>";
+                        var col11 = "<td>" + JSON.parse(sessionStorage.getItem('FUNC-TEST'))[i] + "</td>";
+                        var col12 = "<td>" + JSON.parse(sessionStorage.getItem('SEC-TEST'))[i] + "</td>";
+                        var colempty = "<td></td>";
+                        var lastcol = "<td></td></tr>";
+
+                        $("#table1-body").append(col1 + col2 + col3 + col4 + col5 + col6 + col7 + col8 + col9 + col10 + col11 + col12 + colempty + colempty + colempty + colempty + lastcol);
+                    }
+                }
+            })
+        }, 1000);
     })
 </script>
 <script>
