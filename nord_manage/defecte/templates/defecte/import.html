@@ -75,7 +75,7 @@
                                 <div class="col-12" style="overflow:scroll;">
                                     <table id="table1" class="table table-bordered table-striped">
                                         <thead>
-                                            <tr>
+                                            <tr style="font-size: 80%; important;">
                                                 <th>#</th>
                                                 <th>Data</th>
                                                 <th>Product Code</th>
@@ -272,74 +272,56 @@
             "autoWidth": false,
             "responsive": true,
         });
-        var table = $('#table1').DataTable();
-        table.on('click', '.edit', function () {
+        $("#table1").on('click', '.edit', function () {
+            console.log("apasat");
             $tr = $(this).closest('tr');
-            if ($($tr).hasClass('child')) {
-                $tr = $tr.prev('.parent');
-            }
+            $id = $tr.find(".rowid").text();
+            $data = $tr.find(".DATA").text();
+            $code = $tr.find(".CODE").text();
+            $barcode = $tr.find(".BARCODE").text();
+            $phase = $tr.find(".PHASE").text();
+            $defect = $tr.find(".DEFECT").text();
+            $problem = $tr.find(".PROBLEM").text();
+            $comp_ph_ref = $tr.find(".COMP-PH-REF").text();
+            $act_perf = $tr.find(".ACT-PERF").text();
+            $func_test = $tr.find(".FUNC-TEST").text();
+            $sec_test = $tr.find(".SEC-TEST").text();
+            $tip_comp = $tr.find(".TIP-COMP").text();
+            $cod_scheda = $tr.find(".COD-SCHEDA").text();
+            $comm = $tr.find(".COMM").text();
+            $prodotte_in = $tr.find(".PRODOTTE-IN").text();
+            $voci = $tr.find(".VOCI").text();
+            console.log($voci);
+            //var data = table.row($tr).data();
+            //console.log(data);
 
-            var data = table.row($tr).data();
-            console.log(data);
+            $('#data').val($data);
+            $('#code').val($code);
+            $('#barcode').val($barcode);
+            $('#step-fail').val($phase);
+            $('#defect').val($defect);
+            $('#problem').val($problem);
+            $('#comp-ph-ref').val($comp_ph_ref);
+            $('#action-perf').val($act_perf);
+            $('#func-test').val($func_test);;
+            $('#sec-test').val($sec_test);;
+            $('#tip-comp').val($tip_comp);;
+            $('#cod-scheda').val($cod_scheda);;
+            $('#commessa').val($comm);;
+            $('#prodotte-in').val($prodotte_in);
+            $('#voci-gene').val($voci);
+        });
 
-            $('#data').val(data[1]);
-            console.log(data[1]);
-            $('#code').val(data[2]);
-            console.log(data[2]);
-            $('#barcode').val(data[3]);
-            console.log(data[4]);
-            $('#step-fail').val(data[4]);
-            console.log(data[5]);
-            $('#defect').val(data[5]);
-            console.log(data[6]);
-            $('#problem').val(data[6]);
-            console.log(data[7]);
-            $('#comp-ph-ref').val(data[7]);
-            console.log(data[8]);
-            $('#action-perf').val(data[8]);
-            console.log(data[9]);
-            $('#func-test').val(data[9]);
-            console.log(data[10]);
-            $('#sec-test').val(data[10]);
-            console.log(data[11]);
-            $('#tip-comp').val(data[11]);
-            console.log(data[12]);
-            $('#cod-scheda').val(data[12]);
-            console.log(data[13]);
-            $('#commessa').val(data[13]);
-            console.log(data[14]);
-            $('#prodotte-in').val(data[14]);
-            console.log(data[15]);
-            $('#voci-gene').val(data[15]);
-            console.log(data[16]);
+        $(document).on('submit', '#editForm', function (e) {
+            e.preventDefault();
 
-            $(document).on('submit', '#editForm', function (e) {
-                e.preventDefault();
-
-                $.ajax({
-                    type: 'POST',
-                    //url: "update/",
-                    data: {
-                        defect: $('#defect').val(),
-                        problem: $('#problem').val(),
-                        comp_ph_ref: $('#comp-ph-ref').val(),
-                        action: $('#action-perf').val(),
-                        func_test: $('#func-test').val(),
-                        sec_test: $('#sec-test').val(),
-                        tip_comp: $('#tip-comp').val(),
-                        cod_scheda: $('#cod-scheda').val(),
-                        comm: $('#commessa').val(),
-                        prodotte_in: $('#prodotte-in').val(),
-                        voci_gene: $('#voci-gene').val(),
-                        csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val(),
-                    },
-                    success: function (data) {
-                        $('#editModal').modal('hide');
-                        console.log(data)
-                    }
-                })
-
+            $.ajax({
+                success: function () {
+                    sessionStorage.setItem('COD_SCHEDA')
+                    $('#editModal').modal('hide');
+                }
             })
+
         });
     });
 </script>
@@ -348,8 +330,7 @@
     document.addEventListener('DOMContentLoaded', function () {
         window.stepper = new Stepper(document.querySelector('.bs-stepper'))
     })
-</script>
-<script>
+
     $(function () {
         bsCustomFileInput.init();
     });
@@ -385,21 +366,12 @@
                 sessionStorage.setItem('ACT-PERF', JSON.stringify(json["ACTION PERFORMED"]));
                 sessionStorage.setItem('FUNC-TEST', JSON.stringify(json["FUNCTIONAL TEST"]));
                 sessionStorage.setItem('SEC-TEST', JSON.stringify(json["SECURITY TEST"]));
+                sessionStorage.setItem('TIP-COMP', JSON.stringify(''));
+                sessionStorage.setItem('COD-SCHEDA', JSON.stringify(''));
+                sessionStorage.setItem('COMM', JSON.stringify(''));
+                sessionStorage.setItem('PRODOTTE-IN', JSON.stringify(''));
+                sessionStorage.setItem('VOCI', JSON.stringify(''));
 
-                //console.log(Object.keys(JSON.parse(sessionStorage.getItem('DATA'))).length);
-
-
-
-                //console.log(JSON.parse(sessionStorage.getItem('DATA'))[i]);
-                //console.log(JSON.parse(sessionStorage.getItem('CODE'))[i]);
-                //console.log(JSON.parse(sessionStorage.getItem('BARCODE'))[i]);
-                //console.log(JSON.parse(sessionStorage.getItem('PHASE'))[i]);
-                //console.log(JSON.parse(sessionStorage.getItem('DEFECT'))[i]);
-                //console.log(JSON.parse(sessionStorage.getItem('PROBLEM'))[i]);
-                //console.log(JSON.parse(sessionStorage.getItem('COMP-PH-REF'))[i]);
-                //console.log(JSON.parse(sessionStorage.getItem('ACT-PERF'))[i]);
-                //console.log(JSON.parse(sessionStorage.getItem('FUNC-TEST'))[i]);
-                //console.log(JSON.parse(sessionStorage.getItem('SEC-TEST'))[i]);
             }
         });
 
@@ -413,35 +385,82 @@
                     var length = Object.keys(JSON.parse(sessionStorage.getItem('DATA'))).length;
                     $("#table1-body").empty();
                     for (var i = 0; i < length; i++) {
-                        var col1 = "<tr><td></td>";
-                        var col2 = "<td>" + JSON.parse(sessionStorage.getItem('DATA'))[i].slice(0, 10) + "</td>";
-                        var col3 = "<td>" + JSON.parse(sessionStorage.getItem('CODE'))[i] + "</td>";
-                        var col4 = "<td>" + JSON.parse(sessionStorage.getItem('CODE'))[i] + "</td>";
-                        var col5 = "<td>" + JSON.parse(sessionStorage.getItem('BARCODE'))[i] + "</td>";
-                        var col6 = "<td>" + JSON.parse(sessionStorage.getItem('PHASE'))[i] + "</td>";
-                        var col7 = "<td>" + JSON.parse(sessionStorage.getItem('DEFECT'))[i] + "</td>";
-                        var col8 = "<td>" + JSON.parse(sessionStorage.getItem('PROBLEM'))[i] + "</td>";
-                        var col9 = "<td>" + JSON.parse(sessionStorage.getItem('COMP-PH-REF'))[i] + "</td>";
-                        var col10 = "<td>" + JSON.parse(sessionStorage.getItem('ACT-PERF'))[i] + "</td>";
-                        var col11 = "<td>" + JSON.parse(sessionStorage.getItem('FUNC-TEST'))[i] + "</td>";
-                        var col12 = "<td>" + JSON.parse(sessionStorage.getItem('SEC-TEST'))[i] + "</td>";
-                        var colempty = "<td></td>";
-                        var lastcol = "<td></td></tr>";
+                        var data = JSON.parse(sessionStorage.getItem('DATA'))[i].slice(0, 10);
+                        var code = JSON.parse(sessionStorage.getItem('CODE'))[i];
+                        var barcode = JSON.parse(sessionStorage.getItem('BARCODE'))[i];
+                        var phase = JSON.parse(sessionStorage.getItem('PHASE'))[i];
+                        var defect = JSON.parse(sessionStorage.getItem('DEFECT'))[i];
+                        var problem = JSON.parse(sessionStorage.getItem('PROBLEM'))[i];
+                        var comp_ph_ref = JSON.parse(sessionStorage.getItem('COMP-PH-REF'))[i];
+                        var act_pref = JSON.parse(sessionStorage.getItem('ACT-PERF'))[i];
+                        var func_test = JSON.parse(sessionStorage.getItem('FUNC-TEST'))[i];
+                        var sec_test = JSON.parse(sessionStorage.getItem('SEC-TEST'))[i];
+                        if (sessionStorage.getItem('TIP-COMP') != JSON.stringify('')) {
+                            var tip_comp = JSON.parse(sessionStorage.getItem('TIP-COMP'))[i];
+                        }
+                        else {
+                            var tip_comp = '';
+                        }
+                        if (sessionStorage.getItem('COD-SCHEDA') != JSON.stringify('')) {
+                            var cod_scheda = JSON.parse(sessionStorage.getItem('COD-SCHEDA'))[i];
+                        }
+                        else {
+                            var cod_scheda = '';
+                        }
+                        if (sessionStorage.getItem('COMM') != JSON.stringify('')) {
+                            var comm = JSON.parse(sessionStorage.getItem('COMM'))[i];
+                        }
+                        else {
+                            var comm = '';
+                        }
+                        if (sessionStorage.getItem('PRODOTTE-IN') != JSON.stringify('')) {
+                            var prodotte_in = JSON.parse(sessionStorage.getItem('PRODOTTE-IN'))[i];
+                        }
+                        else {
+                            var prodotte_in = '';
+                        }
+                        if (sessionStorage.getItem('VOCI') != JSON.stringify('')) {
+                            var voci = JSON.parse(sessionStorage.getItem('VOCI'))[i];
+                        }
+                        else {
+                            var voci = '';
+                        }
 
-                        $("#table1-body").append(col1 + col2 + col3 + col4 + col5 + col6 + col7 + col8 + col9 + col10 + col11 + col12 + colempty + colempty + colempty + colempty + lastcol);
+                        var $row = $("<tr style='font-size: 80%; !important'><td class='rowid'>" + (i + 1) + "</td>" +
+                            "<td class='DATA'>" + data + "</td>" +
+                            "<td class='CODE'>" + code + "</td>" +
+                            "<td class='BARCODE'>" + barcode + "</td>" +
+                            "<td class='PHASE'>" + phase + "</td>" +
+                            "<td class='DEFECT'>" + defect + "</td>" +
+                            "<td class='PROBLEM'>" + problem + "</td>" +
+                            "<td class='COMP-PH-REF'>" + comp_ph_ref + "</td>" +
+                            "<td class='ACT-PERF'>" + act_pref + "</td>" +
+                            "<td class='FUNC-TEST'>" + func_test + "</td>" +
+                            "<td class='SEC-TEST'>" + sec_test + "</td>" +
+                            "<td class='TIP-COMP'>" + tip_comp + "</td>" +
+                            "<td class='COD-SCHEDA'>" + cod_scheda + "</td>" +
+                            "<td class='COMM'>" + comm + "</td>" +
+                            "<td class='PRODOTTE-IN'>" + prodotte_in + "</td>" +
+                            "<td class='VOCI'>" + voci + "</td>" +
+                            "<td><a href='#' class='btn btn-success edit' data-toggle='modal' data-target='#editModal' type = 'button'> EDIT </a></td></tr>"
+                        );
+                        $("#table1-body").append($row);
                     }
+                    //var table = $('#table1').DataTable();
+
+                    /*$tr = $(this).closest('tr');
+                    if ($($tr).hasClass('child')) {
+                        $tr = $tr.prev('.parent');
+                    }
+
+                    
+
+                    var data = table.row($tr).data();
+                    console.log(data)*/
                 }
+
             })
         }, 1000);
     })
-</script>
-<script>
-    var table = document.getElementsByTagName('table')[0],
-        rows = table.getElementsByTagName('tr'),
-        text = 'textContent' in document ? 'textContent' : 'innerText';
-
-    for (var i = 1, len = rows.length; i < len; i++) {
-        rows[i].children[0][text] = i + rows[i].children[0][text];
-    }
 </script>
 {% endblock page_specific_scripts %}
