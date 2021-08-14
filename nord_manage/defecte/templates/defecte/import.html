@@ -293,8 +293,7 @@
     $(function () {
         var now = new Date();
         $("#table1").DataTable({
-            "responsive": "true",
-            "paging": "false",
+            "paging": "true",
             "ajax": {
                 url: 'showTemp/',
             },
@@ -316,8 +315,9 @@
                 { "data": "produs_in" },
                 { "data": "voci" },
             ],
-            "responsive": true, "lengthChange": false, "autoWidth": false,
+            "responsive": false, "lengthChange": false, "autoWidth": false,
             "pageLength": 5,
+            "scrollX": true
 
         }).buttons().container().appendTo('#table1_wrapper .col-md-6:eq(0)');
         var table = $("#table1").DataTable();
