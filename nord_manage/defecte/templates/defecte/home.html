@@ -76,6 +76,7 @@
   $(function () {
     var now = new Date();
     $("#table1").DataTable({
+      "dom": 'Bfrtip',
       "responsive": false, "lengthChange": false, "autoWidth": false,
       "buttons": [
         {
@@ -90,10 +91,37 @@
           extend: "print",
           title: 'Raport_Wave_' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + '_' + now.getHours() + '-' + now.getMinutes() + '_Linia-1',
         }
-      ],
-      "pageLength": 3,
+      ],      
+      "ajax": {
+        url: "{% url 'defecte-showHome' %}",
+      },
+      "columns": [
+        { "data": "id" },
+        { "data": "data" },
+        { "data": "cod_placa" },
+        { "data": "barcode" },
+        { "data": "step_fail" },
+        { "data": "defect" },
+        { "data": "problem" },
+        { "data": "comp_ph_ref" },
+        { "data": "act_perf" },
+        { "data": "func_test" },
+        { "data": "sec_test" },
+        { "data": "tip_comp" },
+        { "data": "familia" },
+        { "data": "commessa" },
+        { "data": "produs_in" },
+        { "data": "voci" },
+      ],      
+      "pageLength": 5,
       "scrollX": true,
+
     }).buttons().container().appendTo('#table1_wrapper .col-md-6:eq(0)');
+
+    var table = $("#table1").DataTable();
+    setInterval(function () {
+      table.ajax.reload(null, false);
+    }, 1000);
   });
 </script>
 
