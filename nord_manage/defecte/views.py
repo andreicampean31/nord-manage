@@ -132,3 +132,28 @@ def save_import(request):
 
 
     return JsonResponse({"status": 202, "message": "Import reusit!"})
+
+def show_home(request):
+    datas = Defecte.objects.values('id', 'data', 'barcode', 'step_fail', 'defect', 'problem', 'comp_ph_ref', 'act_perf', 'func_test', 'sec_test', 'tip_comp', 'familia', 'commessa', 'produs_in', 'voci', 'cod_placa__cod_placa')
+
+    data = [dict() for number in range(len(datas))]
+
+    for i in range(0, len(datas)):
+        data[i]['id'] = datas[i]['id']
+        data[i]['data'] = datas[i]['data']
+        data[i]['barcode'] = datas[i]['barcode']
+        data[i]['step_fail'] = datas[i]['step_fail']
+        data[i]['defect'] = datas[i]['defect']
+        data[i]['problem'] = datas[i]['problem']
+        data[i]['comp_ph_ref'] = datas[i]['comp_ph_ref']
+        data[i]['act_perf'] = datas[i]['act_perf']
+        data[i]['func_test'] = datas[i]['func_test']
+        data[i]['sec_test'] = datas[i]['sec_test']
+        data[i]['tip_comp'] = datas[i]['tip_comp']
+        data[i]['familia'] = datas[i]['familia']
+        data[i]['commessa'] = datas[i]['commessa']
+        data[i]['produs_in'] = datas[i]['produs_in']
+        data[i]['voci'] = datas[i]['voci']
+        data[i]['cod_placa'] = datas[i]['cod_placa__cod_placa']
+
+    return JsonResponse({"data": data}, safe=False)
