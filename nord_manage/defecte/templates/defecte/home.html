@@ -22,7 +22,7 @@
     </div>
     <!-- /.card-header -->
     <div class="card-body">
-      <table id="example1" class="table table-bordered table-striped">
+      <table id="table1" class="table table-bordered table-striped">
         <thead>
           <tr>
             <th>#</th>
@@ -95,7 +95,8 @@
           title: 'Raport_Wave_' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + '_' + now.getHours() + '-' + now.getMinutes() + '_Linia-1',
         }
       ],
-      "pageLength": 3
+      "pageLength": 3,
+      "scrollX": true,
     }).buttons().container().appendTo('#table1_wrapper .col-md-6:eq(0)');
     $('#table1.1').DataTable({
       "paging": true,
@@ -108,4 +109,5 @@
     });
   });
 </script>
+
 {% endblock page_specific_scripts %}
