@@ -7,6 +7,8 @@
 <link rel="stylesheet" href="{% static 'plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %} ">
 <link rel="stylesheet" href="{% static 'plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %} ">
 <link rel="stylesheet" href="{% static 'plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+<!-- Toastr -->
+<link rel="stylesheet" href="{% static 'plugins/toastr/toastr.min.css' %}">
 {% endblock specific_plugins_css %}
 
 {% block page_title %} <h1>Home - Defecte</h1>{% endblock page_title %}
@@ -73,9 +75,9 @@
                             <div class="form-group">
                                 <label for="table1">Edit Data</label>
                                 <div class="col-12" style="overflow:scroll;">
-                                    <table id="table1" class="table table-bordered table-striped">
+                                    <table id="table1" class="table table-bordered table-striped" style="font-size:80%">
                                         <thead>
-                                            <tr style="font-size: 80%; important;">
+                                            <tr>
                                                 <th>#</th>
                                                 <th>Data</th>
                                                 <th>Product Code</th>
@@ -92,7 +94,6 @@
                                                 <th>Commessa</th>
                                                 <th>Prodotte in</th>
                                                 <th>Voci generiche</th>
-                                                <th>Action</th>
                                             </tr>
                                         </thead>
                                         <tbody id="table1-body">
@@ -108,7 +109,7 @@
                         <div id="import-part" class="content" role="tabpanel" aria-labelledby="import-part-trigger">
 
                             <button class="btn btn-primary" onclick="stepper.previous()">Previous</button>
-                            <button type="submit" class="btn btn-primary">Import</button>
+                            <button type="button" id="importButton" class="btn btn-primary">Import</button>
                         </div>
                     </div>
                 </div>
@@ -219,6 +220,52 @@
     <!-- /.modal-dialog -->
 </div>
 
+<div class="modal fade" id="tempDbNotEmpty">
+    <div class="modal-dialog">
+        <div class="modal-content bg-danger">
+            <div class="modal-header">
+                <h4 class="modal-title">Fisierul nu a fost incarcat!</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Exista date in memorie care nu au fost importate. </br> Doresti sa renunti la aceste date sau le vei
+                    importa mai intai?</p>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-outline-light" data-dismiss="modal">Import</button>
+                <button type="button" id="clearButton" class="btn btn-outline-light">Renunt</button>
+                <!--<a href="" id="deleteConfirm" type="button" class="btn btn-outline-light">Renunt</a>-->
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+<div class="modal fade" id="errorDeleteMemory">
+    <div class="modal-dialog">
+        <div class="modal-content bg-danger">
+            <div class="modal-header">
+                <h4 class="modal-title">Nu se poate sterge memoria!</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>Refresh pagina sau contacteaza administrator!</p>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-outline-light" data-dismiss="modal">Close</button>
+                <!--<a href="" id="deleteConfirm" type="button" class="btn btn-outline-light">Renunt</a>-->
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
 {% endblock content %}
 
 {% block page_specific_scripts %}
@@ -239,85 +286,97 @@
 <script src="{% static 'plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
 <script src="{% static 'plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
 <script src="{% static 'plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
+<!-- Toastr -->
+<script src="{% static 'plugins/toastr/toastr.min.js' %}"></script>
 
 <script>
     $(function () {
         var now = new Date();
         $("#table1").DataTable({
-            "responsive": true, "lengthChange": false, "autoWidth": false,
-            "buttons": [
-                {
-                    extend: "excel",
-                    title: 'Raport_Wave_' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + '_' + now.getHours() + '-' + now.getMinutes() + '_Linia-1',
-                },
-                {
-                    extend: "csv",
-                    title: 'Raport_Wave_' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + '_' + now.getHours() + '-' + now.getMinutes() + '_Linia-1',
-                },
-                {
-                    extend: "print",
-                    title: 'Raport_Wave_' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + '_' + now.getHours() + '-' + now.getMinutes() + '_Linia-1',
-                }
+            "responsive": "true",
+            "paging": "false",
+            "ajax": {
+                url: 'showTemp/',
+            },
+            "columns": [
+                { "data": "id" },
+                { "data": "data" },
+                { "data": "cod_placa" },
+                { "data": "barcode" },
+                { "data": "step_fail" },
+                { "data": "defect" },
+                { "data": "problem" },
+                { "data": "comp_ph_ref" },
+                { "data": "act_perf" },
+                { "data": "func_test" },
+                { "data": "sec_test" },
+                { "data": "tip_comp" },
+                { "data": "familia" },
+                { "data": "commessa" },
+                { "data": "produs_in" },
+                { "data": "voci" },
             ],
-            "pageLength": 3,
-            "fixedHeader": true,
+            "responsive": true, "lengthChange": false, "autoWidth": false,
+            "pageLength": 5,
 
         }).buttons().container().appendTo('#table1_wrapper .col-md-6:eq(0)');
-        $('#table1.1').DataTable({
-            "paging": true,
-            "lengthChange": false,
-            "searching": true,
-            "ordering": true,
-            "info": true,
-            "autoWidth": false,
-            "responsive": true,
-        });
-        $("#table1").on('click', '.edit', function () {
+        var table = $("#table1").DataTable();
+        setInterval(function () {
+            table.ajax.reload(null, false);
+        }, 1000);
+        $("#table1 tbody").on('click', 'tr', function () {
             console.log("apasat");
-            $tr = $(this).closest('tr');
-            $id = $tr.find(".rowid").text();
-            $data = $tr.find(".DATA").text();
-            $code = $tr.find(".CODE").text();
-            $barcode = $tr.find(".BARCODE").text();
-            $phase = $tr.find(".PHASE").text();
-            $defect = $tr.find(".DEFECT").text();
-            $problem = $tr.find(".PROBLEM").text();
-            $comp_ph_ref = $tr.find(".COMP-PH-REF").text();
-            $act_perf = $tr.find(".ACT-PERF").text();
-            $func_test = $tr.find(".FUNC-TEST").text();
-            $sec_test = $tr.find(".SEC-TEST").text();
-            $tip_comp = $tr.find(".TIP-COMP").text();
-            $cod_scheda = $tr.find(".COD-SCHEDA").text();
-            $comm = $tr.find(".COMM").text();
-            $prodotte_in = $tr.find(".PRODOTTE-IN").text();
-            $voci = $tr.find(".VOCI").text();
-            console.log($voci);
-            //var data = table.row($tr).data();
-            //console.log(data);
-
-            $('#data').val($data);
-            $('#code').val($code);
-            $('#barcode').val($barcode);
-            $('#step-fail').val($phase);
-            $('#defect').val($defect);
-            $('#problem').val($problem);
-            $('#comp-ph-ref').val($comp_ph_ref);
-            $('#action-perf').val($act_perf);
-            $('#func-test').val($func_test);;
-            $('#sec-test').val($sec_test);;
-            $('#tip-comp').val($tip_comp);;
-            $('#cod-scheda').val($cod_scheda);;
-            $('#commessa').val($comm);;
-            $('#prodotte-in').val($prodotte_in);
-            $('#voci-gene').val($voci);
+            obj = table.row(this).data();
+            console.log(obj);
+            $('#editModal').modal('show');
+            
+            $id = obj.id;
+            $('#data').val(obj.data);
+            $('#code').val(obj.cod_placa);
+            $('#barcode').val(obj.barcode);
+            $('#step-fail').val(obj.step_fail);
+            $('#defect').val(obj.defect);
+            $('#problem').val(obj.problem);
+            $('#comp-ph-ref').val(obj.comp_ph_ref);
+            $('#action-perf').val(obj.act_perf);
+            $('#func-test').val(obj.func_test);
+            $('#sec-test').val(obj.sec_test);
+            $('#tip-comp').val(obj.tip_comp);
+            $('#cod-scheda').val(obj.familia);
+            $('#commessa').val(obj.commessa);
+            $('#prodotte-in').val(obj.produs_in);
+            $('#voci-gene').val(obj.voci);
         });
 
         $(document).on('submit', '#editForm', function (e) {
             e.preventDefault();
 
             $.ajax({
-                success: function () {
-                    sessionStorage.setItem('COD_SCHEDA')
+                type: 'POST',
+                url: 'updateTemp/',
+                data: {
+                    id: $id,
+                    data: $("#data").val(),
+                    code: $("#code").val(),
+                    barcode: $("#barcode").val(),
+                    step_fail: $("#step-fail").val(),
+                    defect: $("#defect").val(),
+                    problem: $("#problem").val(),
+                    comp_ph_ref: $("#comp-ph-ref").val(),
+                    act_perf: $("#action-perf").val(),
+                    func_test: $("#func-test").val(),
+                    sec_test: $("#sec-test").val(),
+                    tip_comp: $("#tip-comp").val(),
+                    familia: $("#cod-scheda").val(),
+                    commessa: $("#commessa").val(),
+                    produs_in: $("#prodotte-in").val(),
+                    voci: $("#voci-gene").val(),
+
+                },
+                success: function (data) {
+                    //sessionStorage.setItem('COD_SCHEDA')
+                    console.log(data);
+
                     $('#editModal').modal('hide');
                 }
             })
@@ -341,7 +400,7 @@
         e.preventDefault();
 
         var file = $('#InputFile').get(0).files[0];
-        console.log(file)
+        //console.log(file)
 
         var data = new FormData();
         data.append("file", file)
@@ -354,35 +413,94 @@
             contentType: false,
             processData: false,
             success: function (data) {
-                console.log(data);
-                json = JSON.parse(data);
-                sessionStorage.setItem('DATA', JSON.stringify(json["DATA"]));
-                sessionStorage.setItem('CODE', JSON.stringify(json["PRODUCT CODE"]));
-                sessionStorage.setItem('BARCODE', JSON.stringify(json["BARCODE"]));
-                sessionStorage.setItem('PHASE', JSON.stringify(json["PHASE"]));
-                sessionStorage.setItem('DEFECT', JSON.stringify(json["DEFECT"]));
-                sessionStorage.setItem('PROBLEM', JSON.stringify(json["PROBLEM"]));
-                sessionStorage.setItem('COMP-PH-REF', JSON.stringify(json[" COMPONENT PHASE REFERENCE"]));
-                sessionStorage.setItem('ACT-PERF', JSON.stringify(json["ACTION PERFORMED"]));
-                sessionStorage.setItem('FUNC-TEST', JSON.stringify(json["FUNCTIONAL TEST"]));
-                sessionStorage.setItem('SEC-TEST', JSON.stringify(json["SECURITY TEST"]));
-                sessionStorage.setItem('TIP-COMP', JSON.stringify(''));
-                sessionStorage.setItem('COD-SCHEDA', JSON.stringify(''));
-                sessionStorage.setItem('COMM', JSON.stringify(''));
-                sessionStorage.setItem('PRODOTTE-IN', JSON.stringify(''));
-                sessionStorage.setItem('VOCI', JSON.stringify(''));
+                console.log(data['status']);
+                if (data['status'] == 202) {
+                    toastr.success('Fisierul a fost incarcat!', { timeOut: 2000 });
+                }
+                else if (data['status'] == 404) {
+                    $('#tempDbNotEmpty').modal('show');
+
+                    $('#clearButton').click(function () {
+                        //e.preventDefault();
+                        console.log("apasat");
+                        $.ajax({
+                            url: "clear/",
+                            success: function (returnVal) {
+                                console.log(returnVal['status']);
+                                if (returnVal['status'] == 202) {
+                                    $('#tempDbNotEmpty').modal('hide');
+                                    toastr.success('Memorie golita!', { timeOut: 2000 });
+                                }
+                                else if (returnVal['status'] == 404) {
+                                    $('#tempDbNotEmpty').modal('hide');
+                                    $('#errorDeleteMemory').modal('show');
+                                }
+                            }
+                        });
+                    });
+                    //toastr.error('Exista date in memorie care nu au fost incarcate. Doresti sa renunti la aceste date?', 'Fisierul nu a fost incarcat!', { timeOut: 5000 });
+                }
+
 
             }
         });
 
     });
+
+    $('#importButton').click(function (){
+        console.log("apasat Import");
+
+        $.ajax({
+            url: "saveImport/",
+            success: function(data){
+                //console.log(data);
+                if(data['status'] == 202){
+                    toastr.success('Import reusit!', { timeOut: 2000 });
+                    stepper.previous();
+                    stepper.previous();
+                    $('#InputFile').val(null);
+                }
+                else if(data['status'] == 404){
+                    toastr.error('Intoarce-te la pasul 1 si incarca un fisier.', 'Niciun fisier selectat pentru import!', { timeOut: 5000 });
+                    
+                }
+            }
+        })
+    })
 </script>
+<!-- 
 <script>
     $(document).ready(function () {
         setInterval(function () {
             $.ajax({
-                success: function () {
-                    var length = Object.keys(JSON.parse(sessionStorage.getItem('DATA'))).length;
+                type: 'GET',
+                url: 'showTemp/',
+                success: function (data) {
+                    console.log(data);
+                    var len = data['data'].length;
+                    $("#table1-body").empty();
+                    for (var i=0; i<len; i++){
+                        var $row = $("<tr style='font-size: 80%; !important'><td class='rowid'>" + (i + 1) + "</td>" +
+                            "<td class='DATA'>" + data['data'][i] + "</td>" +
+                            "<td class='CODE'>" + data['cod_placa'][i] + "</td>" +
+                            "<td class='BARCODE'>" + data['barcode'][i] + "</td>" +
+                            "<td class='PHASE'>" + data['step_fail'][i] + "</td>" +
+                            "<td class='DEFECT'>" + data['defect'][i] + "</td>" +
+                            "<td class='PROBLEM'>" + data['problem'][i] + "</td>" +
+                            "<td class='COMP-PH-REF'>" + data['comp_ph_ref'][i] + "</td>" +
+                            "<td class='ACT-PERF'>" + data['act_perf'][i] + "</td>" +
+                            "<td class='FUNC-TEST'>" + data['func_test'][i] + "</td>" +
+                            "<td class='SEC-TEST'>" + data['sec_test'][i] + "</td>" +
+                            "<td class='TIP-COMP'>" + data['tip_comp'][i] + "</td>" +
+                            "<td class='COD-SCHEDA'>" + data['familia'][i] + "</td>" +
+                            "<td class='COMM'>" + data['commessa'][i] + "</td>" +
+                            "<td class='PRODOTTE-IN'>" + data['produs_in'][i] + "</td>" +
+                            "<td class='VOCI'>" + data['voci'][i] + "</td>" +
+                            "<td><a href='#' class='btn btn-success edit' data-toggle='modal' data-target='#editModal' type = 'button'> EDIT </a></td></tr>"
+                        );
+                        $("#table1-body").append($row);
+                    }
+                    /*var length = Object.keys(JSON.parse(sessionStorage.getItem('DATA'))).length;
                     $("#table1-body").empty();
                     for (var i = 0; i < length; i++) {
                         var data = JSON.parse(sessionStorage.getItem('DATA'))[i].slice(0, 10);
@@ -445,7 +563,7 @@
                             "<td><a href='#' class='btn btn-success edit' data-toggle='modal' data-target='#editModal' type = 'button'> EDIT </a></td></tr>"
                         );
                         $("#table1-body").append($row);
-                    }
+                    }*/
                     //var table = $('#table1').DataTable();
 
                     /*$tr = $(this).closest('tr');
@@ -462,5 +580,5 @@
             })
         }, 1000);
     })
-</script>
+</script>-->
 {% endblock page_specific_scripts %}
