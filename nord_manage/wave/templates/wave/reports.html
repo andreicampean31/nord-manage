@@ -133,13 +133,13 @@
               <th>Cod placa</th>
               <th>Nr Bucati</th>
               <th>Target/ora</th>
-              {% if tip == 1 %}
+              {% if tip == 1 or tip == 4%}
               <th>Linia</th>
               {% endif %}
               <th>Durata</th>
               <th>Norma</th>
               <th>Eficienta</th>
-              {% if tip == 3 %}
+              {% if tip == 3 or tip == 4%}
               <th>Data</th>
               {% endif %}
             </tr>
@@ -153,13 +153,13 @@
               <td>{{i.cod_placa}}</td>
               <td>{{i.total}}</td>
               <td>{{i.target}}</td>
-              {% if tip == 1 %}
+              {% if tip == 1 or tip == 4%}
               <td>{{i.linia}}</td>
               {% endif %}
               <td>{{i.durata}}</td>
               <td>{{i.norma}}</td>
               <td>{{i.eficienta}}</td>
-              {% if tip == 3 %}
+              {% if tip == 3 or tip == 4%}
               <td>{{ i.data }}</td>
               {% endif %}
             </tr>
