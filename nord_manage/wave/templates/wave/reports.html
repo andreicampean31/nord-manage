@@ -241,25 +241,10 @@
 
     $("#example1").DataTable({
       "responsive": true, "lengthChange": false, "autoWidth": false,
-      "buttons": [
-        {
-          extend: "excel",
-          title: 'Ora realizare: ' + now_title + ' --- {% if interval|length > 10 %}Interval raport: {{ interval }} {% else %} Data raport: {{interval}} {% endif %}',
-          filename: 'Raport_Wave_' + now_filename,
-        },
-        {
-          extend: "csv",
-          title: 'Ora realizare: ' + now_title + ' --- {% if interval|length > 10 %} Interval raport: {{ interval }} {% else %} Data raport: {{interval}} {%endif %}',
-          filename: 'Raport_Wave_' + now_filename,
-        },
-        {
-          extend: "print",
-          title: 'Ora realizare: ' + now_title + ' --- {% if interval|length > 10 %}Interval raport: {{ interval }} {% else %} Data raport: {{interval}} {%endif %}',
-          filename: 'Raport_Wave_' + now_filename,
-        }
-      ],
+      
       "pageLength": 20,
-      "order": [[7, 'asc']],
+      
+      "{% if tip == 3 %} order": [[7, 'asc']],
       drawCallback: function (settings) {
         var api = this.api();
         var rows = api.rows({ page: 'current' }).nodes();
@@ -303,7 +288,71 @@
           //console.log(i)
           k += 1;
         });
-      }
+      },
+      
+      "{% elif tip == 4%} order": [[8, 'asc']],
+      drawCallback: function (settings) {
+        var api = this.api();
+        var rows = api.rows({ page: 'current' }).nodes();
+        var last = api.column(8, { page: 'current' }).data()[0];
+        var mediaEff = 0;
+        var durataTotala = 0;
+        var k = 0;
+        //console.log(api.column(7, { page: 'current' }).data()[0])
+        api.column(8, { page: 'current' }).data().each(function (group, i) {
+          //console.log(api.column(6, { page: 'current' }).data()[i])
+
+
+          if (last !== group) {
+            //console.log(mediaEff)
+            //console.log(k)
+
+
+            //console.log(sformat(durataTotala));
+            $(rows).eq(i).before(
+              '<tr><td colspan="5" style="BACKGROUND-COLOR:rgb(237, 208, 0);font-weight:700;color:#006232; font-size: 115%; text-align: center">'
+              + last +
+              '</td><td colspan="1" style="BACKGROUND-COLOR:rgb(237, 208, 0);font-weight:700;color:#006232; font-size: 115%">' + secondstoDHMS(durataTotala) +
+              '</td><td colspan="1" style="BACKGROUND-COLOR:rgb(237, 208, 0);font-weight:700;color:#006232; font-size: 115%"></td>' +
+              '<td colspan="1" style="BACKGROUND-COLOR:rgb(237, 208, 0);font-weight:700;color:#006232; font-size: 115%">'
+              + (mediaEff/k).toFixed(2) +
+              '%</td></td><td colspan="1" style="BACKGROUND-COLOR:rgb(237, 208, 0);font-weight:700;color:#006232; font-size: 115%"></td></tr>'
+            );
+
+            last = group;
+            k = 0;
+            mediaEff = 0;
+            durataTotala = 0;
+          }
+          mediaEff += parseFloat(api.column(7, { page: 'current' }).data()[i].slice(0, -1));
+          durataTotala += hmstoSeconds(api.column(5, { page: 'current' }).data()[i]);
+
+          //console.log(mediaEff)
+
+
+          //console.log(group)
+          //console.log(i)
+          k += 1;
+        });
+      },
+      
+      "{% endif %}buttons": [
+        {
+          extend: "excel",
+          title: 'Ora realizare: ' + now_title + ' --- {% if interval|length > 10 %}Interval raport: {{ interval }} {% else %} Data raport: {{interval}} {% endif %}',
+          filename: 'Raport_Wave_' + now_filename,
+        },
+        {
+          extend: "csv",
+          title: 'Ora realizare: ' + now_title + ' --- {% if interval|length > 10 %} Interval raport: {{ interval }} {% else %} Data raport: {{interval}} {%endif %}',
+          filename: 'Raport_Wave_' + now_filename,
+        },
+        {
+          extend: "print",
+          title: 'Ora realizare: ' + now_title + ' --- {% if interval|length > 10 %}Interval raport: {{ interval }} {% else %} Data raport: {{interval}} {%endif %}',
+          filename: 'Raport_Wave_' + now_filename,
+        }
+      ],
 
     }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
     $('#example1.1').DataTable({
