@@ -46,9 +46,21 @@
               </label>
             </div>
             <div class="icheck-primary d-inline">
+              <input type="radio" id="radioSplitZile" name="Tip" value="split-zile" onclick="deactivateLineSelection()" >
+              <label for="radioSplitZile">
+                Impartit pe linii pe zile
+              </label>
+            </div>
+            <div class="icheck-primary d-inline">
               <input type="radio" id="radioTotal" value="total" name="Tip" onclick="deactivateLineSelection()">
               <label for="radioTotal">
                 Total
+              </label>
+            </div>
+            <div class="icheck-primary d-inline">
+              <input type="radio" id="radioTotalZile" value="total-zile" name="Tip" onclick="deactivateLineSelection()">
+              <label for="radioTotalZile">
+                Total pe zile
               </label>
             </div> </br></br>
             <label for="lista_coduri">Selecteaza codurile de placa:</label>
@@ -121,12 +133,15 @@
               <th>Cod placa</th>
               <th>Nr Bucati</th>
               <th>Target/ora</th>
-              {% if tip == 1 %}
+              {% if tip == 1 or tip == 4%}
               <th>Linia</th>
               {% endif %}
               <th>Durata</th>
               <th>Norma</th>
               <th>Eficienta</th>
+              {% if tip == 3 or tip == 4%}
+              <th>Data</th>
+              {% endif %}
             </tr>
           </thead>
           <tbody>
@@ -138,12 +153,15 @@
               <td>{{i.cod_placa}}</td>
               <td>{{i.total}}</td>
               <td>{{i.target}}</td>
-              {% if tip == 1 %}
+              {% if tip == 1 or tip == 4%}
               <td>{{i.linia}}</td>
               {% endif %}
               <td>{{i.durata}}</td>
               <td>{{i.norma}}</td>
               <td>{{i.eficienta}}</td>
+              {% if tip == 3 or tip == 4%}
+              <td>{{ i.data }}</td>
+              {% endif %}
             </tr>
             {% endif %}
             {% endfor %}
@@ -257,7 +275,7 @@
 <script>
   function deactivateLineSelection() {
 
-    if (document.getElementById('radioTotal').checked) {
+    if (document.getElementById('radioTotal').checked || document.getElementById('radioTotalZile').checked) {
       document.getElementById('checkboxL1').disabled = true;
       document.getElementById('checkboxL2').disabled = true;
       document.getElementById('checkboxL3').disabled = true;
