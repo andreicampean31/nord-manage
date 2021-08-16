@@ -496,10 +496,12 @@ def custom_reports_result(request):
                     #print(list(entries))
                     #print("----")
                     custom_report += count_total_productie(entries, 'raport-zile')
+                    
 
                     print("report-------")
                     print(custom_report)
-                    if custom_report != [None]:
+                    if entries:
+                        custom_report += count_total_productie(entries, 'raport-zile')
                         for j in range(previous_len, len(custom_report)):
                             custom_report[j]['durata'] = datetime.timedelta(hours=0)
 
