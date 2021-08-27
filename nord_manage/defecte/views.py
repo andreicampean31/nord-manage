@@ -1,10 +1,9 @@
 from django.http.response import JsonResponse
 from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
+from django.http import JsonResponse
 from .models import Defecte, Date_Placi, Temporary
 import pandas
 from django.views.decorators.csrf import csrf_exempt
-from django.core import serializers
 # Create your views here.
 
 
@@ -113,6 +112,26 @@ def update_temp(request):
         
         
     return JsonResponse({"status": 202})
+
+@csrf_exempt
+def update(request):
+    if request.method == 'POST':
+        edit_values = dict(request.POST.items())
+        if edit_values['func_test'] == 'true':
+            func_test = True
+        else:
+            func_test = False
+
+        if edit_values['sec_test'] == 'true':
+            sec_test = True
+        else:
+            sec_test = False
+        
+        Defecte.objects.filter(id = edit_values['id']).update(defect = edit_values['defect'], problem = edit_values['problem'], comp_ph_ref = edit_values['comp_ph_ref'], act_perf = edit_values['act_perf'], func_test = func_test, sec_test = sec_test, tip_comp = edit_values['tip_comp'], familia = edit_values['familia'], commessa = edit_values['commessa'], produs_in = edit_values['produs_in'], voci = edit_values['voci'])
+    #print(edit_values)
+    
+    return JsonResponse({"status": 202})
+        
 
 def save_import(request):
     temp_data = Temporary.objects.all()

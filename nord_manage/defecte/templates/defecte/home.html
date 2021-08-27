@@ -53,6 +53,101 @@
 </div>
 <!-- /.col -->
 
+<!-- EDIT modal -->
+<div class="modal fade" id="editModal">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title">EDIT</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <form action="" method="post" id="editForm">
+              <div class="modal-body">
+                  {%csrf_token%}
+
+                  <div class="form-group">
+                      <label for="data">Data</label>
+                      <input type="text" class="form-control" id="data" placeholder="data" name="data" disabled>
+                  </div>
+                  <div class="form-group">
+                      <label for="code">Product Code</label>
+                      <input type="text" class="form-control" id="code" placeholder="code" name="code" disabled>
+                  </div>
+                  <div class="form-group">
+                      <label for="barcode">Barcode</label>
+                      <input type="text" class="form-control" id="barcode" placeholder="barcode" , name="barcode"
+                          disabled>
+                  </div>
+                  <div class="form-group">
+                      <label for="step-fail">Step-fail</label>
+                      <input type="text" class="form-control" id="step-fail" placeholder="step-fail" ,
+                          name="step-fail" disabled>
+                  </div>
+                  <div class="form-group">
+                      <label for="defect">Defect</label>
+                      <input type="text" class="form-control" id="defect" placeholder="defect" , name="defect">
+                  </div>
+                  <div class="form-group">
+                      <label for="problem">Problem</label>
+                      <input type="text" class="form-control" id="problem" placeholder="problem" , name="problem">
+                  </div>
+                  <div class="form-group">
+                      <label for="comp-ph-ref">Component Phase Reference</label>
+                      <input type="text" class="form-control" id="comp-ph-ref" placeholder="comp-ph-ref" ,
+                          name="comp-ph-ref">
+                  </div>
+                  <div class="form-group">
+                      <label for="action-perf">Action Performed</label>
+                      <input type="text" class="form-control" id="action-perf" placeholder="action-perf" ,
+                          name="action_perf">
+                  </div>
+                  <div class="form-group">
+                      <label for="func-test">Functional Test</label>
+                      <input type="text" class="form-control" id="func-test" placeholder="func-test" ,
+                          name="func-test">
+                  </div>
+                  <div class="form-group">
+                      <label for="sec-test">Security Test</label>
+                      <input type="text" class="form-control" id="sec-test" placeholder="sec-test" , name="sec-test">
+                  </div>
+                  <div class="form-group">
+                      <label for="tip-comp">Smd/Pth</label>
+                      <input type="text" class="form-control" id="tip-comp" placeholder="tip-comp" , name="tip-comp">
+                  </div>
+                  <div class="form-group">
+                      <label for="cod-scheda">Cod Scheda</label>
+                      <input type="text" class="form-control" id="cod-scheda" placeholder="cod-scheda" ,
+                          name="cod-scheda">
+                  </div>
+                  <div class="form-group">
+                      <label for="commessa">Commessa</label>
+                      <input type="text" class="form-control" id="commessa" placeholder="commessa" , name="commessa">
+                  </div>
+                  <div class="form-group">
+                      <label for="prodotte-in">Prodotte in</label>
+                      <input type="text" class="form-control" id="prodotte-in" placeholder="prodotte-in" ,
+                          name="prodotte-in">
+                  </div>
+                  <div class="form-group">
+                      <label for="voci-gene">Voci generiche</label>
+                      <input type="text" class="form-control" id="voci-gene" placeholder="voci-gene" ,
+                          name="voci-gene">
+                  </div>
+
+
+              </div>
+              <div class="modal-footer justify-content-between">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  <input class="btn btn-primary" type="submit" value="OK">
+              </div>
+          </form>
+      </div>
+      <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
 
 {% endblock content %}
 
@@ -122,6 +217,65 @@
     setInterval(function () {
       table.ajax.reload(null, false);
     }, 1000);
+
+    $("#table1 tbody").on('click', 'tr', function () {
+            console.log("apasat");
+            obj = table.row(this).data();
+            console.log(obj);
+            $('#editModal').modal('show');
+            
+            $id = obj.id;
+            $('#data').val(obj.data);
+            $('#code').val(obj.cod_placa);
+            $('#barcode').val(obj.barcode);
+            $('#step-fail').val(obj.step_fail);
+            $('#defect').val(obj.defect);
+            $('#problem').val(obj.problem);
+            $('#comp-ph-ref').val(obj.comp_ph_ref);
+            $('#action-perf').val(obj.act_perf);
+            $('#func-test').val(obj.func_test);
+            $('#sec-test').val(obj.sec_test);
+            $('#tip-comp').val(obj.tip_comp);
+            $('#cod-scheda').val(obj.familia);
+            $('#commessa').val(obj.commessa);
+            $('#prodotte-in').val(obj.produs_in);
+            $('#voci-gene').val(obj.voci);
+        });
+
+      $(document).on('submit', '#editForm', function (e) {
+          e.preventDefault();
+
+          $.ajax({
+              type: 'POST',
+              url: 'update/',
+              data: {
+                  id: $id,
+                  data: $("#data").val(),
+                  code: $("#code").val(),
+                  barcode: $("#barcode").val(),
+                  step_fail: $("#step-fail").val(),
+                  defect: $("#defect").val(),
+                  problem: $("#problem").val(),
+                  comp_ph_ref: $("#comp-ph-ref").val(),
+                  act_perf: $("#action-perf").val(),
+                  func_test: $("#func-test").val(),
+                  sec_test: $("#sec-test").val(),
+                  tip_comp: $("#tip-comp").val(),
+                  familia: $("#cod-scheda").val(),
+                  commessa: $("#commessa").val(),
+                  produs_in: $("#prodotte-in").val(),
+                  voci: $("#voci-gene").val(),
+
+              },
+              success: function (data) {
+                  //sessionStorage.setItem('COD_SCHEDA')
+                  console.log(data);
+
+                  $('#editModal').modal('hide');
+              }
+          })
+
+      });
   });
 </script>
 
