@@ -5,6 +5,8 @@
 <link rel="stylesheet" href="{% static 'plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %} ">
 <link rel="stylesheet" href="{% static 'plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %} ">
 <link rel="stylesheet" href="{% static 'plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+<!-- daterange picker -->
+<link rel="stylesheet" href="{% static 'plugins/daterangepicker/daterangepicker.css' %}">
 {% endblock specific_plugins_css %}
 
 {% block page_title %} <h1>Home - Defecte</h1>{% endblock page_title %}
@@ -23,6 +25,7 @@
     <!-- /.card-header -->
     <div class="card-body">
       <table id="table1" class="table table-bordered table-striped">
+        <a class="btn btn-primary add" data-toggle="modal" data-target="#addModal" type="button"> ADD </a>
         <thead>
           <tr>
             <th>#</th>
@@ -149,10 +152,115 @@
   <!-- /.modal-dialog -->
 </div>
 
+<!-- add modal -->
+<div class="modal fade" id="addModal">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title">Add</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <form action="" method="post" id="addForm">
+              <div class="modal-body">
+                  {%csrf_token%}
+
+                  <div class="form-group">
+                      <label for="data">Data</label>
+                      <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">
+                            <i class="far fa-calendar-alt"></i>
+                          </span>
+                        </div>
+                        <input type="text" name="date_range" class="form-control float-right" id="date_range">
+                      </div>
+                  </div>
+                  <div class="form-group">
+                      <label for="code">Product Code</label>
+                      <input type="text" class="form-control" id="code_add" placeholder="code" name="code">
+                  </div>
+                  <div class="form-group">
+                      <label for="barcode">Barcode</label>
+                      <input type="text" class="form-control" id="barcode_add" placeholder="barcode" , name="barcode">
+                  </div>
+                  <div class="form-group">
+                      <label for="step-fail">Step-fail</label>
+                      <input type="text" class="form-control" id="step-fail_add" placeholder="step-fail" ,
+                          name="step-fail">
+                  </div>
+                  <div class="form-group">
+                      <label for="defect">Defect</label>
+                      <input type="text" class="form-control" id="defect_add" placeholder="defect" , name="defect">
+                  </div>
+                  <div class="form-group">
+                      <label for="problem">Problem</label>
+                      <input type="text" class="form-control" id="problem_add" placeholder="problem" , name="problem">
+                  </div>
+                  <div class="form-group">
+                      <label for="comp-ph-ref">Component Phase Reference</label>
+                      <input type="text" class="form-control" id="comp-ph-ref_add" placeholder="comp-ph-ref" ,
+                          name="comp-ph-ref">
+                  </div>
+                  <div class="form-group">
+                      <label for="action-perf">Action Performed</label>
+                      <input type="text" class="form-control" id="action-perf_add" placeholder="action-perf" ,
+                          name="action_perf">
+                  </div>
+                  <div class="form-group">
+                      <label for="func-test">Functional Test</label>
+                      <input type="text" class="form-control" id="func-test_add" placeholder="func-test" ,
+                          name="func-test">
+                  </div>
+                  <div class="form-group">
+                      <label for="sec-test">Security Test</label>
+                      <input type="text" class="form-control" id="sec-test_add" placeholder="sec-test" , name="sec-test">
+                  </div>
+                  <div class="form-group">
+                      <label for="tip-comp">Smd/Pth</label>
+                      <input type="text" class="form-control" id="tip-comp_add" placeholder="tip-comp" , name="tip-comp">
+                  </div>
+                  <div class="form-group">
+                      <label for="cod-scheda">Cod Scheda</label>
+                      <input type="text" class="form-control" id="cod-scheda_add" placeholder="cod-scheda" ,
+                          name="cod-scheda">
+                  </div>
+                  <div class="form-group">
+                      <label for="commessa">Commessa</label>
+                      <input type="text" class="form-control" id="commessa_add" placeholder="commessa" , name="commessa">
+                  </div>
+                  <div class="form-group">
+                      <label for="prodotte-in">Prodotte in</label>
+                      <input type="text" class="form-control" id="prodotte-in_add" placeholder="prodotte-in" ,
+                          name="prodotte-in">
+                  </div>
+                  <div class="form-group">
+                      <label for="voci-gene">Voci generiche</label>
+                      <input type="text" class="form-control" id="voci-gene_add" placeholder="voci-gene" ,
+                          name="voci-gene">
+                  </div>
+
+
+              </div>
+              <div class="modal-footer justify-content-between">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  <input class="btn btn-primary" type="submit" value="OK">
+              </div>
+          </form>
+      </div>
+      <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
 {% endblock content %}
 
 {% block page_specific_scripts %}
 <!-- page specific plugins -->
+<!-- date-range-picker -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <!-- DataTables  & Plugins -->
 <script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %}"></script>
 <script src="{% static 'plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
@@ -167,7 +275,13 @@
 <script src="{% static 'plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
 <script src="{% static 'plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
 
+
 <script>
+  $('#date_range').daterangepicker({
+    locale: {
+      format: 'DD/MM/YYYY'
+    }
+  });
   $(function () {
     var now = new Date();
     $("#table1").DataTable({
@@ -242,41 +356,76 @@
             $('#voci-gene').val(obj.voci);
         });
 
-      $(document).on('submit', '#editForm', function (e) {
-          e.preventDefault();
+    $(document).on('submit', '#editForm', function (e) {
+        e.preventDefault();
 
-          $.ajax({
-              type: 'POST',
-              url: 'update/',
-              data: {
-                  id: $id,
-                  data: $("#data").val(),
-                  code: $("#code").val(),
-                  barcode: $("#barcode").val(),
-                  step_fail: $("#step-fail").val(),
-                  defect: $("#defect").val(),
-                  problem: $("#problem").val(),
-                  comp_ph_ref: $("#comp-ph-ref").val(),
-                  act_perf: $("#action-perf").val(),
-                  func_test: $("#func-test").val(),
-                  sec_test: $("#sec-test").val(),
-                  tip_comp: $("#tip-comp").val(),
-                  familia: $("#cod-scheda").val(),
-                  commessa: $("#commessa").val(),
-                  produs_in: $("#prodotte-in").val(),
-                  voci: $("#voci-gene").val(),
+        $.ajax({
+            type: 'POST',
+            url: 'update/',
+            data: {
+                id: $id,
+                data: $("#data").val(),
+                code: $("#code").val(),
+                barcode: $("#barcode").val(),
+                step_fail: $("#step-fail").val(),
+                defect: $("#defect").val(),
+                problem: $("#problem").val(),
+                comp_ph_ref: $("#comp-ph-ref").val(),
+                act_perf: $("#action-perf").val(),
+                func_test: $("#func-test").val(),
+                sec_test: $("#sec-test").val(),
+                tip_comp: $("#tip-comp").val(),
+                familia: $("#cod-scheda").val(),
+                commessa: $("#commessa").val(),
+                produs_in: $("#prodotte-in").val(),
+                voci: $("#voci-gene").val(),
 
-              },
-              success: function (data) {
-                  //sessionStorage.setItem('COD_SCHEDA')
-                  console.log(data);
+            },
+            success: function (data) {
+                //sessionStorage.setItem('COD_SCHEDA')
+                console.log(data);
 
-                  $('#editModal').modal('hide');
-              }
-          })
+                $('#editModal').modal('hide');
+            }
+        })
 
-      });
+    });
+    $(document).on('submit', '#addForm', function (e) {
+        e.preventDefault();
+        console.log("apasat ")
+        $.ajax({
+            type: 'POST',
+            url: 'addDefect/',
+            data: {
+                //id: $id,
+                data: $("#data_add").val(),
+                code: $("#code_add").val(),
+                barcode: $("#barcode_add").val(),
+                step_fail: $("#step-fail_add").val(),
+                defect: $("#defect_add").val(),
+                problem: $("#problem_add").val(),
+                comp_ph_ref: $("#comp-ph-ref_add").val(),
+                act_perf: $("#action-perf_add").val(),
+                func_test: $("#func-test_add").val(),
+                sec_test: $("#sec-test_add").val(),
+                tip_comp: $("#tip-comp_add").val(),
+                familia: $("#cod-scheda_add").val(),
+                commessa: $("#commessa_add").val(),
+                produs_in: $("#prodotte-in_add").val(),
+                voci: $("#voci-gene_add").val(),
+            },
+            success: function (data) {
+                //sessionStorage.setItem('COD_SCHEDA')
+                console.log(data);
+
+                $('#addModal').modal('hide');
+            }
+        })
+
+    });
   });
+
+
 </script>
 
 {% endblock page_specific_scripts %}
