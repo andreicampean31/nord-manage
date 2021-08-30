@@ -6668,3 +6668,4 @@ django_env/lib/python3.9/site-packages/setuptools/unicode_utils.py
 django_env/lib/python3.9/site-packages/setuptools/version.py
 django_env/lib/python3.9/site-packages/setuptools/wheel.py
 django_env/lib/python3.9/site-packages/setuptools/windows_support.py
+.DS_Store
