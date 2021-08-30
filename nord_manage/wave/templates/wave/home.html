@@ -245,6 +245,164 @@
   <!-- /.row -->
 </div>
 
+<div class="card card-primary ">
+  <div class="card-header">
+    <h3 class="card-title">
+      <i class="far fa-chart-bar"></i>
+      Linia 2A
+    </h3>
+  </div>
+  <div class="row">
+    <div class="col-6">
+      <!-- AREA CHART -->
+      <div class="card card-info">
+        <div class="card-header">
+          <h3 class="card-title">Productivitate linia 2A</h3>
+
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+              <i class="fas fa-minus"></i>
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="chart">
+            <canvas id="areaChart2a" data-url="{% url 'efficency-chart' %}"
+              style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+          </div>
+        </div>
+        <!-- /.card-body -->
+      </div>
+      <!-- /.card -->
+    </div>
+    <!-- /.col -->
+    <div class="col-6">
+      <div class="card card-info">
+        <div class="card-header">
+          <h3 class="card-title">Total productie linia {{linia}}</h3>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+              <i class="fas fa-minus"></i>
+            </button>
+          </div>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+          <table id="example2a" class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Cod placa</th>
+                <th>Linia</th>
+                <th>Nr Bucati</th>
+                <th>Target/ora</th>
+                <th>Interval</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for i in linia2a %}
+              {% if i != None %}
+              <tr class='{% if i.last == 1 %} table-success {% endif %}'>
+                <td>{{forloop.counter}}</td>
+                <td>{{i.cod_placa}}</td>
+                <td>{{i.linia}}</td>
+                <td>{{i.total}}</td>
+                <td>{{ i.target }}</td>
+                <td>{{ i.interval}}</td>
+              </tr>
+              {% endif %}
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <!-- /.card-body -->
+      </div>
+      <!-- /.card -->
+    </div>
+    <!-- /.col -->
+  </div>
+  <!-- /.row -->
+</div>
+
+<div class="card card-primary ">
+  <div class="card-header">
+    <h3 class="card-title">
+      <i class="far fa-chart-bar"></i>
+      Linia 3A
+    </h3>
+  </div>
+  <div class="row">
+    <div class="col-6">
+      <!-- AREA CHART -->
+      <div class="card card-info">
+        <div class="card-header">
+          <h3 class="card-title">Productivitate linia 3A</h3>
+
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+              <i class="fas fa-minus"></i>
+            </button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="chart">
+            <canvas id="areaChart3a" data-url="{% url 'efficency-chart' %}"
+              style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+          </div>
+        </div>
+        <!-- /.card-body -->
+      </div>
+      <!-- /.card -->
+    </div>
+    <!-- /.col -->
+    <div class="col-6">
+      <div class="card card-info">
+        <div class="card-header">
+          <h3 class="card-title">Total productie linia {{linia}}</h3>
+          <div class="card-tools">
+            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+              <i class="fas fa-minus"></i>
+            </button>
+          </div>
+        </div>
+        <!-- /.card-header -->
+        <div class="card-body">
+          <table id="example3a" class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Cod placa</th>
+                <th>Linia</th>
+                <th>Nr Bucati</th>
+                <th>Target/ora</th>
+                <th>Interval</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for i in linia3a %}
+              {% if i != None %}
+              <tr class='{% if i.last == 1 %} table-success {% endif %}'>
+                <td>{{forloop.counter}}</td>
+                <td>{{i.cod_placa}}</td>
+                <td>{{i.linia}}</td>
+                <td>{{i.total}}</td>
+                <td>{{ i.target }}</td>
+                <td>{{ i.interval}}</td>
+              </tr>
+              {% endif %}
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <!-- /.card-body -->
+      </div>
+      <!-- /.card -->
+    </div>
+    <!-- /.col -->
+  </div>
+  <!-- /.row -->
+</div>
+
 
 {% endblock content %}
 
@@ -333,6 +491,7 @@
 </script>
 <!-- Page specific script - Tables 3 -->
 <script>
+
   $(function () {
     var now = new Date();
     $("#example3").DataTable({
@@ -364,7 +523,72 @@
     });
   });
 </script>
-
+<!-- Page specific script - Table 2A-->
+<script>
+  $(function () {
+    var now = new Date();
+    $("#example2a").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      "buttons": [
+        {
+          extend: "excel",
+          title: 'Raport_Wave_' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + '_' + now.getHours() + '-' + now.getMinutes() + '_Linia-3',
+        },
+        {
+          extend: "csv",
+          title: 'Raport_Wave_' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + '_' + now.getHours() + '-' + now.getMinutes() + '_Linia-3',
+        },
+        {
+          extend: "print",
+          title: 'Raport_Wave_' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + '_' + now.getHours() + '-' + now.getMinutes() + '_Linia-3',
+        }
+      ],
+      "pageLength": 3
+    }).buttons().container().appendTo('#example2a_wrapper .col-md-6:eq(0)');
+    $('#example2a.1').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": true,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+  });
+</script>
+<!-- Page specific script - Table 3A-->
+<script>
+  $(function () {
+    var now = new Date();
+    $("#example3a").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      "buttons": [
+        {
+          extend: "excel",
+          title: 'Raport_Wave_' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + '_' + now.getHours() + '-' + now.getMinutes() + '_Linia-3',
+        },
+        {
+          extend: "csv",
+          title: 'Raport_Wave_' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + '_' + now.getHours() + '-' + now.getMinutes() + '_Linia-3',
+        },
+        {
+          extend: "print",
+          title: 'Raport_Wave_' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + '_' + now.getHours() + '-' + now.getMinutes() + '_Linia-3',
+        }
+      ],
+      "pageLength": 3
+    }).buttons().container().appendTo('#example3a_wrapper .col-md-6:eq(0)');
+    $('#example3a.1').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": true,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+  });
+</script>
 <script>
   // draw live plugin
   Chart.pluginService.register({
@@ -594,6 +818,170 @@
 
         var areaChartData = {
           labels: data.labels["linia3"],
+          datasets: [
+            {
+              label: 'Eficienta',
+              lineTension: 0,
+              steppedLine: '',
+              backgroundColor: '',
+              borderColor: 'rgba(60,141,188,0.8)',
+              pointRadius: true,
+              pointColor: '#3b8bba',
+              pointStrokeColor: 'rgba(60,141,188,1)',
+              pointHighlightFill: '#fff',
+              pointHighlightStroke: 'rgba(60,141,188,1)',
+              data: data.data["linia3"],
+            }],
+        }
+
+        var areaChartOptions = {
+          maintainAspectRatio: false,
+          responsive: true,
+          legend: {
+            display: false
+          },
+          scales: {
+            xAxes: [{
+              gridLines: {
+                display: true,
+              }
+            }],
+            yAxes: [{
+              ticks: {
+                min: 0,
+                max: 160
+              },
+              gridLines: {
+                display: true,
+              }
+            }]
+          },
+          drawHorizontalLine: {
+            lineY: [100, 100],
+            lineColor: "rgba(50, 155, 255, 0.85)",
+            text: '',
+            textPosition: 360,
+            textFont: '18px sans-serif',
+            textColor: "rgba(50, 155, 255, 0.85)"
+          }
+        }
+
+        // This will get the first returned node in the jQuery collection.
+        new Chart(areaChartCanvas, {
+          type: 'line',
+          data: areaChartData,
+          options: areaChartOptions
+        })
+      }
+    })
+
+  })
+
+</script>
+<!-- Page specific script - area chart - chart.js 2A -->
+<script>
+  $(function () {
+    /* ChartJS
+     * -------
+     * Here we will create a few charts using ChartJS
+     */
+
+    //--------------
+    //- AREA CHART -
+    //--------------
+
+    // Get context with jQuery - using jQuery's .get() method.
+    var $efficencyChart = $("#areaChart2a");
+    $.ajax({
+      url: $efficencyChart.data("url"),
+      success: function (data) {
+
+        var areaChartCanvas = $('#areaChart2a').get(0).getContext('2d')
+
+        var areaChartData = {
+          labels: data.labels["linia2a"],
+          datasets: [
+            {
+              label: 'Eficienta',
+              lineTension: 0,
+              steppedLine: '',
+              backgroundColor: '',
+              borderColor: 'rgba(60,141,188,0.8)',
+              pointRadius: true,
+              pointColor: '#3b8bba',
+              pointStrokeColor: 'rgba(60,141,188,1)',
+              pointHighlightFill: '#fff',
+              pointHighlightStroke: 'rgba(60,141,188,1)',
+              data: data.data["linia3"],
+            }],
+        }
+
+        var areaChartOptions = {
+          maintainAspectRatio: false,
+          responsive: true,
+          legend: {
+            display: false
+          },
+          scales: {
+            xAxes: [{
+              gridLines: {
+                display: true,
+              }
+            }],
+            yAxes: [{
+              ticks: {
+                min: 0,
+                max: 160
+              },
+              gridLines: {
+                display: true,
+              }
+            }]
+          },
+          drawHorizontalLine: {
+            lineY: [100, 100],
+            lineColor: "rgba(50, 155, 255, 0.85)",
+            text: '',
+            textPosition: 360,
+            textFont: '18px sans-serif',
+            textColor: "rgba(50, 155, 255, 0.85)"
+          }
+        }
+
+        // This will get the first returned node in the jQuery collection.
+        new Chart(areaChartCanvas, {
+          type: 'line',
+          data: areaChartData,
+          options: areaChartOptions
+        })
+      }
+    })
+
+  })
+
+</script>
+<!-- Page specific script - area chart - chart.js 3A -->
+<script>
+  $(function () {
+    /* ChartJS
+     * -------
+     * Here we will create a few charts using ChartJS
+     */
+
+    //--------------
+    //- AREA CHART -
+    //--------------
+
+    // Get context with jQuery - using jQuery's .get() method.
+    var $efficencyChart = $("#areaChart3a");
+    $.ajax({
+      url: $efficencyChart.data("url"),
+      success: function (data) {
+
+        var areaChartCanvas = $('#areaChart3a').get(0).getContext('2d')
+
+        var areaChartData = {
+          labels: data.labels["linia3a"],
           datasets: [
             {
               label: 'Eficienta',
