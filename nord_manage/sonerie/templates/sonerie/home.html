@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% load static %}
+{% block specific_plugins_css %}
+
+{% endblock specific_plugins_css %}
+
+{% block page_title %} <h1>Home - Sonerie</h1>{% endblock page_title %}
+{% block content %}
+<div class="card card-primary">
+    <div class="card-header">
+      <h3 class="card-title">Sonerie</h3>
+
+      <div class="card-tools">
+        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+          <i class="fas fa-minus"></i>
+        </button>
+      </div>
+    </div>
+    <div class="card-body">
+        <div class="col-6">
+            <div class="list-group" id="lista-sonerii">
+              {% for i,j in zipped %}
+                <a href="#" class="list-group-item list-group-item-action list-group-item-{%if j == True %}success{% else %}warning{%endif%} ">{{i}}</a>
+              {% endfor %}
+                <a href="#" class="list-group-item list-group-item-action list-group-item">Adaugare sonerie</a>
+            </div>
+        </div> 
+    <!-- /.card-body -->
+</div>
+  <!-- /.card -->
+
+  <!-- EDIT modal -->
+<div class="modal fade" id="editModal">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title">EDIT</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <form action="" method="post" id="editForm">
+              <div class="modal-body">
+                  {%csrf_token%}
+
+                  <div class="form-group">
+                      <label for="nume">Denumire</label>
+                      <input type="text" class="form-control" id="nume" placeholder="nume" name="nume">
+                  </div>
+                  <div class="form-group">
+                      <label for="pin">Pin Arduino</label>
+                      <input type="text" class="form-control" id="pin" placeholder="pin" name="pin">
+                  </div>
+
+                  <div class="form-group">
+                    <label>Ore</label>
+                    <div class="form-check" id="alarme">
+                      <div class="input-group mb-3" id="add-alarma-group">
+                        <input type="text" class="form-control" placeholder="Adaugare alarma noua" id="nou">
+                        <div class="input-group-append">
+                          <button class="btn btn-outline-secondary" type="button" id="add-alarma">Add</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+              <div class="modal-footer justify-content-between">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  <input class="btn btn-primary" type="submit" value="OK">
+              </div>
+          </form>
+      </div>
+      <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+{% endblock content %}
+
+{% block page_specific_scripts %}
+<script>
+  $("#lista-sonerii a").on('click', function () {
+    var alarma = $(this).text();
+    
+    $.get("{% url 'sonerie-getsettings' %}", {sonerie: alarma}, function (data) {
+      console.log(data);
+
+      $('#nume').val(data['denumire']);
+      $('#pin').val(data['pin']);
+
+      for(i=0; i<data['ore'].length; i++){
+        $('#alarme #add-alarma-group:last').before("<div class='custom-control custom-switch'> <input type='checkbox' class='custom-control-input' id='customSwitch' value='" + data['ore'][i] + "' name='alarm' checked><label class='custom-control-label' for='customSwitch'>" + data['ore'][i] + "</label></div>");
+      }
+      $('#editModal').modal('show');
+  
+    })
+    //console.log(return_data)
+    
+
+  });
+
+  $('#add-alarma').on('click', function(){
+    $('#alarme #add-alarma-group:last').before("<div class='custom-control custom-switch'> <input type='checkbox' class='custom-control-input' id='customSwitch1' value=" +  $('#nou').val() +" name='alarm' checked><label class='custom-control-label' for='customSwitch'>" + $('#nou').val() + "</label></div>");
+    $('#nou').val('');
+  });
+
+  $('#editModal').on('hidden.bs.modal', function () {
+    $('.custom-control').remove();
+    
+  })
+</script>
+{% endblock page_specific_scripts %}

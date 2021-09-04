@@ -20,10 +20,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <!-- Theme style -->
   <link rel="stylesheet" href="{% static 'css/adminlte.min.css' %}">
   <!-- Page specific plugins/css -->
+  <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}" />
   {% block specific_plugins_css %}{% endblock specific_plugins_css %}
+  
 </head>
 
-<body class="hold-transition sidebar-mini skin-green-light">
+<body class="hold-transition sidebar-mini sidebar-collapse">
 
   <div class="wrapper">
     <div class="wrapper">
@@ -126,6 +128,17 @@ scratch. This page gets rid of all links and provides the needed markup only.
                   </a>
                 </li>
               </ul>
+            </li>
+            {% endwith %}
+
+            {% with url_name=request.path %}
+            <li class="nav-item menu-{% if '/sonerie/' in url_name %}open{% endif %}">
+              <a href="{% url 'sonerie-home' %}" class="nav-link {% if '/sonerie/' in url_name %}active{% endif %}">
+                <i class="fas fa-bell"></i>
+                <p>
+                  Sonerie
+                </p>
+              </a>
             </li>
             {% endwith %}
           </ul>
