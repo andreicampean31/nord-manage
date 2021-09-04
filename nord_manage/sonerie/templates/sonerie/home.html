@@ -2,6 +2,7 @@
 {% load static %}
 {% block specific_plugins_css %}
 
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
 {% endblock specific_plugins_css %}
 
 {% block page_title %} <h1>Home - Sonerie</h1>{% endblock page_title %}
@@ -56,7 +57,7 @@
                     <label>Ore</label>
                     <div class="form-check" id="alarme">
                       <div class="input-group mb-3" id="add-alarma-group">
-                        <input type="text" class="form-control" placeholder="Adaugare alarma noua" id="nou">
+                        <input type="text" class="form-control timepicker" placeholder="Adaugare alarma noua" id="nou">
                         <div class="input-group-append">
                           <button class="btn btn-outline-secondary" type="button" id="add-alarma">Add</button>
                         </div>
@@ -77,7 +78,10 @@
 {% endblock content %}
 
 {% block page_specific_scripts %}
+<script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+
 <script>
+  var added_times;
   $("#lista-sonerii a").on('click', function () {
     var alarma = $(this).text();
     
@@ -87,11 +91,12 @@
       $('#nume').val(data['denumire']);
       $('#pin').val(data['pin']);
 
+      added_times = data['ore'].length
       for(i=0; i<data['ore'].length; i++){
-        $('#alarme #add-alarma-group:last').before("<div class='custom-control custom-switch'> <input type='checkbox' class='custom-control-input' id='customSwitch' value='" + data['ore'][i] + "' name='alarm' checked><label class='custom-control-label' for='customSwitch'>" + data['ore'][i] + "</label></div>");
+        $('#alarme #add-alarma-group:last').before("<div class='custom-control custom-switch'> <input type='checkbox' class='custom-control-input' id='customSwitch" + i + "' value=" + data['ore'][i] + " name='alarm' checked><label class='custom-control-label' for='customSwitch" + i + "'>" + data['ore'][i] + "</label></div>");
       }
       $('#editModal').modal('show');
-  
+      
     })
     //console.log(return_data)
     
@@ -99,7 +104,8 @@
   });
 
   $('#add-alarma').on('click', function(){
-    $('#alarme #add-alarma-group:last').before("<div class='custom-control custom-switch'> <input type='checkbox' class='custom-control-input' id='customSwitch1' value=" +  $('#nou').val() +" name='alarm' checked><label class='custom-control-label' for='customSwitch'>" + $('#nou').val() + "</label></div>");
+    $('#alarme #add-alarma-group:last').before("<div class='custom-control custom-switch'> <input type='checkbox' class='custom-control-input' id='customSwitch" + added_times + "' value=" +  $('#nou').val() +" name='alarm' checked><label class='custom-control-label' for='customSwitch" + added_times + "'>" + $('#nou').val() + "</label></div>");
+    added_times++;
     $('#nou').val('');
   });
 
@@ -107,5 +113,25 @@
     $('.custom-control').remove();
     
   })
+
+  $('.timepicker').timepicker({
+    timeFormat: 'h:mm p',
+    interval: 30,
+    minTime: '12AM',
+    maxTime: '11:59PM',
+    defaultTime: '12AM',
+    startTime: '12AM',
+    dynamic: true,
+    dropdown: true,
+    scrollbar: true,
+    zindex: 9999999
+  });
 </script>
+<script>
+
+
+  
+  
+  
+  </script>
 {% endblock page_specific_scripts %}
