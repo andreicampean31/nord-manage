@@ -1,4 +1,5 @@
 
+from decimal import InvalidOperation
 from django.db import connections
 from django.shortcuts import render
 from django.http import HttpResponse, JsonResponse
@@ -59,7 +60,12 @@ def updateSettings(request):
         ore_inactive = request.POST.getlist('alarme_inactive[]')
         #ore_noi = request.POST.getlist('alarme_noi[]')
         
+        version = Info_Sonerii.objects.values('versiune')
+        print(version[0]['versiune'])
+        Info_Sonerii.objects.all().update(versiune = int(version[0]['versiune'])+1)
+        
         Info_Sonerii.objects.filter(id = id).update(denumire = denumire, pin = pin)
+        
         for i in ore_active:
             k=0
             for j in ore_active:
@@ -87,6 +93,7 @@ def updateSettings(request):
             if ora:
                 if ora[0].status == False:
                     Ore_Sonerii.objects.filter(soneria_id = id, ora = i).update(status = True)
+                    
             else:
                 alarma_noua = Ore_Sonerii(soneria_id = id, ora = i, status = True)
                 alarma_noua.save()
@@ -104,7 +111,32 @@ def updateSettings(request):
 
         
     return JsonResponse({'stauts': 202})
-def ardu(request):
-    #return HttpResponse(status = 202)
+def ardu_get_settings(request):
     
-    return JsonResponse({'status': 202, 'version': 'v1.2'})
+    setari = Info_Sonerii.objects.all()
+    #ore = Ore_Sonerii.objects.all()
+        
+    setari_json = {
+        'status': 202,
+        'names': [None]*len(setari),
+        'pins': [None]*len(setari),
+        'versiune': setari[0].versiune,
+        'status': [None]*len(setari),
+        'ore': [None]*len(setari)
+    }
+    
+    for i in range(0, len(setari)):
+        ore = Ore_Sonerii.objects.filter(soneria_id__denumire = setari[i].denumire)
+        
+        ore_str = ''
+        for j in ore:
+            ore_str += str(j.ora) + ','
+            
+        print(ore_str)
+        #print(ore)
+        setari_json['names'][i] = setari[i].denumire
+        setari_json['pins'][i] = setari[i].pin
+        setari_json['status'][i] = setari[i].status
+        setari_json['ore'][i] = ore_str
+        
+    return JsonResponse(setari_json)
