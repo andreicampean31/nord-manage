@@ -128,9 +128,7 @@ def updateSettings(request):
                 
         if ore_active == []:
             Info_Sonerii.objects.filter(denumire = denumire).update(status = False)
-            for i in ore_inactive:
-                time = datetime.strptime(i+':00', '%H:%M:%S')
-                Ore_Sonerii.objects.filter(soneria_id = id, ora = time).delete()
+            Ore_Sonerii.objects.filter(soneria_id = id).delete()
         else:
             Info_Sonerii.objects.filter(denumire = denumire).update(status = True)
             
