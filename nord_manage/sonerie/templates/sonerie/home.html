@@ -21,9 +21,8 @@
         <div class="col-6">
             <div class="list-group" id="lista-sonerii">
               {% for i,j in zipped %}
-                <a href="#" class="list-group-item list-group-item-action list-group-item-{%if j == True %}success{% else %}warning{%endif%} ">{{i}}</a>
+                <a href="#" id="soneriiExistente" class="list-group-item list-group-item-action list-group-item-{%if j == True %}success{% else %}warning{%endif%} ">{{i}}</a>
               {% endfor %}
-                <a href="#" class="list-group-item list-group-item-action list-group-item">Adaugare sonerie</a>
             </div>
         </div> 
     <!-- /.card-body -->
