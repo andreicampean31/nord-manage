@@ -92,13 +92,22 @@
       id = data['id']
       added_times = data['ore'].length
       for(i=0; i<data['ore'].length; i++){
+        checked = $("<div class='custom-control custom-switch'> <input type='checkbox' class='custom-control-input alarms' id='customSwitch" + i + "' value=" + data['ore'][i].substring(0, 5) + " name='alarm' checked><label class='custom-control-label' for='customSwitch" + i + "'>" + data['ore'][i].substring(0, 5) + "</label> <a class='btn btn-default btn-xs' id='remove" + i + "'><i class='fas fa-times'></i></a></div>")
+        unchecked = $("<div class='custom-control custom-switch'> <input type='checkbox' class='custom-control-input alarms' id='customSwitch" + i + "' value=" + data['ore'][i].substring(0, 5) + " name='alarm'><label class='custom-control-label' for='customSwitch" + i + "'>" + data['ore'][i].substring(0, 5) + "</label> <a class='btn btn-default btn-xs' id='remove" + i + "'><i class='fas fa-times'></i></a></div>")
         if(data['status'][i]){
-          $('#alarme #add-alarma-group:last').before("<div class='custom-control custom-switch'> <input type='checkbox' class='custom-control-input alarms' id='customSwitch" + i + "' value=" + data['ore'][i].substring(0, 5) + " name='alarm' checked><label class='custom-control-label' for='customSwitch" + i + "'>" + data['ore'][i].substring(0, 5) + "</label></div>");
+          $('#alarme #add-alarma-group:last').before(checked);
         }
         else{
-          $('#alarme #add-alarma-group:last').before("<div class='custom-control custom-switch'> <input type='checkbox' class='custom-control-input alarms' id='customSwitch" + i + "' value=" + data['ore'][i].substring(0, 5) + " name='alarm'><label class='custom-control-label' for='customSwitch" + i + "'>" + data['ore'][i].substring(0, 5) + "</label></div>");
+          $('#alarme #add-alarma-group:last').before(unchecked);
         }
-        
+        checked.on('click', function(){
+          $(this).remove();
+          console.log($(this));
+        });
+        unchecked.on('click', function(){
+          $(this).remove();
+          console.log("apasat uncheked");
+        });
       }
       $('#editModal').modal('show');
     })
@@ -170,12 +179,8 @@
     scrollbar: true,
     zindex: 9999999
   });
+
+  
 </script>
-<script>
 
-
-  
-  
-  
-  </script>
 {% endblock page_specific_scripts %}
