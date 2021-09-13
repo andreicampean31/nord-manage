@@ -33,6 +33,7 @@ ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = [
     'defecte.apps.DefecteConfig',
     'wave.apps.WaveConfig',
+    'sonerie.apps.SonerieConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

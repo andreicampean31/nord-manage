@@ -1,8 +1,7 @@
 import datetime
 from math import floor
-from typing import DefaultDict
 
-from django.core.mail import EmailMultiAlternatives, send_mail
+from django.core.mail import EmailMultiAlternatives
 from django.db import connection
 from django.db.models import Count, F
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
