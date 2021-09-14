@@ -105,12 +105,12 @@
         else{
           $('#alarme #add-alarma-group:last').before(unchecked);
         }
-        checked.on('click', function(){
-          $(this).remove();
-          console.log($(this));
+        checked.on('click', 'a', function(){
+          $(this).parent().remove();
+          console.log($(this).children("a"));
         });
-        unchecked.on('click', function(){
-          $(this).remove();
+        unchecked.on('click', 'a', function(){
+          $(this).parent().remove();
           console.log("apasat uncheked");
         });
       }
@@ -122,10 +122,15 @@
   });
 
   $('#add-alarma').on('click', function(){
+    new_alarm = $("<div class='custom-control custom-switch'> <input type='checkbox' class='custom-control-input alarms' id='customSwitch" + added_times + "' value=" +  $('#nou').val() +" name='alarm' checked><label class='custom-control-label' for='customSwitch" + added_times + "'>" + $('#nou').val() + "</label><a class='btn btn-default btn-xs' id='remove" + added_times + "'><i class='fas fa-times'></i></a></div>")
     console.log($('#nou').val());
-    $('#alarme #add-alarma-group:last').before("<div class='custom-control custom-switch'> <input type='checkbox' class='custom-control-input alarms' id='customSwitch" + added_times + "' value=" +  $('#nou').val() +" name='alarm' checked><label class='custom-control-label' for='customSwitch" + added_times + "'>" + $('#nou').val() + "</label></div>");
+    $('#alarme #add-alarma-group:last').before(new_alarm);
     added_times++;
     $('#nou').val('');
+    new_alarm.on('click', 'a', function(){
+      $(this).parent().remove();
+      console.log($(this).children("a"));
+    });
   });
 
   $('#editModal').on('hidden.bs.modal', function () {
