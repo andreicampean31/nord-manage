@@ -105,12 +105,12 @@
         else{
           $('#alarme #add-alarma-group:last').before(unchecked);
         }
-        checked.on('click', function(){
-          $(this).remove();
-          console.log($(this));
+        checked.on('click', 'a', function(){
+          $(this).parent().remove();
+          console.log($(this).children("a"));
         });
-        unchecked.on('click', function(){
-          $(this).remove();
+        unchecked.on('click', 'a', function(){
+          $(this).parent().remove();
           console.log("apasat uncheked");
         });
       }
