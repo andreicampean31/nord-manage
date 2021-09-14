@@ -2,17 +2,16 @@
 {% load static %}
 {% block specific_plugins_css %}
 <!-- Bootstrap4 Duallistbox -->
-<link rel="stylesheet" href="{% static 'wave/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css' %}">
+<link rel="stylesheet" href="{% static 'plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css' %}">
 <!-- daterange picker -->
-<link rel="stylesheet" href="{% static 'wave/plugins/daterangepicker/daterangepicker.css' %}">
+<link rel="stylesheet" href="{% static 'plugins/daterangepicker/daterangepicker.css' %}">
 <!-- Tempusdominus Bootstrap 4 -->
-<link rel="stylesheet"
-  href="{% static 'wave/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}">
-<link rel="stylesheet" href="{% static 'wave/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %} ">
-<link rel="stylesheet" href="{% static 'wave/plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %} ">
-<link rel="stylesheet" href="{% static 'wave/plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
+<link rel="stylesheet" href="{% static 'plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}">
+<link rel="stylesheet" href="{% static 'plugins/datatables-bs4/css/dataTables.bootstrap4.min.css' %} ">
+<link rel="stylesheet" href="{% static 'plugins/datatables-responsive/css/responsive.bootstrap4.min.css' %} ">
+<link rel="stylesheet" href="{% static 'plugins/datatables-buttons/css/buttons.bootstrap4.min.css' %}">
 <!-- iCheck for checkboxes and radio inputs -->
-<link rel="stylesheet" href="{% static 'wave/plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}">
 {% endblock specific_plugins_css %}
 
 {% block page_title %} <h1>Reports - Wave</h1> {% endblock page_title %}
@@ -40,15 +39,27 @@
             {%csrf_token%}
             <label>Tip Raport</label> </br>
             <div class="icheck-primary d-inline">
-              <input type="radio" id="radioSplit" name="Tip" value="split" checked onclick="deactivateLineSelection()" >
+              <input type="radio" id="radioSplit" name="Tip" value="split" checked onclick="deactivateLineSelection()">
               <label for="radioSplit">
                 Impartit pe linii
+              </label>
+            </div>
+            <div class="icheck-primary d-inline">
+              <input type="radio" id="radioSplitZile" name="Tip" value="split-zile" onclick="deactivateLineSelection()">
+              <label for="radioSplitZile">
+                Impartit pe linii pe zile
               </label>
             </div>
             <div class="icheck-primary d-inline">
               <input type="radio" id="radioTotal" value="total" name="Tip" onclick="deactivateLineSelection()">
               <label for="radioTotal">
                 Total
+              </label>
+            </div>
+            <div class="icheck-primary d-inline">
+              <input type="radio" id="radioTotalZile" value="total-zile" name="Tip" onclick="deactivateLineSelection()">
+              <label for="radioTotalZile">
+                Total pe zile
               </label>
             </div> </br></br>
             <label for="lista_coduri">Selecteaza codurile de placa:</label>
@@ -58,7 +69,7 @@
               {% endfor %}
             </select>
             </br>
-            <label >Selecteaza liniile:</label> </br>
+            <label>Selecteaza liniile:</label> </br>
             <div class="icheck-primary d-inline">
               <input type="checkbox" id="checkboxL1" value="1" name="linia">
               <label for="checkboxL1">
@@ -121,16 +132,19 @@
               <th>Cod placa</th>
               <th>Nr Bucati</th>
               <th>Target/ora</th>
-              {% if tip == 1 %}
+              {% if tip == 1 or tip == 4%}
               <th>Linia</th>
               {% endif %}
               <th>Durata</th>
               <th>Norma</th>
               <th>Eficienta</th>
+              {% if tip == 3 or tip == 4%}
+              <th>Data</th>
+              {% endif %}
             </tr>
           </thead>
           <tbody>
-            
+
             {% for i in result %}
             {% if i != None %}
             <tr>
@@ -138,16 +152,19 @@
               <td>{{i.cod_placa}}</td>
               <td>{{i.total}}</td>
               <td>{{i.target}}</td>
-              {% if tip == 1 %}
+              {% if tip == 1 or tip == 4%}
               <td>{{i.linia}}</td>
               {% endif %}
               <td>{{i.durata}}</td>
               <td>{{i.norma}}</td>
               <td>{{i.eficienta}}</td>
+              {% if tip == 3 or tip == 4%}
+              <td>{{ i.data }}</td>
+              {% endif %}
             </tr>
             {% endif %}
             {% endfor %}
-            
+
           </tbody>
         </table>
         </br>
@@ -171,22 +188,22 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <!-- Bootstrap4 Duallistbox -->
-<script src="{% static 'wave/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js' %}"></script>
+<script src="{% static 'plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js' %}"></script>
 <!-- DataTables  & Plugins -->
-<script src="{% static 'wave/plugins/datatables/jquery.dataTables.min.js' %}"></script>
-<script src="{% static 'wave/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
-<script src="{% static 'wave/plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
-<script src="{% static 'wave/plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
-<script src="{% static 'wave/plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
-<script src="{% static 'wave/plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
-<script src="{% static 'wave/plugins/jszip/jszip.min.js' %}"></script>
-<script src="{% static 'wave/plugins/pdfmake/pdfmake.min.js' %}"></script>
-<script src="{% static 'wave/plugins/pdfmake/vfs_fonts.js' %}"></script>
-<script src="{% static 'wave/plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
-<script src="{% static 'wave/plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
-<script src="{% static 'wave/plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
+<script src="{% static 'plugins/datatables/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'plugins/datatables-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'plugins/datatables-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'plugins/datatables-responsive/js/responsive.bootstrap4.min.js' %}"></script>
+<script src="{% static 'plugins/datatables-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'plugins/datatables-buttons/js/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'plugins/jszip/jszip.min.js' %}"></script>
+<script src="{% static 'plugins/pdfmake/pdfmake.min.js' %}"></script>
+<script src="{% static 'plugins/pdfmake/vfs_fonts.js' %}"></script>
+<script src="{% static 'plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
+<script src="{% static 'plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
+<script src="{% static 'plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
 <!-- ChartJS -->
-<script src="{% static 'wave/plugins/chart.js/Chart.min.js' %}"></script>
+<script src="{% static 'plugins/chart.js/Chart.min.js' %}"></script>
 
 <script>
   //Bootstrap Duallistbox
@@ -224,7 +241,102 @@
 
     $("#example1").DataTable({
       "responsive": true, "lengthChange": false, "autoWidth": false,
-      "buttons": [
+      
+      "pageLength": 20,
+      
+      "{% if tip == 3 %} order": [[7, 'asc']],
+      drawCallback: function (settings) {
+        var api = this.api();
+        var rows = api.rows({ page: 'current' }).nodes();
+        var last = api.column(7, { page: 'current' }).data()[0];
+        var mediaEff = 0;
+        var durataTotala = 0;
+        var k = 0;
+        //console.log(api.column(7, { page: 'current' }).data()[0])
+        api.column(7, { page: 'current' }).data().each(function (group, i) {
+          //console.log(api.column(6, { page: 'current' }).data()[i])
+
+
+          if (last !== group) {
+            //console.log(mediaEff)
+            //console.log(k)
+
+
+            //console.log(sformat(durataTotala));
+            $(rows).eq(i).before(
+              '<tr><td colspan="4" style="BACKGROUND-COLOR:rgb(237, 208, 0);font-weight:700;color:#006232; font-size: 115%; text-align: center">'
+              + last +
+              '</td><td colspan="1" style="BACKGROUND-COLOR:rgb(237, 208, 0);font-weight:700;color:#006232; font-size: 115%">' + secondstoDHMS(durataTotala) +
+              '</td><td colspan="1" style="BACKGROUND-COLOR:rgb(237, 208, 0);font-weight:700;color:#006232; font-size: 115%"></td>' +
+              '<td colspan="1" style="BACKGROUND-COLOR:rgb(237, 208, 0);font-weight:700;color:#006232; font-size: 115%">'
+              + (mediaEff/k).toFixed(2) +
+              '%</td></td><td colspan="1" style="BACKGROUND-COLOR:rgb(237, 208, 0);font-weight:700;color:#006232; font-size: 115%"></td></tr>'
+            );
+
+            last = group;
+            k = 0;
+            mediaEff = 0;
+            durataTotala = 0;
+          }
+          mediaEff += parseFloat(api.column(6, { page: 'current' }).data()[i].slice(0, -1));
+          durataTotala += hmstoSeconds(api.column(4, { page: 'current' }).data()[i]);
+
+          //console.log(mediaEff)
+
+
+          //console.log(group)
+          //console.log(i)
+          k += 1;
+        });
+      },
+      
+      "{% elif tip == 4%} order": [[8, 'asc']],
+      drawCallback: function (settings) {
+        var api = this.api();
+        var rows = api.rows({ page: 'current' }).nodes();
+        var last = api.column(8, { page: 'current' }).data()[0];
+        var mediaEff = 0;
+        var durataTotala = 0;
+        var k = 0;
+        //console.log(api.column(7, { page: 'current' }).data()[0])
+        api.column(8, { page: 'current' }).data().each(function (group, i) {
+          //console.log(api.column(6, { page: 'current' }).data()[i])
+
+
+          if (last !== group) {
+            //console.log(mediaEff)
+            //console.log(k)
+
+
+            //console.log(sformat(durataTotala));
+            $(rows).eq(i).before(
+              '<tr><td colspan="5" style="BACKGROUND-COLOR:rgb(237, 208, 0);font-weight:700;color:#006232; font-size: 115%; text-align: center">'
+              + last +
+              '</td><td colspan="1" style="BACKGROUND-COLOR:rgb(237, 208, 0);font-weight:700;color:#006232; font-size: 115%">' + secondstoDHMS(durataTotala) +
+              '</td><td colspan="1" style="BACKGROUND-COLOR:rgb(237, 208, 0);font-weight:700;color:#006232; font-size: 115%"></td>' +
+              '<td colspan="1" style="BACKGROUND-COLOR:rgb(237, 208, 0);font-weight:700;color:#006232; font-size: 115%">'
+              + (mediaEff/k).toFixed(2) +
+              '%</td></td><td colspan="1" style="BACKGROUND-COLOR:rgb(237, 208, 0);font-weight:700;color:#006232; font-size: 115%"></td></tr>'
+            );
+
+            last = group;
+            k = 0;
+            mediaEff = 0;
+            durataTotala = 0;
+          }
+          mediaEff += parseFloat(api.column(7, { page: 'current' }).data()[i].slice(0, -1));
+          durataTotala += hmstoSeconds(api.column(5, { page: 'current' }).data()[i]);
+
+          //console.log(mediaEff)
+
+
+          //console.log(group)
+          //console.log(i)
+          k += 1;
+        });
+      },
+      
+      "{% endif %}buttons": [
         {
           extend: "excel",
           title: 'Ora realizare: ' + now_title + ' --- {% if interval|length > 10 %}Interval raport: {{ interval }} {% else %} Data raport: {{interval}} {% endif %}',
@@ -241,7 +353,7 @@
           filename: 'Raport_Wave_' + now_filename,
         }
       ],
-      "pageLength": 20
+
     }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
     $('#example1.1').DataTable({
       "paging": true,
@@ -253,11 +365,50 @@
       "responsive": true,
     });
   });
+
+  function hmstoSeconds(str) {
+    var p = str.split(':'),
+      s = 0, m = 1;
+
+    while (p.length > 0) {
+      s += m * parseInt(p.pop(), 10);
+      m *= 60;
+    }
+
+    return s;
+  }
+  function secondstoDHMS(s) {
+    var fm = [
+      Math.floor(s / 60 / 60 / 24), // DAYS
+      Math.floor(s / 60 / 60) % 24, // HOURS
+      Math.floor(s / 60) % 60, // MINUTES
+      s % 60 // SECONDS
+    ];
+    var string = $.map(fm, function (v, i) { return ((v < 10) ? '0' : '') + v; }).join(':');
+    console.log(string);
+    console.log(string.substring(0, 1));
+    if (string.substring(0, 2) == '00'){
+      var new_string = string.substring(3,11);
+    }
+    else if(string.substring(0, 1) == '0'){
+      if (string.substring(1,2) == '1')
+        var new_string = string.substring(1,2) + ' Day ' + string.substring(3,11);
+      else
+        var new_string = string.substring(1,2) + ' Days ' + string.substring(3,11);
+    }
+    
+    else{
+      var new_string = string.substring(0,2) + ' Days ' + string.substring(3,11);
+    }
+    return new_string;
+
+    
+  }
 </script>
 <script>
   function deactivateLineSelection() {
 
-    if (document.getElementById('radioTotal').checked) {
+    if (document.getElementById('radioTotal').checked || document.getElementById('radioTotalZile').checked) {
       document.getElementById('checkboxL1').disabled = true;
       document.getElementById('checkboxL2').disabled = true;
       document.getElementById('checkboxL3').disabled = true;

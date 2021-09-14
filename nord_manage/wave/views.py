@@ -1,17 +1,17 @@
-from typing import DefaultDict
-from django.shortcuts import render
-from .models import Productie, Date_Placi
-from django.db.models import Count, F
-from django.db import connection
-from django.http import JsonResponse
-from nord_manage.settings import EMAIL_HOST_USER
-from django.core.mail import send_mail, EmailMultiAlternatives
-from django.template.loader import get_template
-from django.http import HttpResponse, HttpResponseRedirect
-from django.utils import timezone
 import datetime
-from .forms import DatePlaciForm, CustomReportForm
 from math import floor
+
+from django.core.mail import EmailMultiAlternatives
+from django.db import connection
+from django.db.models import Count, F
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.shortcuts import render
+from django.template.loader import get_template
+from django.utils import timezone
+from nord_manage.settings import EMAIL_HOST_USER
+
+from .forms import CustomReportForm, DatePlaciForm
+from .models import Date_Placi, Productie
 
 
 def date_loop(start_date, end_date):
@@ -26,8 +26,9 @@ def count_total_productie(entries, tip_interogare):
     total_count = [0] * len(entries)
     # print(entries)
     final_array = [None]
+    #date = entries[0]['data']
     for i in entries:
-
+        #print()
         cod_placa = i['cod_placa__cod_placa']
         total = i['total']
         linie = i['linie_productie']
@@ -80,6 +81,22 @@ def count_total_productie(entries, tip_interogare):
                     'total': total_count_cleaned[k],
                     'target': floor(60/target[0]['min_placa']),
                     'linia': linie
+                }
+            elif tip_interogare == 'raport-zile':
+                final_array[k] = {
+                    'cod_placa': coduri_placi_cleaned[k],
+                    'total': total_count_cleaned[k],
+                    'target': floor(60/target[0]['min_placa']),
+                    #'linia': linie,
+                    'data': i['data']
+                }
+            elif tip_interogare == 'raport-zile-split':
+                final_array[k] = {
+                    'cod_placa': coduri_placi_cleaned[k],
+                    'total': total_count_cleaned[k],
+                    'target': floor(60/target[0]['min_placa']),
+                    'linia': linie,
+                    'data': i['data']
                 }
     return final_array
 
@@ -367,7 +384,7 @@ def custom_reports_result(request):
                 str_start_date, '%d/%m/%Y %H:%M:%S')
             last_date = datetime.datetime.strptime(
                 str_end_date, '%d/%m/%Y %H:%M:%S')
-
+            
             if tip_raport == 'split':
                 tip_raport = 1
                 lungime = 0
@@ -392,13 +409,12 @@ def custom_reports_result(request):
                                     'cod_placa_id__cod_placa', 'data').first()
                                 last_entry = Productie.objects.filter(cod_placa_id__cod_placa=entries[k]['cod_placa__cod_placa'], data__date=date).values(
                                     'cod_placa_id__cod_placa', 'data').last()
-
+                                
                                 if first_entry != None and last_entry != None:
                                     durata = last_entry['data'] - first_entry['data']
                                     for j in range(0, len(custom_report)):
                                         if custom_report[j]['cod_placa'] == entries[k]['cod_placa__cod_placa'] and custom_report[j]['linia'] == linia:
-                                            custom_report[j]['durata'] += durata
-                                            
+                                            custom_report[j]['durata'] += durata         
 
                         for j in range(0, len(custom_report)):
                             custom_report[j]['norma'] = (
@@ -429,14 +445,12 @@ def custom_reports_result(request):
                     'cod_placa__cod_placa', 'multi_factor', 'linie_productie').annotate(total=Count('cod_placa')*F('multi_factor')).order_by('cod_placa_id')
 
                 custom_report += count_total_productie(entries, 'raport')
-                print(custom_report)
 
                 if custom_report != [None]:
                     for j in range(0, len(custom_report)):
                         custom_report[j]['durata'] = datetime.timedelta(hours=0)
 
                     for date in date_loop(first_date, last_date + datetime.timedelta(days=1)):
-                        # print(date)
                         for k in range(0, len(entries)):
                             first_entry = Productie.objects.filter(cod_placa_id__cod_placa=entries[k]['cod_placa__cod_placa'], data__date=date).values(
                                 'cod_placa_id__cod_placa', 'data').first()
@@ -453,12 +467,8 @@ def custom_reports_result(request):
                         custom_report[j]['norma'] = (custom_report[j]['total']*datetime.timedelta(minutes=60))/custom_report[j]['target']
 
                         if custom_report[j]['durata'].total_seconds()*1000 >= 1000:
-                            print(custom_report[j]['cod_placa'])
-                            print(custom_report[j]['durata'])
                             custom_report[j]['eficienta']=((custom_report[j]['norma'].total_seconds()/3600)*100)/(custom_report[j]['durata'].total_seconds()/3600)
                         else:
-                            print(custom_report[j]['cod_placa'])
-                            print(custom_report[j]['durata'])
                             custom_report[j]['eficienta'] = 0
 
                         custom_report[j]['eficienta']=str(round(custom_report[j]['eficienta'],2)) + "%"
@@ -467,7 +477,91 @@ def custom_reports_result(request):
                         custom_report[j]['durata']=str(
                             custom_report[j]['durata']).split(".")[0]
 
-                    #print(custom_report[j]['eficienta'])
+            elif tip_raport == 'total-zile':
+                tip_raport = 3
+
+                previous_len = 0
+                for date in date_loop(first_date, last_date + datetime.timedelta(days=1)):
+                    entries = Productie.objects.filter(cod_placa_id__cod_placa__in=lista_coduri, data__date=date).values(
+                        'cod_placa__cod_placa', 'multi_factor', 'linie_productie', 'data').annotate(total=Count('cod_placa')*F('multi_factor')).order_by('cod_placa_id')
+                    
+                    if entries:
+                        custom_report += count_total_productie(entries, 'raport-zile')
+                        for j in range(previous_len, len(custom_report)):
+                            custom_report[j]['durata'] = datetime.timedelta(hours=0)
+                        
+                        for k in range(previous_len, len(custom_report)):
+                            first_entry = Productie.objects.filter(cod_placa_id__cod_placa=custom_report[k]['cod_placa'], data__date=date).values(
+                                'cod_placa_id__cod_placa', 'data').first()
+                            last_entry = Productie.objects.filter(cod_placa_id__cod_placa=custom_report[k]['cod_placa'], data__date=date).values(
+                                'cod_placa_id__cod_placa', 'data').last()
+                            if first_entry != None and last_entry != None:
+                                durata = last_entry['data'] - first_entry['data']
+                                for j in range(0, len(custom_report)):
+                                    if custom_report[j]['cod_placa'] == custom_report[k]['cod_placa'] and custom_report[j]['data'] == custom_report[k]['data']:
+                                        custom_report[j]['durata'] += durata
+
+                        
+                        for j in range(previous_len, len(custom_report)):
+                            custom_report[j]['norma'] = (custom_report[j]['total']*datetime.timedelta(minutes=60))/custom_report[j]['target']
+                            
+                            custom_report[j]['data'] = str(custom_report[j]['data']).split(" ")[0]
+                            if custom_report[j]['durata'].total_seconds()*1000 >= 1000:
+                                custom_report[j]['eficienta']=((custom_report[j]['norma'].total_seconds()/3600)*100)/(custom_report[j]['durata'].total_seconds()/3600)
+                            else:
+                                custom_report[j]['eficienta'] = 0
+
+                            custom_report[j]['eficienta']=str(round(custom_report[j]['eficienta'],2)) + "%"
+                            custom_report[j]['norma']=str(
+                                custom_report[j]['norma']).split(".")[0]
+                            custom_report[j]['durata']=str(
+                                custom_report[j]['durata']).split(".")[0]
+                    previous_len = len(custom_report)
+            elif tip_raport == 'split-zile':
+                tip_raport = 4
+                previous_len = 0
+                
+                for date in date_loop(first_date, last_date + datetime.timedelta(days=1)):
+                    for linia in lista_linii:
+                        entries = Productie.objects.filter(cod_placa_id__cod_placa__in=lista_coduri, data__date=date, linie_productie=linia).values(
+                            'cod_placa__cod_placa', 'multi_factor', 'linie_productie', 'data').annotate(total=Count('cod_placa')*F('multi_factor')).order_by('cod_placa_id')
+
+                        if entries:
+                            custom_report += count_total_productie(entries, 'raport-zile-split')
+                            for j in range(previous_len, len(custom_report)):
+                                custom_report[j]['durata'] = datetime.timedelta(
+                                    hours=0)
+
+                            for k in range(previous_len, len(custom_report)):
+                                first_entry = Productie.objects.filter(cod_placa_id__cod_placa=custom_report[k]['cod_placa'], data__date=date).values(
+                                    'cod_placa_id__cod_placa', 'data').first()
+                                last_entry = Productie.objects.filter(cod_placa_id__cod_placa=custom_report[k]['cod_placa'], data__date=date).values(
+                                    'cod_placa_id__cod_placa', 'data').last()
+                                if first_entry != None and last_entry != None:
+                                    durata = last_entry['data'] - first_entry['data']
+                                    for j in range(previous_len, len(custom_report)):
+                                        if custom_report[j]['cod_placa'] == custom_report[k]['cod_placa'] and custom_report[j]['linia'] == linia and custom_report[j]['data'] == custom_report[k]['data']:
+                                            custom_report[j]['durata'] += durata
+
+                            for j in range(previous_len, len(custom_report)):
+                                custom_report[j]['norma'] = (
+                                custom_report[j]['total']*datetime.timedelta(minutes=60))/custom_report[j]['target']
+                                custom_report[j]['data'] = str(custom_report[j]['data']).split(" ")[0]
+                                
+                                if custom_report[j]['durata'].total_seconds()*1000 >= 1000:
+                                    custom_report[j]['eficienta'] = ((custom_report[j]['norma'].total_seconds()/3600)*100)/(custom_report[j]['durata'].total_seconds()/3600)
+                                else:
+                                    custom_report[j]['eficienta'] = 0
+                            previous_len = len(custom_report)
+            
+                for i in custom_report:
+                    if i != None:               
+                        i['eficienta'] = str(
+                            round(i['eficienta'], 2)) + "%"
+                        i['norma'] = str(
+                            i['norma']).split(".")[0]
+                        i['durata'] = str(
+                            i['durata']).split(".")[0]
 
             lista_placi=Date_Placi.objects.order_by(
                 'cod_placa').values('cod_placa')

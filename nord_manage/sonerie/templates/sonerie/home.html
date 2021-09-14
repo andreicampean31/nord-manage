@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+{% load static %}
+{% block specific_plugins_css %}
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.css">
+{% endblock specific_plugins_css %}
+
+{% block page_title %} <h1>Home - Sonerie</h1>{% endblock page_title %}
+{% block content %}
+<div class="card card-primary">
+    <div class="card-header">
+      <h3 class="card-title">Sonerie</h3>
+
+      <div class="card-tools">
+        <button type="button" class="btn btn-tool" data-card-widget="collapse">
+          <i class="fas fa-minus"></i>
+        </button>
+      </div>
+    </div>
+    <div class="card-body">
+        <div class="col-6">
+            <div class="list-group" id="lista-sonerii">
+              {% for i,j in zipped %}
+                <a href="#" id="soneriiExistente" class="list-group-item list-group-item-action list-group-item-{%if j == True %}success{% else %}warning{%endif%} ">{{i}}</a>
+              {% endfor %}
+            </div>
+        </div> 
+    <!-- /.card-body -->
+</div>
+  <!-- /.card -->
+
+  <!-- EDIT modal -->
+<div class="modal fade" id="editModal">
+  <div class="modal-dialog">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h4 class="modal-title">EDIT</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <form action="" method="post" id="editForm">
+              <div class="modal-body">
+
+                  <div class="form-group">
+                      <label for="nume">Denumire</label>
+                      <input type="text" class="form-control" id="nume" placeholder="nume" name="nume">
+                  </div>
+
+                  <div class="form-group col-md-4">
+                    <label for="pin">Port</label>
+                    <select id="pin" class="form-control">
+                      <option value="6">6</option>
+                      <option value="5">5</option>
+                      <option value="4">4</option>
+                      <option value="3">3</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Ore</label>
+                    <div class="form-check" id="alarme">
+                      <div class="input-group mb-3" id="add-alarma-group">
+                        <input type="text" class="form-control timepicker" placeholder="Adaugare alarma noua" id="nou">
+                        <div class="input-group-append">
+                          <button class="btn btn-outline-secondary" type="button" id="add-alarma">Add</button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+              <div class="modal-footer justify-content-between">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  <input class="btn btn-primary" type="submit" value="OK">
+              </div>
+          </form>
+      </div>
+      <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
+</div>
+{% endblock content %}
+
+{% block page_specific_scripts %}
+<script src="//cdnjs.cloudflare.com/ajax/libs/timepicker/1.3.5/jquery.timepicker.min.js"></script>
+
+<script>
+  var added_times;
+  var id;
+  $("#lista-sonerii a").on('click', function () {
+    var alarma = $(this).text();
+    
+    $.get("{% url 'sonerie-getsettings' %}", {sonerie: alarma}, function (data) {
+      console.log(data);
+
+      $('#nume').val(data['denumire']);
+      $('#pin').val(data['pin']);
+      id = data['id']
+      added_times = data['ore'].length
+      for(i=0; i<data['ore'].length; i++){
+        checked = $("<div class='custom-control custom-switch'> <input type='checkbox' class='custom-control-input alarms' id='customSwitch" + i + "' value=" + data['ore'][i].substring(0, 5) + " name='alarm' checked><label class='custom-control-label' for='customSwitch" + i + "'>" + data['ore'][i].substring(0, 5) + "</label> <a class='btn btn-default btn-xs' id='remove" + i + "'><i class='fas fa-times'></i></a></div>")
+        unchecked = $("<div class='custom-control custom-switch'> <input type='checkbox' class='custom-control-input alarms' id='customSwitch" + i + "' value=" + data['ore'][i].substring(0, 5) + " name='alarm'><label class='custom-control-label' for='customSwitch" + i + "'>" + data['ore'][i].substring(0, 5) + "</label> <a class='btn btn-default btn-xs' id='remove" + i + "'><i class='fas fa-times'></i></a></div>")
+        if(data['status'][i]){
+          $('#alarme #add-alarma-group:last').before(checked);
+        }
+        else{
+          $('#alarme #add-alarma-group:last').before(unchecked);
+        }
+        checked.on('click', 'a', function(){
+          $(this).parent().remove();
+          console.log($(this).children("a"));
+        });
+        unchecked.on('click', 'a', function(){
+          $(this).parent().remove();
+          console.log("apasat uncheked");
+        });
+      }
+      $('#editModal').modal('show');
+    })
+    //console.log(return_data)
+    
+
+  });
+
+  $('#add-alarma').on('click', function(){
+    new_alarm = $("<div class='custom-control custom-switch'> <input type='checkbox' class='custom-control-input alarms' id='customSwitch" + added_times + "' value=" +  $('#nou').val() +" name='alarm' checked><label class='custom-control-label' for='customSwitch" + added_times + "'>" + $('#nou').val() + "</label><a class='btn btn-default btn-xs' id='remove" + added_times + "'><i class='fas fa-times'></i></a></div>")
+    console.log($('#nou').val());
+    $('#alarme #add-alarma-group:last').before(new_alarm);
+    added_times++;
+    $('#nou').val('');
+    new_alarm.on('click', 'a', function(){
+      $(this).parent().remove();
+      console.log($(this).children("a"));
+    });
+  });
+
+  $('#editModal').on('hidden.bs.modal', function () {
+    $('.custom-control').remove();
+    
+  })
+
+  $(document).on('submit', '#editForm', function (e) {
+    e.preventDefault();
+
+    var lista_ore_active = [];
+    $('.alarms:checked').each(function(){
+      lista_ore_active.push($(this).val());
+    })
+
+    var lista_ore_inactive = [];
+    $('.alarms:not(:checked)').each(function(){
+      lista_ore_inactive.push($(this).val());
+    })
+
+    var lista_ore_new = [];
+    $('.alarms-new').each(function(){
+      lista_ore_new.push($(this).val());
+    })
+
+
+    $.ajax({
+      type: 'POST',
+      url: "{% url 'sonerie-updateSettings' %}",
+      data: {
+          id: id,
+          denumire: $('#nume').val(),
+          pin: $('#pin').val(),
+          alarme_active: lista_ore_active,
+          alarme_inactive: lista_ore_inactive,
+          //alarme_noi: lista_ore_new
+      },
+      success: function (data) {
+          //sessionStorage.setItem('COD_SCHEDA')
+          console.log(data);
+
+          $('#editModal').modal('hide');
+      }
+    })
+  });
+
+  $('.timepicker').timepicker({
+    timeFormat: 'HH:mm',
+    interval: 30,
+    minTime: '12AM',
+    maxTime: '11:59PM',
+    defaultTime: '12AM',
+    startTime: '12AM',
+    dynamic: true,
+    dropdown: true,
+    scrollbar: true,
+    zindex: 9999999
+  });
+
+  
+</script>
+
+{% endblock page_specific_scripts %}
