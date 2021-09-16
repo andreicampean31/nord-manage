@@ -1,8 +1,7 @@
 import datetime
 from math import floor
-from typing import DefaultDict
 
-from django.core.mail import EmailMultiAlternatives, send_mail
+from django.core.mail import EmailMultiAlternatives
 from django.db import connection
 from django.db.models import Count, F
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
@@ -22,7 +21,7 @@ def date_loop(start_date, end_date):
 
 def count_total_productie(entries, tip_interogare):
     today = datetime.date.today()
-    now = datetime.datetime.now()
+
     coduri_placi = [None] * len(entries)
     total_count = [0] * len(entries)
     # print(entries)
@@ -106,7 +105,9 @@ def today_total(numar_linii_productie):
     context = {
         'linia1': None,
         'linia2': None,
-        'linia3': None
+        'linia3': None,
+        'linia4': None,
+        'linia5': None
     }
     for linia in range(0, numar_linii_productie):
         today = datetime.date.today()
@@ -121,11 +122,11 @@ def today_total(numar_linii_productie):
 
 
 def home(request):
-    return render(request, 'wave/home.html', context=today_total(3))
+    return render(request, 'wave/home.html', context=today_total(5))
 
 
 def realtimeview(request):
-    return render(request, 'wave/realtime.html', context=today_total(3))
+    return render(request, 'wave/realtime.html', context=today_total(5))
 
 
 def efficency_chart(request):
@@ -133,11 +134,15 @@ def efficency_chart(request):
         'linia1': [],
         'linia2': [],
         'linia3': [],
+        'linia4': [],
+        'linia5': []
     }
     data = {
         'linia1': [0],
         'linia2': [0],
         'linia3': [0],
+        'linia4': [0],
+        'linia5': [0]
     }
 
     linia1 = connection.cursor()
@@ -190,6 +195,40 @@ def efficency_chart(request):
         labels["linia3"].append(i[0])
         eficienta = i[1]*100/30
         data["linia3"].append(eficienta)
+        
+    linia4 = connection.cursor()
+    linia4.execute('''SELECT CONCAT(DATE_FORMAT(data, '%H:'), IF('30' > MINUTE(data), '00', '30')) AS 'Hour Interval',
+       SUM(min_placa*multiplication_factor) AS 'Minutes Worked'
+      FROM (select min_placa,data, multiplication_factor
+          from (select wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.linie_productie, wave_date_placi.multiplication_factor
+             from wave_productie
+                inner join wave_date_placi on wave_productie.cod_placa_id = wave_date_placi.id
+            where CAST(wave_productie.data as Date) = CAST(NOW() as Date)
+                and wave_productie.linie_productie = 4) as wpwdp) as asd
+              GROUP BY CONCAT(DATE_FORMAT(data, '%H:'), IF('30' > MINUTE(data), '00', '30'));''')
+    results_linia4 = sorted(linia4.fetchall())
+
+    for i in results_linia4:
+        labels["linia4"].append(i[0])
+        eficienta = i[1]*100/30
+        data["linia4"].append(eficienta)
+        
+    linia5 = connection.cursor()
+    linia5.execute('''SELECT CONCAT(DATE_FORMAT(data, '%H:'), IF('30' > MINUTE(data), '00', '30')) AS 'Hour Interval',
+       SUM(min_placa*multiplication_factor) AS 'Minutes Worked'
+      FROM (select min_placa,data, multiplication_factor
+          from (select wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.linie_productie, wave_date_placi.multiplication_factor
+             from wave_productie
+                inner join wave_date_placi on wave_productie.cod_placa_id = wave_date_placi.id
+            where CAST(wave_productie.data as Date) = CAST(NOW() as Date)
+                and wave_productie.linie_productie = 5) as wpwdp) as asd
+              GROUP BY CONCAT(DATE_FORMAT(data, '%H:'), IF('30' > MINUTE(data), '00', '30'));''')
+    results_linia5 = sorted(linia5.fetchall())
+
+    for i in results_linia5:
+        labels["linia5"].append(i[0])
+        eficienta = i[1]*100/30
+        data["linia5"].append(eficienta)
 
     return JsonResponse(data={
         'labels': labels,

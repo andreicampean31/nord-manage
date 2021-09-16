@@ -200,7 +200,7 @@
     <div class="col-6">
       <div class="card card-info">
         <div class="card-header">
-          <h3 class="card-title">Total productie linia {{linia}}</h3>
+          <h3 class="card-title">Total productie linia 3</h3>
           <div class="card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
               <i class="fas fa-minus"></i>
@@ -279,7 +279,7 @@
     <div class="col-6">
       <div class="card card-info">
         <div class="card-header">
-          <h3 class="card-title">Total productie linia {{linia}}</h3>
+          <h3 class="card-title">Total productie linia 2A</h3>
           <div class="card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
               <i class="fas fa-minus"></i>
@@ -300,7 +300,7 @@
               </tr>
             </thead>
             <tbody>
-              {% for i in linia2a %}
+              {% for i in linia4 %}
               {% if i != None %}
               <tr class='{% if i.last == 1 %} table-success {% endif %}'>
                 <td>{{forloop.counter}}</td>
@@ -358,7 +358,7 @@
     <div class="col-6">
       <div class="card card-info">
         <div class="card-header">
-          <h3 class="card-title">Total productie linia {{linia}}</h3>
+          <h3 class="card-title">Total productie linia 3A</h3>
           <div class="card-tools">
             <button type="button" class="btn btn-tool" data-card-widget="collapse">
               <i class="fas fa-minus"></i>
@@ -379,7 +379,7 @@
               </tr>
             </thead>
             <tbody>
-              {% for i in linia3a %}
+              {% for i in linia5 %}
               {% if i != None %}
               <tr class='{% if i.last == 1 %} table-success {% endif %}'>
                 <td>{{forloop.counter}}</td>
@@ -899,7 +899,7 @@
         var areaChartCanvas = $('#areaChart2a').get(0).getContext('2d')
 
         var areaChartData = {
-          labels: data.labels["linia2a"],
+          labels: data.labels["linia4"],
           datasets: [
             {
               label: 'Eficienta',
@@ -912,7 +912,7 @@
               pointStrokeColor: 'rgba(60,141,188,1)',
               pointHighlightFill: '#fff',
               pointHighlightStroke: 'rgba(60,141,188,1)',
-              data: data.data["linia3"],
+              data: data.data["linia4"],
             }],
         }
 
@@ -981,7 +981,7 @@
         var areaChartCanvas = $('#areaChart3a').get(0).getContext('2d')
 
         var areaChartData = {
-          labels: data.labels["linia3a"],
+          labels: data.labels["linia5"],
           datasets: [
             {
               label: 'Eficienta',
@@ -994,7 +994,7 @@
               pointStrokeColor: 'rgba(60,141,188,1)',
               pointHighlightFill: '#fff',
               pointHighlightStroke: 'rgba(60,141,188,1)',
-              data: data.data["linia3"],
+              data: data.data["linia5"],
             }],
         }
 
