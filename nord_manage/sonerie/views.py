@@ -75,6 +75,7 @@ def updateSettings(request):
         ore_active = request.POST.getlist('alarme_active[]')
         ore_inactive = request.POST.getlist('alarme_inactive[]')
         
+
         alarme_existente = Ore_Sonerii.objects.filter(soneria_id__denumire = denumire)
         print((len(ore_active)+len(ore_inactive)))
         print(len(alarme_existente))
