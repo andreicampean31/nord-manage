@@ -170,14 +170,11 @@ def ardu_get_settings(request):
         
         for i in range(0, len(setari)):
             ore = Ore_Sonerii.objects.filter(soneria_id__denumire = setari[i].denumire, status = True)
-            
-            ore_list = ''
+        
+            ore_list = [None] * len(ore)
             for j in range(0, len(ore)):
-                if j < len(ore)-1:
-                    ore_list += str(ore[j].ora) + ','
-                    
-                else:
-                    ore_list += str(ore[j].ora) + '.'
+                time = str(ore[j].ora)
+                ore_list[j] = (int(time[0:2]), int(time[3:5]), int(time[6:8]))
                 
             #print(ore_str)
             #print(ore)
