@@ -78,19 +78,19 @@ def updateSettings(request):
         alarme_existente = Ore_Sonerii.objects.filter(soneria_id__denumire = denumire)
         print((len(ore_active)+len(ore_inactive)))
         print(len(alarme_existente))
-        if (len(ore_active)+len(ore_inactive)) < len(alarme_existente):
-            ore_total = ore_active + ore_inactive
-            for i in alarme_existente:
-                print(i.ora)
-                k=0
-                for j in ore_total:
-                    print(j)
-                    if i.ora == j:
-                        k=1
-                        break
-                        
-                if k == 0:
-                    Ore_Sonerii.objects.filter(soneria_id__denumire = denumire, ora = i.ora).delete()
+
+        ore_total = ore_active + ore_inactive
+        for i in alarme_existente:
+            print(i.ora)
+            k=0
+            for j in ore_total:
+                print(j)
+                if i.ora == j:
+                    k=1
+                    break
+                    
+            if k == 0:
+                Ore_Sonerii.objects.filter(soneria_id__denumire = denumire, ora = i.ora).delete()
         
         #ore_noi = request.POST.getlist('alarme_noi[]')
         
@@ -151,8 +151,6 @@ def updateSettings(request):
         if ore_active != []:
             Info_Sonerii.objects.filter(denumire = denumire).update(status = True)
             
-
-        
     return JsonResponse({'stauts': 202})
 def ardu_get_settings(request):
     if request.method == 'GET':
