@@ -78,6 +78,7 @@ def updateSettings(request):
         alarme_existente = Ore_Sonerii.objects.filter(soneria_id__denumire = denumire)
         print((len(ore_active)+len(ore_inactive)))
         print(len(alarme_existente))
+
         ore_total = ore_active + ore_inactive
         for i in alarme_existente:
             print(i.ora)
