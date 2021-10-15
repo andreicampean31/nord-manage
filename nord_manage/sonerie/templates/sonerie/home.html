@@ -7,10 +7,11 @@
 
 {% block page_title %} <h1>Home - Sonerie</h1>{% endblock page_title %}
 {% block content %}
+
 <div class="card card-primary">
     <div class="card-header">
       <h3 class="card-title">Sonerie</h3>
-
+      
       <div class="card-tools">
         <button type="button" class="btn btn-tool" data-card-widget="collapse">
           <i class="fas fa-minus"></i>
@@ -18,13 +19,19 @@
       </div>
     </div>
     <div class="card-body">
-        <div class="col-6">
+      <div class="row">
+        <div class="col-4">
             <div class="list-group" id="lista-sonerii">
               {% for i,j in zipped %}
                 <a href="#" id="soneriiExistente" class="list-group-item list-group-item-action list-group-item-{%if j == True %}success{% else %}warning{%endif%} ">{{i}}</a>
               {% endfor %}
             </div>
-        </div> 
+        </div>
+        <div class="col-6">
+
+            <p id="esp-status">SONERIA NU ESTE CONECTATA LA SERVER</p>
+        </div>
+      </div>
     <!-- /.card-body -->
 </div>
   <!-- /.card -->
@@ -93,7 +100,7 @@
     
     $.get("{% url 'sonerie-getsettings' %}", {sonerie: alarma}, function (data) {
       console.log(data);
-
+      data['ore'].sort();
       $('#nume').val(data['denumire']);
       $('#pin').val(data['pin']);
       id = data['id']
@@ -178,6 +185,22 @@
       }
     })
   });
+  function showEsp(){
+    $.ajax({
+      type: 'GET',
+      url: "{% url 'showEspStatus' %}",
+      success: function(data){
+        console.log(data)
+        if(data["status"]==1){
+          $('#esp-status').text("SONERIA ESTE CONECTATA LA SERVER")
+        }
+        else{
+          $('#esp-status').text("SONERIA NU ESTE CONECTATA LA SERVER")
+        }
+      }
+    })
+  }
+  setInterval(showEsp, 10000);
 
   $('.timepicker').timepicker({
     timeFormat: 'HH:mm',
