@@ -7,6 +7,8 @@ from .models import Info_Sonerii, Ore_Sonerii
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime
 
+espstatus = 0
+
 def home(request):
     lista_sonerii = Info_Sonerii.objects.values('id', 'denumire', 'status')
 
@@ -66,6 +68,31 @@ def getSettings(request):
         'status': status
         })
 
+def espStatus(request):
+    global espstatus
+    if request.method == 'GET':
+        
+        status = request.GET.get("status")
+        #print(status)
+        if status == "1":
+            espstatus = 1
+            print(espstatus)
+        else:
+            espstatus = 0
+        return HttpResponse()
+    else:
+        espStatus = 0
+        
+def showEspStatus(request):
+    global espstatus
+    esp_local_status = espstatus
+    if request.method == 'GET':
+        #print(espstatus)
+        espstatus = 0
+        return JsonResponse({"status": esp_local_status})
+    
+    
+    
 @csrf_exempt
 def updateSettings(request):
     if request.method == 'POST':
