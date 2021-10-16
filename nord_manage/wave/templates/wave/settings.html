@@ -122,7 +122,7 @@
               <div class="col-4">
                 <div class="card card-info collapsed-card">
                   <div class="card-header">
-                    <h3 class="card-title">Coduri de bare Linia 1</h3>
+                    <h3 class="card-title">Coduri de bare Linia 2</h3>
 
                     <div class="card-tools">
                       <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -158,7 +158,7 @@
               <div class="col-4">
                 <div class="card card-info collapsed-card">
                   <div class="card-header">
-                    <h3 class="card-title">Coduri de bare Linia 1</h3>
+                    <h3 class="card-title">Coduri de bare Linia 3</h3>
 
                     <div class="card-tools">
                       <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -189,6 +189,80 @@
                       </tbody>
                     </table>
                   </div>
+                  
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="card card-info collapsed-card">
+                  <div class="card-header">
+                    <h3 class="card-title">Coduri de bare Linia 2A</h3>
+
+                    <div class="card-tools">
+                      <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-plus"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <table id="barcodesTableL2A" class="table table-bordered table-hover">
+                      <a onclick="printFnc('#barcodesTableL2A')" class="btn btn-primary printBtn" type="button"> PRINT
+                      </a>
+                      <thead>
+                        <tr>
+                          <th>Cod placa</th>
+                          <th>Barcode L2A</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for i in lista %}
+                        <tr>
+                          <td>{{ i.cod_placa }}</td>
+                          <td>
+                            <svg class="barcode" jsbarcode-value="L2A-{{i.cod_placa}}" jsbarcode-width="1"
+                              jsbarcode-height="100"></svg>
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <div class="col-4">
+                <div class="card card-info collapsed-card">
+                  <div class="card-header">
+                    <h3 class="card-title">Coduri de bare Linia 3A</h3>
+
+                    <div class="card-tools">
+                      <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                        <i class="fas fa-plus"></i>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="card-body">
+                    <table id="barcodesTableL3A" class="table table-bordered table-hover">
+                      <a onclick="printFnc('#barcodesTableL3A')" class="btn btn-primary printBtn" type="button"> PRINT
+                      </a>
+                      <thead>
+                        <tr>
+                          <th>Cod placa</th>
+                          <th>Barcode L3A</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for i in lista %}
+                        <tr>
+                          <td>{{ i.cod_placa }}</td>
+                          <td>
+                            <svg class="barcode" jsbarcode-value="L3A-{{i.cod_placa}}" jsbarcode-width="1"
+                              jsbarcode-height="100"></svg>
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
+                  
                 </div>
               </div>
             </div>

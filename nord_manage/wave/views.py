@@ -75,7 +75,7 @@ def count_total_productie(entries, tip_interogare):
                     'linia': linie
                 }
 
-            elif tip_interogare == 'raport':
+            elif tip_interogare == 'raport':                
                 final_array[k] = {
                     'cod_placa': coduri_placi_cleaned[k],
                     'total': total_count_cleaned[k],
@@ -235,11 +235,19 @@ def efficency_chart(request):
         'data': data,
     })
 
+
+
+
+
 def insert_data(request, linie, cod_placa):
     now = timezone.now()
 
     placa_info = Date_Placi.objects.get(cod_placa=cod_placa)
 
+    if linie == '2A':
+        linie = 4
+    elif linie == '3A':
+        linie = 5
     insert_data = Productie(cod_placa_id=placa_info.id, linie_productie=linie,
                             data=now, multi_factor=placa_info.multiplication_factor)
     insert_data.save()
