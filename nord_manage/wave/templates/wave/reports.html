@@ -90,7 +90,22 @@
                 Linia 3
               </label>
             </div>
-            </br></br>
+            </br>
+            <div class="icheck-primary d-inline">
+              <input type="checkbox" id="checkboxL2A" value="4" name="linia">
+              <label for="checkboxL2A">
+                Linia 2A
+              </label>
+            </div>
+            </br>
+            <div class="icheck-primary d-inline">
+              <input type="checkbox" id="checkboxL3A" value="5" name="linia">
+              <label for="checkboxL3A">
+                Linia 3A
+              </label>
+            </div>
+            </br>
+            </br>
             <!-- Date range -->
             <label for="date_range">Date range:</label>
 
@@ -153,7 +168,13 @@
               <td>{{i.total}}</td>
               <td>{{i.target}}</td>
               {% if tip == 1 or tip == 4%}
+              {% if i.linia ==  '4'%}
+              <td>2A</td>
+              {% elif i.linia == '5'%}
+              <td>3A</td>
+              {% else %}
               <td>{{i.linia}}</td>
+              {%endif%}
               {% endif %}
               <td>{{i.durata}}</td>
               <td>{{i.norma}}</td>
@@ -412,10 +433,14 @@
       document.getElementById('checkboxL1').disabled = true;
       document.getElementById('checkboxL2').disabled = true;
       document.getElementById('checkboxL3').disabled = true;
+      document.getElementById('checkboxL2A').disabled = true;
+      document.getElementById('checkboxL3A').disabled = true;
     } else {
       document.getElementById('checkboxL1').disabled = false;
       document.getElementById('checkboxL2').disabled = false;
       document.getElementById('checkboxL3').disabled = false;
+      document.getElementById('checkboxL2A').disabled = false;
+      document.getElementById('checkboxL3A').disabled = false;
     }
   }
 </script>
