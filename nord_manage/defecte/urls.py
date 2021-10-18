@@ -3,6 +3,8 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='defecte-home'),
+    path('update/', views.update, name='defecte-update'),
+    path('addDefect/', views.addDefect, name='defecte-addDefect'),
     path('import/', views.import_defecte, name='defecte-import' ),
     path('import/upload/', views.import_excel, name='defecte-upload' ),
     path('import/clear/', views.clearDB, name='defecte-clearDB'),

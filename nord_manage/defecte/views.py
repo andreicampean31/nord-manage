@@ -131,6 +131,28 @@ def update(request):
     #print(edit_values)
     
     return JsonResponse({"status": 202})
+@csrf_exempt
+def addDefect(request):
+    if request.method == 'POST':
+        add_values = dict(request.POST.items())
+        print(add_values['code'])
+        if add_values['func_test'] == 'PASS':
+            functional_test = True
+        else:
+            functional_test = False
+
+        if add_values['sec_test'] == 'PASS':
+            security_test = True
+        else:
+            security_test = False
+            
+        cod_placa = Date_Placi.objects.get(cod_placa = add_values['code'])
+        
+        insert_value = Defecte(data=add_values['data'], cod_placa_id=cod_placa.id, barcode=add_values['barcode'], step_fail=add_values['step_fail'], defect=add_values['defect'],
+                                    problem=add_values['problem'], comp_ph_ref=add_values['comp_ph_ref'], act_perf=add_values['act_perf'], func_test=functional_test, sec_test=security_test)
+        insert_value.save()
+        
+    return JsonResponse({"status": 202})
         
 
 def save_import(request):
