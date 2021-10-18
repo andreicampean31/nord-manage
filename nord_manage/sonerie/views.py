@@ -90,9 +90,6 @@ def showEspStatus(request):
         #print(espstatus)
         espstatus = 0
         return JsonResponse({"status": esp_local_status})
-    
-    
-    
 @csrf_exempt
 def updateSettings(request):
     if request.method == 'POST':

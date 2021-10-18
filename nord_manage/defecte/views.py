@@ -131,7 +131,6 @@ def update(request):
     #print(edit_values)
     
     return JsonResponse({"status": 202})
-
 @csrf_exempt
 def addDefect(request):
     if request.method == 'POST':
