@@ -275,9 +275,7 @@
 <script src="{% static 'plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
 <script src="{% static 'plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
 
-
 <script>
-
 
 $('#data_add').daterangepicker({
     "singleDatePicker": true,
@@ -428,7 +426,41 @@ $('#data_add').daterangepicker({
 
     });
   });
+      $(document).on('submit', '#editForm', function (e) {
+          e.preventDefault();
 
+          $.ajax({
+              type: 'POST',
+              url: 'update/',
+              data: {
+                  id: $id,
+                  data: $("#data").val(),
+                  code: $("#code").val(),
+                  barcode: $("#barcode").val(),
+                  step_fail: $("#step-fail").val(),
+                  defect: $("#defect").val(),
+                  problem: $("#problem").val(),
+                  comp_ph_ref: $("#comp-ph-ref").val(),
+                  act_perf: $("#action-perf").val(),
+                  func_test: $("#func-test").val(),
+                  sec_test: $("#sec-test").val(),
+                  tip_comp: $("#tip-comp").val(),
+                  familia: $("#cod-scheda").val(),
+                  commessa: $("#commessa").val(),
+                  produs_in: $("#prodotte-in").val(),
+                  voci: $("#voci-gene").val(),
+
+              },
+              success: function (data) {
+                  //sessionStorage.setItem('COD_SCHEDA')
+                  console.log(data);
+
+                  $('#editModal').modal('hide');
+              }
+          })
+
+      });
+  });
 
 </script>
 

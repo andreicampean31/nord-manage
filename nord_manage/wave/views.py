@@ -196,7 +196,6 @@ def efficency_chart(request):
         'labels': labels,
         'data': datas,
     })
-
 def insert_data(request, linie, cod_placa):
     now = timezone.now()
 

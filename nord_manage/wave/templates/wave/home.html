@@ -525,6 +525,7 @@
 <!-- Page specific script - Tables 3 -->
 <script>
 
+
   $(function () {
     var now = new Date();
     $("#tableL3").DataTable({
@@ -580,6 +581,8 @@
 </script>
 <!-- Page specific script - Table 2A-->
 <script>
+
+
   $(function () {
     var now = new Date();
     $("#tableL2A").DataTable({
@@ -686,6 +689,73 @@
     setInterval(function (){
       table.ajax.reload(null, false);
     }, 1000);
+  });
+</script>
+
+<!-- Page specific script - Table 2A-->
+<script>
+  $(function () {
+    var now = new Date();
+    $("#example2a").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      "buttons": [
+        {
+          extend: "excel",
+          title: 'Raport_Wave_' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + '_' + now.getHours() + '-' + now.getMinutes() + '_Linia-3',
+        },
+        {
+          extend: "csv",
+          title: 'Raport_Wave_' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + '_' + now.getHours() + '-' + now.getMinutes() + '_Linia-3',
+        },
+        {
+          extend: "print",
+          title: 'Raport_Wave_' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + '_' + now.getHours() + '-' + now.getMinutes() + '_Linia-3',
+        }
+      ],
+      "pageLength": 3
+    }).buttons().container().appendTo('#example2a_wrapper .col-md-6:eq(0)');
+    $('#example2a.1').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": true,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
+  });
+</script>
+<!-- Page specific script - Table 3A-->
+<script>
+  $(function () {
+    var now = new Date();
+    $("#example3a").DataTable({
+      "responsive": true, "lengthChange": false, "autoWidth": false,
+      "buttons": [
+        {
+          extend: "excel",
+          title: 'Raport_Wave_' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + '_' + now.getHours() + '-' + now.getMinutes() + '_Linia-3',
+        },
+        {
+          extend: "csv",
+          title: 'Raport_Wave_' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + '_' + now.getHours() + '-' + now.getMinutes() + '_Linia-3',
+        },
+        {
+          extend: "print",
+          title: 'Raport_Wave_' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + '_' + now.getHours() + '-' + now.getMinutes() + '_Linia-3',
+        }
+      ],
+      "pageLength": 3
+    }).buttons().container().appendTo('#example3a_wrapper .col-md-6:eq(0)');
+    $('#example3a.1').DataTable({
+      "paging": true,
+      "lengthChange": false,
+      "searching": true,
+      "ordering": true,
+      "info": true,
+      "autoWidth": false,
+      "responsive": true,
+    });
   });
 </script>
 <script>
@@ -898,36 +968,8 @@
       chart.update();
       i++;
     })
-    
-    
 
-    //console.log(x.length);
-    //console.log(datas["labels"].length);   
-    //console.log(datas["data"].at(-1));
-    /*if(x.length < datas["labels"].length){
-      console.log("new");
-      chart.data.labels.pop();
-      chart.data.labels.push(datas["labels"].at(-2));
-      chart.data.labels.push(datas["labels"].at(-1));
-      chart.data.datasets[0].data.pop();
-      chart.data.datasets[0].data.push(datas["data"].at(-2));
-      chart.data.datasets[0].data.push(datas["data"].at(-1));
-
-    }
-    x.length = 0;
-    y.length = 0;
-    //console.log(x);
-    //console.log(y);
-    datas["labels"].forEach((label) => {
-      x.push(label);
-    })
-    datas["data"].forEach((data) => {
-      y.push(data);
-    })
-*/
-    
   }
 
 </script>
-
 {% endblock page_specific_scripts %}
