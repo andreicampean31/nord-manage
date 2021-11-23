@@ -11,6 +11,6 @@ urlpatterns = [
     path('import/showTemp/', views.show_temp, name='defecte-showTemp'),
     path('import/updateTemp/', views.update_temp, name='defecte-updateTemp'),
     path('import/saveImport/', views.save_import, name='defecte-saveImport'),
-    path('import/showHome/', views.show_home, name='defecte-showHome'),
+    path('showHome/', views.show_home, name='defecte-showHome'),
     #path('import/update/', views.update, name='defecte-update')
 ]

@@ -32,7 +32,7 @@
         </div>
         <div class="card-body">
           <div class="chart">
-            <canvas id="areaChart1" data-url="{% url 'efficency-chart' %}"
+            <canvas id="effChart1"
               style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
           </div>
         </div>
@@ -53,7 +53,7 @@
         </div>
         <!-- /.card-header -->
         <div class="card-body">
-          <table id="example1" class="table table-bordered table-striped">
+          <table id="tableL1" class="table table-bordered table-striped">
             <thead>
               <tr>
                 <th>#</th>
@@ -65,18 +65,7 @@
               </tr>
             </thead>
             <tbody>
-              {% for i in linia1 %}
-              {% if i != None %}
-              <tr class='{% if i.last == 1 %} table-success {% endif %}'>
-                <td>{{forloop.counter}}</td>
-                <td>{{i.cod_placa}}</td>
-                <td>{{i.linia}}</td>
-                <td>{{i.total}}</td>
-                <td>{{ i.target }}</td>
-                <td>{{ i.interval}}</td>
-              </tr>
-              {% endif %}
-              {% endfor %}
+
             </tbody>
           </table>
         </div>
@@ -110,7 +99,7 @@
         </div>
         <div class="card-body">
           <div class="chart">
-            <canvas id="areaChart2" data-url="{% url 'efficency-chart' %}"
+            <canvas id="effChart2"
               style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
           </div>
         </div>
@@ -131,7 +120,7 @@
         </div>
         <!-- /.card-header -->
         <div class="card-body">
-          <table id="example2" class="table table-bordered table-striped">
+          <table id="tableL2" class="table table-bordered table-striped">
             <thead>
               <tr>
                 <th>#</th>
@@ -188,7 +177,7 @@
         </div>
         <div class="card-body">
           <div class="chart">
-            <canvas id="areaChart3" data-url="{% url 'efficency-chart' %}"
+            <canvas id="effChart3"
               style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
           </div>
         </div>
@@ -209,7 +198,7 @@
         </div>
         <!-- /.card-header -->
         <div class="card-body">
-          <table id="example3" class="table table-bordered table-striped">
+          <table id="tableL3" class="table table-bordered table-striped">
             <thead>
               <tr>
                 <th>#</th>
@@ -267,7 +256,7 @@
         </div>
         <div class="card-body">
           <div class="chart">
-            <canvas id="areaChart2a" data-url="{% url 'efficency-chart' %}"
+            <canvas id="effChart2A"
               style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
           </div>
         </div>
@@ -288,7 +277,7 @@
         </div>
         <!-- /.card-header -->
         <div class="card-body">
-          <table id="example2a" class="table table-bordered table-striped">
+          <table id="tableL2A" class="table table-bordered table-striped">
             <thead>
               <tr>
                 <th>#</th>
@@ -346,7 +335,7 @@
         </div>
         <div class="card-body">
           <div class="chart">
-            <canvas id="areaChart3a" data-url="{% url 'efficency-chart' %}"
+            <canvas id="effChart3A"
               style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
           </div>
         </div>
@@ -367,7 +356,7 @@
         </div>
         <!-- /.card-header -->
         <div class="card-body">
-          <table id="example3a" class="table table-bordered table-striped">
+          <table id="tableL3A" class="table table-bordered table-striped">
             <thead>
               <tr>
                 <th>#</th>
@@ -427,7 +416,8 @@
 <script>
   $(function () {
     var now = new Date();
-    $("#example1").DataTable({
+    $("#tableL1").DataTable({
+      "dom": 'Bftrip',
       "responsive": true, "lengthChange": false, "autoWidth": false,
       "buttons": [
         {
@@ -443,9 +433,25 @@
           title: 'Raport_Wave_' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + '_' + now.getHours() + '-' + now.getMinutes() + '_Linia-1',
         }
       ],
-      "pageLength": 3
-    }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-    $('#example1.1').DataTable({
+      "ajax":{
+        url: "{% url 'wave-liveData' linia=1 %}",
+      },
+      "columns": [
+        {"data": "id"},
+        {"data": "cod_placa"},
+        {"data": "linia"},
+        {"data": "total"},
+        {"data": "target"},
+        {"data": "interval"},
+        //{"data": "last"}
+        
+      ],
+      "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+        if (aData['last'] == "1") {
+          $('td', nRow).addClass('table-success');
+        }
+      },
+      "pageLength": 3,
       "paging": true,
       "lengthChange": false,
       "searching": true,
@@ -453,14 +459,19 @@
       "info": true,
       "autoWidth": false,
       "responsive": true,
-    });
+    }).buttons().container().appendTo('#tableL1_wrapper .col-md-6:eq(0)');
+
+    var table = $("#tableL1").DataTable();
+    setInterval(function (){
+      table.ajax.reload(null, false);
+    }, 1000);
   });
 </script>
 <!-- Page specific script - Tables 2 -->
 <script>
   $(function () {
     var now = new Date();
-    $("#example2").DataTable({
+    $("#tableL2").DataTable({
       "responsive": true, "lengthChange": false, "autoWidth": false,
       "buttons": [
         {
@@ -476,9 +487,27 @@
           title: 'Raport_Wave_' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + '_' + now.getHours() + '-' + now.getMinutes() + '_Linia-2',
         }
       ],
+      "ajax":{
+        url: "{% url 'wave-liveData' linia=2 %}",
+      },
+      "columns": [
+        {"data": "id"},
+        {"data": "cod_placa"},
+        {"data": "linia"},
+        {"data": "total"},
+        {"data": "target"},
+        {"data": "interval"},
+        //{"data": "last"}
+        
+      ],
+      "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+        if (aData['last'] == "1") {
+          $('td', nRow).addClass('table-success');
+        }
+      },
       "pageLength": 3
-    }).buttons().container().appendTo('#example2_wrapper .col-md-6:eq(0)');
-    $('#example2.1').DataTable({
+    }).buttons().container().appendTo('#tableL2_wrapper .col-md-6:eq(0)');
+    $('#tableL2.1').DataTable({
       "paging": true,
       "lengthChange": false,
       "searching": true,
@@ -487,6 +516,10 @@
       "autoWidth": false,
       "responsive": true,
     });
+    var table = $("#tableL2").DataTable();
+    setInterval(function (){
+      table.ajax.reload(null, false);
+    }, 1000);
   });
 </script>
 <!-- Page specific script - Tables 3 -->
@@ -494,7 +527,7 @@
 
   $(function () {
     var now = new Date();
-    $("#example3").DataTable({
+    $("#tableL3").DataTable({
       "responsive": true, "lengthChange": false, "autoWidth": false,
       "buttons": [
         {
@@ -510,9 +543,27 @@
           title: 'Raport_Wave_' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + '_' + now.getHours() + '-' + now.getMinutes() + '_Linia-3',
         }
       ],
+      "ajax":{
+        url: "{% url 'wave-liveData' linia=3 %}",
+      },
+      "columns": [
+        {"data": "id"},
+        {"data": "cod_placa"},
+        {"data": "linia"},
+        {"data": "total"},
+        {"data": "target"},
+        {"data": "interval"},
+        //{"data": "last"}
+        
+      ],
+      "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+        if (aData['last'] == "1") {
+          $('td', nRow).addClass('table-success');
+        }
+      },
       "pageLength": 3
-    }).buttons().container().appendTo('#example3_wrapper .col-md-6:eq(0)');
-    $('#example3.1').DataTable({
+    }).buttons().container().appendTo('#tableL3_wrapper .col-md-6:eq(0)');
+    $('#etableL3.1').DataTable({
       "paging": true,
       "lengthChange": false,
       "searching": true,
@@ -521,13 +572,17 @@
       "autoWidth": false,
       "responsive": true,
     });
+    var table = $("#tableL3").DataTable();
+    setInterval(function (){
+      table.ajax.reload(null, false);
+    }, 1000);
   });
 </script>
 <!-- Page specific script - Table 2A-->
 <script>
   $(function () {
     var now = new Date();
-    $("#example2a").DataTable({
+    $("#tableL2A").DataTable({
       "responsive": true, "lengthChange": false, "autoWidth": false,
       "buttons": [
         {
@@ -543,9 +598,27 @@
           title: 'Raport_Wave_' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + '_' + now.getHours() + '-' + now.getMinutes() + '_Linia-3',
         }
       ],
+      "ajax":{
+        url: "{% url 'wave-liveData' linia=4 %}",
+      },
+      "columns": [
+        {"data": "id"},
+        {"data": "cod_placa"},
+        {"data": "linia"},
+        {"data": "total"},
+        {"data": "target"},
+        {"data": "interval"},
+        //{"data": "last"}
+        
+      ],
+      "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+        if (aData['last'] == "1") {
+          $('td', nRow).addClass('table-success');
+        }
+      },
       "pageLength": 3
-    }).buttons().container().appendTo('#example2a_wrapper .col-md-6:eq(0)');
-    $('#example2a.1').DataTable({
+    }).buttons().container().appendTo('#tableL2A_wrapper .col-md-6:eq(0)');
+    $('#tableL2A.1').DataTable({
       "paging": true,
       "lengthChange": false,
       "searching": true,
@@ -554,13 +627,17 @@
       "autoWidth": false,
       "responsive": true,
     });
+    var table = $("#tableL2A").DataTable();
+    setInterval(function (){
+      table.ajax.reload(null, false);
+    }, 1000);
   });
 </script>
 <!-- Page specific script - Table 3A-->
 <script>
   $(function () {
     var now = new Date();
-    $("#example3a").DataTable({
+    $("#tableL3A").DataTable({
       "responsive": true, "lengthChange": false, "autoWidth": false,
       "buttons": [
         {
@@ -576,9 +653,27 @@
           title: 'Raport_Wave_' + now.getDate() + '-' + (now.getMonth() + 1) + '-' + now.getFullYear() + '_' + now.getHours() + '-' + now.getMinutes() + '_Linia-3',
         }
       ],
+      "ajax":{
+        url: "{% url 'wave-liveData' linia=5 %}",
+      },
+      "columns": [
+        {"data": "id"},
+        {"data": "cod_placa"},
+        {"data": "linia"},
+        {"data": "total"},
+        {"data": "target"},
+        {"data": "interval"},
+        //{"data": "last"}
+        
+      ],
+      "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+        if (aData['last'] == "1") {
+          $('td', nRow).addClass('table-success');
+        }
+      },
       "pageLength": 3
-    }).buttons().container().appendTo('#example3a_wrapper .col-md-6:eq(0)');
-    $('#example3a.1').DataTable({
+    }).buttons().container().appendTo('#tableL3A_wrapper .col-md-6:eq(0)');
+    $('#tableL3A.1').DataTable({
       "paging": true,
       "lengthChange": false,
       "searching": true,
@@ -587,6 +682,10 @@
       "autoWidth": false,
       "responsive": true,
     });
+    var table = $("#tableL3A").DataTable();
+    setInterval(function (){
+      table.ajax.reload(null, false);
+    }, 1000);
   });
 </script>
 <script>
@@ -605,9 +704,9 @@
         //var xValueEnd = xAxis.getPixelForTick(xAxis.ticks.length-1) + 15/*xAxis.right*/;
         var xValueEnd = xAxis.right;
 
-        console.log('xValueEnd', xValueEnd);
-        console.log('xAxis.ticks.length', xAxis.ticks.length);
-        console.log(xAxis.getPixelForTick(xAxis.ticks.length - 1));
+        //console.log('xValueEnd', xValueEnd);
+        //console.log('xAxis.ticks.length', xAxis.ticks.length);
+        //console.log(xAxis.getPixelForTick(xAxis.ticks.length - 1));
 
         var ctx = chartInstance.chart.ctx;
         ctx.save();
@@ -634,43 +733,30 @@
 </script>
 <!-- Page specific script - area chart - chart.js 1 -->
 <script>
-  $(function () {
-    /* ChartJS
-     * -------
-     * Here we will create a few charts using ChartJS
-     */
+  //getData();
+  var today = new Date();
+  var charts = createCharts(['effChart1', 'effChart2', 'effChart3', 'effChart2A', 'effChart3A']);
 
-    //--------------
-    //- AREA CHART -
-    //--------------
+  chartIt(charts);
+  setInterval(updateChart, 1000, charts);
 
-    // Get context with jQuery - using jQuery's .get() method.
-    var $efficencyChart = $("#areaChart1");
-    $.ajax({
-      url: $efficencyChart.data("url"),
-      success: function (data) {
-
-        var areaChartCanvas = $('#areaChart1').get(0).getContext('2d')
-
-        var areaChartData = {
-          labels: data.labels["linia1"],
-          datasets: [
-            {
-              label: 'Eficienta',
-              lineTension: 0,
-              steppedLine: '',
-              backgroundColor: '',
-              borderColor: 'rgba(60,141,188,0.8)',
-              pointRadius: true,
-              pointColor: '#3b8bba',
-              pointStrokeColor: 'rgba(60,141,188,1)',
-              pointHighlightFill: '#fff',
-              pointHighlightStroke: 'rgba(60,141,188,1)',
-              data: data.data["linia1"],
-            }],
-        }
-
-        var areaChartOptions = {
+  function createCharts(chartsIds){
+    createdCharts = [];
+    chartsIds.forEach((chartId) => {
+      //console.log(chartId);
+      const ctx = document.getElementById(chartId).getContext('2d');
+      const newChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: [],
+          datasets: [{
+            label: "Eficienta",
+            data: [],
+            borderColor: "#0363ff",
+            lineTension: 0
+          }]
+        },
+        options:{
           maintainAspectRatio: false,
           responsive: true,
           legend: {
@@ -701,345 +787,147 @@
             textColor: "rgba(50, 155, 255, 0.85)"
           }
         }
-
-        // This will get the first returned node in the jQuery collection.
-        new Chart(areaChartCanvas, {
-          type: 'line',
-          data: areaChartData,
-          options: areaChartOptions
-        })
-      }
+      })
+      
+      createdCharts.push(newChart);
     })
+    //console.log(createCharts)
+    return createdCharts;
+  }
+  async function chartIt(charts){
+    const data = await getData();
+    console.log(data["xs"]);
+    console.log(data["ys"]);
+    
+    let i = 1;
+    charts.forEach((chart) => {
+      data["xs"][i].forEach((label) => {
+        chart.data.labels.push(label);
+      });
 
-  })
+      chart.data.datasets.forEach((dataset) => {
+        data["ys"][i].forEach((data) => {
+          dataset.data.push(data);
+        })
+      });
+      chart.update();
+      i++;
+    });
+  }
+
+  async function getData(){
+    const xs = {
+      "1": [],
+      "2": [],
+      "3": [],
+      "4": [],
+      "5": []
+    };
+    const ys = {
+      "1": [],
+      "2": [],
+      "3": [],
+      "4": [],
+      "5": []
+    };
+    //console.log(xs["1"]);
+    const response = await fetch("{% url 'efficency-chart'%}");
+    const datas = await response.json();
+    //const data = await JSON.parse(json_data);
+    //console.log(datas["labels"][1]);
+
+    for(let i=1; i<6; i++){
+      datas["labels"][i].forEach((label) => {
+      //console.log(label);
+      xs[i.toString()].push(label);
+      })
+      datas["data"][i].forEach((data) => {
+        ys[i.toString()].push(data);
+      })
+    }
+    
+
+    //console.log([xs, ys]);
+    return {
+      "xs": xs,
+      "ys": ys,
+    };
+
+  }
+
+  async function updateChart(charts){
+    var newDay = new Date();
+    console.log("run");
+    const datas = await getData();
+    //console.log(datas);
+    //console.log();
+    if(today.getDate() != newDay.getDate()){
+      chart.data.datasets.forEach((dataset) => {
+        dataset.data.pop();
+      });
+      chart.data.labels.pop();
+      console.log("reset chart");
+      today = new Date();
+    }
+    
+    let i=1;
+    charts.forEach((chart) => {
+      chart.data.datasets[0].data.pop();
+      chart.data.datasets[0].data.push(datas["ys"][i].at(-1));
+      chart.data.labels.pop();
+      chart.data.labels.push(datas["xs"][i].at(-1));
+      
+
+      let chart_len = chart.data.datasets[0].data.length;
+      let new_data_len = datas["ys"][i].length;
+
+      
+      console.log(chart_len);
+      console.log(new_data_len);
+
+      if(chart_len < new_data_len){
+        console.log("new");
+        chart.data.labels.pop();
+        chart.data.labels.push(datas["xs"][i].at(-2));
+        chart.data.labels.push(datas["xs"][i].at(-1));
+        chart.data.datasets[0].data.pop();
+        chart.data.datasets[0].data.push(datas["ys"][i].at(-2));
+        chart.data.datasets[0].data.push(datas["ys"][i].at(-1));
+      }
+
+      chart.update();
+      i++;
+    })
+    
+    
+
+    //console.log(x.length);
+    //console.log(datas["labels"].length);   
+    //console.log(datas["data"].at(-1));
+    /*if(x.length < datas["labels"].length){
+      console.log("new");
+      chart.data.labels.pop();
+      chart.data.labels.push(datas["labels"].at(-2));
+      chart.data.labels.push(datas["labels"].at(-1));
+      chart.data.datasets[0].data.pop();
+      chart.data.datasets[0].data.push(datas["data"].at(-2));
+      chart.data.datasets[0].data.push(datas["data"].at(-1));
+
+    }
+    x.length = 0;
+    y.length = 0;
+    //console.log(x);
+    //console.log(y);
+    datas["labels"].forEach((label) => {
+      x.push(label);
+    })
+    datas["data"].forEach((data) => {
+      y.push(data);
+    })
+*/
+    
+  }
 
 </script>
-<!-- Page specific script - area chart - chart.js 2 -->
-<script>
-  $(function () {
-    /* ChartJS
-     * -------
-     * Here we will create a few charts using ChartJS
-     */
 
-    //--------------
-    //- AREA CHART -
-    //--------------
-
-    // Get context with jQuery - using jQuery's .get() method.
-    var $efficencyChart = $("#areaChart2");
-    $.ajax({
-      url: $efficencyChart.data("url"),
-      success: function (data) {
-
-        var areaChartCanvas = $('#areaChart2').get(0).getContext('2d')
-
-        var areaChartData = {
-          labels: data.labels["linia2"],
-          datasets: [
-            {
-              label: 'Eficienta',
-              lineTension: 0,
-              steppedLine: '',
-              backgroundColor: '',
-              borderColor: 'rgba(60,141,188,0.8)',
-              pointRadius: true,
-              pointColor: '#3b8bba',
-              pointStrokeColor: 'rgba(60,141,188,1)',
-              pointHighlightFill: '#fff',
-              pointHighlightStroke: 'rgba(60,141,188,1)',
-              data: data.data["linia2"],
-            }],
-        }
-
-        var areaChartOptions = {
-          maintainAspectRatio: false,
-          responsive: true,
-          legend: {
-            display: false
-          },
-          scales: {
-            xAxes: [{
-              gridLines: {
-                display: true,
-              }
-            }],
-            yAxes: [{
-              ticks: {
-                min: 0,
-                max: 160
-              },
-              gridLines: {
-                display: true,
-              }
-            }]
-          },
-          drawHorizontalLine: {
-            lineY: [100, 100],
-            lineColor: "rgba(50, 155, 255, 0.85)",
-            text: '',
-            textPosition: 360,
-            textFont: '18px sans-serif',
-            textColor: "rgba(50, 155, 255, 0.85)"
-          }
-        }
-
-        // This will get the first returned node in the jQuery collection.
-        new Chart(areaChartCanvas, {
-          type: 'line',
-          data: areaChartData,
-          options: areaChartOptions
-        })
-      }
-    })
-
-  })
-
-</script>
-<!-- Page specific script - area chart - chart.js 3 -->
-<script>
-  $(function () {
-    /* ChartJS
-     * -------
-     * Here we will create a few charts using ChartJS
-     */
-
-    //--------------
-    //- AREA CHART -
-    //--------------
-
-    // Get context with jQuery - using jQuery's .get() method.
-    var $efficencyChart = $("#areaChart3");
-    $.ajax({
-      url: $efficencyChart.data("url"),
-      success: function (data) {
-
-        var areaChartCanvas = $('#areaChart3').get(0).getContext('2d')
-
-        var areaChartData = {
-          labels: data.labels["linia3"],
-          datasets: [
-            {
-              label: 'Eficienta',
-              lineTension: 0,
-              steppedLine: '',
-              backgroundColor: '',
-              borderColor: 'rgba(60,141,188,0.8)',
-              pointRadius: true,
-              pointColor: '#3b8bba',
-              pointStrokeColor: 'rgba(60,141,188,1)',
-              pointHighlightFill: '#fff',
-              pointHighlightStroke: 'rgba(60,141,188,1)',
-              data: data.data["linia3"],
-            }],
-        }
-
-        var areaChartOptions = {
-          maintainAspectRatio: false,
-          responsive: true,
-          legend: {
-            display: false
-          },
-          scales: {
-            xAxes: [{
-              gridLines: {
-                display: true,
-              }
-            }],
-            yAxes: [{
-              ticks: {
-                min: 0,
-                max: 160
-              },
-              gridLines: {
-                display: true,
-              }
-            }]
-          },
-          drawHorizontalLine: {
-            lineY: [100, 100],
-            lineColor: "rgba(50, 155, 255, 0.85)",
-            text: '',
-            textPosition: 360,
-            textFont: '18px sans-serif',
-            textColor: "rgba(50, 155, 255, 0.85)"
-          }
-        }
-
-        // This will get the first returned node in the jQuery collection.
-        new Chart(areaChartCanvas, {
-          type: 'line',
-          data: areaChartData,
-          options: areaChartOptions
-        })
-      }
-    })
-
-  })
-
-</script>
-<!-- Page specific script - area chart - chart.js 2A -->
-<script>
-  $(function () {
-    /* ChartJS
-     * -------
-     * Here we will create a few charts using ChartJS
-     */
-
-    //--------------
-    //- AREA CHART -
-    //--------------
-
-    // Get context with jQuery - using jQuery's .get() method.
-    var $efficencyChart = $("#areaChart2a");
-    $.ajax({
-      url: $efficencyChart.data("url"),
-      success: function (data) {
-
-        var areaChartCanvas = $('#areaChart2a').get(0).getContext('2d')
-
-        var areaChartData = {
-          labels: data.labels["linia4"],
-          datasets: [
-            {
-              label: 'Eficienta',
-              lineTension: 0,
-              steppedLine: '',
-              backgroundColor: '',
-              borderColor: 'rgba(60,141,188,0.8)',
-              pointRadius: true,
-              pointColor: '#3b8bba',
-              pointStrokeColor: 'rgba(60,141,188,1)',
-              pointHighlightFill: '#fff',
-              pointHighlightStroke: 'rgba(60,141,188,1)',
-              data: data.data["linia4"],
-            }],
-        }
-
-        var areaChartOptions = {
-          maintainAspectRatio: false,
-          responsive: true,
-          legend: {
-            display: false
-          },
-          scales: {
-            xAxes: [{
-              gridLines: {
-                display: true,
-              }
-            }],
-            yAxes: [{
-              ticks: {
-                min: 0,
-                max: 160
-              },
-              gridLines: {
-                display: true,
-              }
-            }]
-          },
-          drawHorizontalLine: {
-            lineY: [100, 100],
-            lineColor: "rgba(50, 155, 255, 0.85)",
-            text: '',
-            textPosition: 360,
-            textFont: '18px sans-serif',
-            textColor: "rgba(50, 155, 255, 0.85)"
-          }
-        }
-
-        // This will get the first returned node in the jQuery collection.
-        new Chart(areaChartCanvas, {
-          type: 'line',
-          data: areaChartData,
-          options: areaChartOptions
-        })
-      }
-    })
-
-  })
-
-</script>
-<!-- Page specific script - area chart - chart.js 3A -->
-<script>
-  $(function () {
-    /* ChartJS
-     * -------
-     * Here we will create a few charts using ChartJS
-     */
-
-    //--------------
-    //- AREA CHART -
-    //--------------
-
-    // Get context with jQuery - using jQuery's .get() method.
-    var $efficencyChart = $("#areaChart3a");
-    $.ajax({
-      url: $efficencyChart.data("url"),
-      success: function (data) {
-
-        var areaChartCanvas = $('#areaChart3a').get(0).getContext('2d')
-
-        var areaChartData = {
-          labels: data.labels["linia5"],
-          datasets: [
-            {
-              label: 'Eficienta',
-              lineTension: 0,
-              steppedLine: '',
-              backgroundColor: '',
-              borderColor: 'rgba(60,141,188,0.8)',
-              pointRadius: true,
-              pointColor: '#3b8bba',
-              pointStrokeColor: 'rgba(60,141,188,1)',
-              pointHighlightFill: '#fff',
-              pointHighlightStroke: 'rgba(60,141,188,1)',
-              data: data.data["linia5"],
-            }],
-        }
-
-        var areaChartOptions = {
-          maintainAspectRatio: false,
-          responsive: true,
-          legend: {
-            display: false
-          },
-          scales: {
-            xAxes: [{
-              gridLines: {
-                display: true,
-              }
-            }],
-            yAxes: [{
-              ticks: {
-                min: 0,
-                max: 160
-              },
-              gridLines: {
-                display: true,
-              }
-            }]
-          },
-          drawHorizontalLine: {
-            lineY: [100, 100],
-            lineColor: "rgba(50, 155, 255, 0.85)",
-            text: '',
-            textPosition: 360,
-            textFont: '18px sans-serif',
-            textColor: "rgba(50, 155, 255, 0.85)"
-          }
-        }
-
-        // This will get the first returned node in the jQuery collection.
-        new Chart(areaChartCanvas, {
-          type: 'line',
-          data: areaChartData,
-          options: areaChartOptions
-        })
-      }
-    })
-
-  })
-
-</script>
 {% endblock page_specific_scripts %}
