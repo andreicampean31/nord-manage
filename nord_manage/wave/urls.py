@@ -3,7 +3,8 @@ from . import views
 
 urlpatterns = [
     path('', views.home, name='wave-home'),
-    path('efficency-chart/', views.efficency_chart, name='efficency-chart'),
+
+    path('efficency-chart', views.efficency_chart, name='efficency-chart'),
     path('insert_data/<linie>&<cod_placa>/',
          views.insert_data, name='wave-insert-data'),
     path('settings/', views.settings, name='wave-settings'),
@@ -15,6 +16,7 @@ urlpatterns = [
     path('reports/', views.custom_reports, name='wave-custom-reports'),
     path('reports/results', views.custom_reports_result,
          name='custom-reports-results'),
-    path('realtimeview/', views.realtimeview, name='wave-realtimeview')
+    path('realtimeview/', views.realtimeview, name='wave-realtimeview'),
+    path('liveData/<linia>', views.liveData, name = 'wave-liveData')
 ]
 

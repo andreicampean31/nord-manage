@@ -258,6 +258,7 @@
 {% block page_specific_scripts %}
 <!-- page specific plugins -->
 <!-- date-range-picker -->
+
 <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
 <!-- DataTables  & Plugins -->
@@ -273,13 +274,16 @@
 <script src="{% static 'plugins/datatables-buttons/js/buttons.html5.min.js' %}"></script>
 <script src="{% static 'plugins/datatables-buttons/js/buttons.print.min.js' %}"></script>
 <script src="{% static 'plugins/datatables-buttons/js/buttons.colVis.min.js' %}"></script>
+
 <script>
+
 $('#data_add').daterangepicker({
     "singleDatePicker": true,
     "locale": {
       format: 'YYYY-MM-DD',
     }
 })
+
   $(function () {
     var now = new Date();
     $("#table1").DataTable({
@@ -422,7 +426,6 @@ $('#data_add').daterangepicker({
 
     });
   });
-
       $(document).on('submit', '#editForm', function (e) {
           e.preventDefault();
 
@@ -458,6 +461,7 @@ $('#data_add').daterangepicker({
 
       });
   });
+
 </script>
 
 {% endblock page_specific_scripts %}

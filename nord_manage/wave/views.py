@@ -3,7 +3,8 @@ from math import floor
 
 from django.core.mail import EmailMultiAlternatives
 from django.db import connection
-from django.db.models import Count, F
+from django.db.models import Count, F, FloatField
+from django.db.models.functions import Cast
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.template.loader import get_template
@@ -17,6 +18,7 @@ from .models import Date_Placi, Productie
 def date_loop(start_date, end_date):
     for n in range(int((end_date - start_date).days)):
         yield start_date + datetime.timedelta(n)
+
 
 
 def count_total_productie(entries, tip_interogare):
@@ -67,6 +69,7 @@ def count_total_productie(entries, tip_interogare):
                     last_code_used = 1
 
                 final_array[k] = {
+                    'id': k+1,
                     'cod_placa': coduri_placi_cleaned[k],
                     'total': total_count_cleaned[k],
                     'target': floor(60/target[0]['min_placa']),
@@ -120,125 +123,79 @@ def today_total(numar_linii_productie):
 
     return context
 
+def liveData(request, linia):
+    today = datetime.date.today()
+    
+    today_entries = Productie.objects.filter(data__date=today, linie_productie=linia).values('cod_placa__cod_placa', 'multi_factor', 'linie_productie').annotate(
+            count=Count('cod_placa'), total=Count('cod_placa')*F('multi_factor')).order_by('cod_placa_id')
+    
+    context = count_total_productie(today_entries, 'today')
+    #print(context)
+    return JsonResponse({"data": context}, safe=False)
+
 
 def home(request):
-    return render(request, 'wave/home.html', context=today_total(5))
+    return render(request, 'wave/home.html')
 
 
 def realtimeview(request):
-    return render(request, 'wave/realtime.html', context=today_total(5))
+    return render(request, 'wave/realtime.html')
 
 
 def efficency_chart(request):
+    #print(linia)
     labels = {
-        'linia1': [],
-        'linia2': [],
-        'linia3': [],
-        'linia4': [],
-        'linia5': []
+        "1": [],
+        "2": [],
+        "3": [],
+        "4": [],
+        "5": []
+        }
+    datas = {
+        "1": [0],
+        "2": [0],
+        "3": [0],
+        "4": [0],
+        "5": [0]
     }
-    data = {
-        'linia1': [0],
-        'linia2': [0],
-        'linia3': [0],
-        'linia4': [0],
-        'linia5': [0]
-    }
+    
+    today = datetime.date.today()
+    
+    start_time = datetime.datetime.combine(datetime.date.today(), datetime.time(6,30))
+    
+    for i in range(1, 6):
+        j=0
+        time = start_time
+        now_time = datetime.datetime.combine(datetime.date.today(), datetime.datetime.now().time())
+        while time < now_time:
+            if j%2 == 0:
+                linia_query = Productie.objects.filter(data__date = today, data__hour = time.hour, data__minute__gt=30,  linie_productie = i).values('linie_productie').annotate(minutes_worked = Cast(Count('cod_placa_id')*F('cod_placa_id__min_placa')*F('multi_factor'), FloatField()))
+            else:
+                linia_query = Productie.objects.filter(data__date = today, data__hour = time.hour, data__minute__lte=30,  linie_productie = i).values('linie_productie').annotate(minutes_worked = Cast(Count('cod_placa_id')*F('cod_placa_id__min_placa')*F('multi_factor'), FloatField()))
 
-    linia1 = connection.cursor()
-    linia1.execute('''SELECT CONCAT(DATE_FORMAT(data, '%H:'), IF('30' > MINUTE(data), '00', '30')) AS 'Hour Interval',
-       SUM(min_placa*multiplication_factor) AS 'Minutes Worked'
-      FROM (select min_placa,data, multiplication_factor
-          from (select wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.linie_productie, wave_date_placi.multiplication_factor
-             from wave_productie
-                inner join wave_date_placi on wave_productie.cod_placa_id = wave_date_placi.id
-            where CAST(wave_productie.data as Date) = CAST(NOW() as Date)
-                and wave_productie.linie_productie = 1) as wpwdp) as asd
-              GROUP BY CONCAT(DATE_FORMAT(data, '%H:'), IF('30' > MINUTE(data), '00', '30'));''')
-    results_linia1 = sorted(linia1.fetchall())
-
-    for i in results_linia1:
-        labels["linia1"].append(i[0])
-        eficienta = i[1]*100/30
-        data["linia1"].append(eficienta)
-
-    linia2 = connection.cursor()
-    linia2.execute('''SELECT CONCAT(DATE_FORMAT(data, '%H:'), IF('30' > MINUTE(data), '00', '30')) AS 'Hour Interval',
-       SUM(min_placa*multiplication_factor) AS 'Minutes Worked'
-      FROM (select min_placa,data, multiplication_factor
-          from (select wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.linie_productie, wave_date_placi.multiplication_factor
-             from wave_productie
-                inner join wave_date_placi on wave_productie.cod_placa_id = wave_date_placi.id
-            where CAST(wave_productie.data as Date) = CAST(NOW() as Date)
-                and wave_productie.linie_productie = 2) as wpwdp) as asd
-              GROUP BY CONCAT(DATE_FORMAT(data, '%H:'), IF('30' > MINUTE(data), '00', '30'));''')
-    results_linia2 = sorted(linia2.fetchall())
-
-    for i in results_linia2:
-        labels["linia2"].append(i[0])
-        eficienta = i[1]*100/30
-        data["linia2"].append(eficienta)
-
-    linia3 = connection.cursor()
-    linia3.execute('''SELECT CONCAT(DATE_FORMAT(data, '%H:'), IF('30' > MINUTE(data), '00', '30')) AS 'Hour Interval',
-       SUM(min_placa*multiplication_factor) AS 'Minutes Worked'
-      FROM (select min_placa,data, multiplication_factor
-          from (select wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.linie_productie, wave_date_placi.multiplication_factor
-             from wave_productie
-                inner join wave_date_placi on wave_productie.cod_placa_id = wave_date_placi.id
-            where CAST(wave_productie.data as Date) = CAST(NOW() as Date)
-                and wave_productie.linie_productie = 3) as wpwdp) as asd
-              GROUP BY CONCAT(DATE_FORMAT(data, '%H:'), IF('30' > MINUTE(data), '00', '30'));''')
-    results_linia3 = sorted(linia3.fetchall())
-
-    for i in results_linia3:
-        labels["linia3"].append(i[0])
-        eficienta = i[1]*100/30
-        data["linia3"].append(eficienta)
+            #print(linia_query)
+            labels[str(i)].append(time.strftime('%H:%M'))
+            if linia_query:       
+                datas[str(i)].append((linia_query[0]['minutes_worked']*100)/30)
+            else:
+                datas[str(i)].append(0)
+            time += datetime.timedelta(minutes = 30)
+            j += 1
         
-    linia4 = connection.cursor()
-    linia4.execute('''SELECT CONCAT(DATE_FORMAT(data, '%H:'), IF('30' > MINUTE(data), '00', '30')) AS 'Hour Interval',
-       SUM(min_placa*multiplication_factor) AS 'Minutes Worked'
-      FROM (select min_placa,data, multiplication_factor
-          from (select wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.linie_productie, wave_date_placi.multiplication_factor
-             from wave_productie
-                inner join wave_date_placi on wave_productie.cod_placa_id = wave_date_placi.id
-            where CAST(wave_productie.data as Date) = CAST(NOW() as Date)
-                and wave_productie.linie_productie = 4) as wpwdp) as asd
-              GROUP BY CONCAT(DATE_FORMAT(data, '%H:'), IF('30' > MINUTE(data), '00', '30'));''')
-    results_linia4 = sorted(linia4.fetchall())
+        now_time = now_time.strftime('%M')
+        if int(now_time) != 0 and int(now_time) != 30:
+            min_worked = (30*datas[str(i)][-1])/100
+            datas[str(i)][-1] = (min_worked*100)/(int(now_time)-int(labels[str(i)][-1][-2:]))
+            
 
-    for i in results_linia4:
-        labels["linia4"].append(i[0])
-        eficienta = i[1]*100/30
-        data["linia4"].append(eficienta)
-        
-    linia5 = connection.cursor()
-    linia5.execute('''SELECT CONCAT(DATE_FORMAT(data, '%H:'), IF('30' > MINUTE(data), '00', '30')) AS 'Hour Interval',
-       SUM(min_placa*multiplication_factor) AS 'Minutes Worked'
-      FROM (select min_placa,data, multiplication_factor
-          from (select wave_date_placi.cod_placa, wave_date_placi.min_placa, wave_productie.data, wave_productie.linie_productie, wave_date_placi.multiplication_factor
-             from wave_productie
-                inner join wave_date_placi on wave_productie.cod_placa_id = wave_date_placi.id
-            where CAST(wave_productie.data as Date) = CAST(NOW() as Date)
-                and wave_productie.linie_productie = 5) as wpwdp) as asd
-              GROUP BY CONCAT(DATE_FORMAT(data, '%H:'), IF('30' > MINUTE(data), '00', '30'));''')
-    results_linia5 = sorted(linia5.fetchall())
+        now_time = datetime.datetime.now().strftime('%H:%M')
 
-    for i in results_linia5:
-        labels["linia5"].append(i[0])
-        eficienta = i[1]*100/30
-        data["linia5"].append(eficienta)
+        labels[str(i)].append(now_time)
 
     return JsonResponse(data={
         'labels': labels,
-        'data': data,
+        'data': datas,
     })
-
-
-
-
-
 def insert_data(request, linie, cod_placa):
     now = timezone.now()
 
