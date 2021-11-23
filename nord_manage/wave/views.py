@@ -3,7 +3,8 @@ from math import floor
 
 from django.core.mail import EmailMultiAlternatives
 from django.db import connection
-from django.db.models import Count, F
+from django.db.models import Count, F, FloatField
+from django.db.models.functions import Cast
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.template.loader import get_template
@@ -134,11 +135,11 @@ def liveData(request, linia):
 
 
 def home(request):
-    return render(request, 'wave/home.html', context=today_total(5))
+    return render(request, 'wave/home.html')
 
 
 def realtimeview(request):
-    return render(request, 'wave/realtime.html', context=today_total(5))
+    return render(request, 'wave/realtime.html')
 
 
 def efficency_chart(request):
@@ -168,13 +169,14 @@ def efficency_chart(request):
         now_time = datetime.datetime.combine(datetime.date.today(), datetime.datetime.now().time())
         while time < now_time:
             if j%2 == 0:
-                linia_query = Productie.objects.filter(data__date = today, data__hour = time.hour, data__minute__gt=30,  linie_productie = i).values('linie_productie').annotate(minutes_worked = Count('cod_placa_id__min_placa')*F('multi_factor'))
+                linia_query = Productie.objects.filter(data__date = today, data__hour = time.hour, data__minute__gt=30,  linie_productie = i).values('linie_productie').annotate(minutes_worked = Cast(Count('cod_placa_id')*F('cod_placa_id__min_placa')*F('multi_factor'), FloatField()))
             else:
-                linia_query = Productie.objects.filter(data__date = today, data__hour = time.hour, data__minute__lte=30,  linie_productie = i).values('linie_productie').annotate(minutes_worked = Count('cod_placa_id__min_placa')*F('multi_factor'))
+                linia_query = Productie.objects.filter(data__date = today, data__hour = time.hour, data__minute__lte=30,  linie_productie = i).values('linie_productie').annotate(minutes_worked = Cast(Count('cod_placa_id')*F('cod_placa_id__min_placa')*F('multi_factor'), FloatField()))
 
+            #print(linia_query)
             labels[str(i)].append(time.strftime('%H:%M'))
             if linia_query:       
-                datas[str(i)].append(linia_query[0]['minutes_worked']*100/30)
+                datas[str(i)].append((linia_query[0]['minutes_worked']*100)/30)
             else:
                 datas[str(i)].append(0)
             time += datetime.timedelta(minutes = 30)
@@ -182,8 +184,8 @@ def efficency_chart(request):
         
         now_time = now_time.strftime('%M')
         if int(now_time) != 0 and int(now_time) != 30:
-            min_worked = 30*datas[str(i)][-1]/100
-            datas[str(i)][-1] = min_worked*100/(int(now_time)-int(labels[str(i)][-1][-2:]))
+            min_worked = (30*datas[str(i)][-1])/100
+            datas[str(i)][-1] = (min_worked*100)/(int(now_time)-int(labels[str(i)][-1][-2:]))
             
 
         now_time = datetime.datetime.now().strftime('%H:%M')

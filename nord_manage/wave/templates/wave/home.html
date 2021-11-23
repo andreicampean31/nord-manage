@@ -451,9 +451,7 @@
           $('td', nRow).addClass('table-success');
         }
       },
-      "pageLength": 3
-    }).buttons().container().appendTo('#tableL1_wrapper .col-md-6:eq(0)');
-    $('#tableL1.1').DataTable({
+      "pageLength": 3,
       "paging": true,
       "lengthChange": false,
       "searching": true,
@@ -461,7 +459,8 @@
       "info": true,
       "autoWidth": false,
       "responsive": true,
-    });
+    }).buttons().container().appendTo('#tableL1_wrapper .col-md-6:eq(0)');
+
     var table = $("#tableL1").DataTable();
     setInterval(function (){
       table.ajax.reload(null, false);
@@ -739,7 +738,7 @@
   var charts = createCharts(['effChart1', 'effChart2', 'effChart3', 'effChart2A', 'effChart3A']);
 
   chartIt(charts);
-  setInterval(updateChart, 10000, charts);
+  setInterval(updateChart, 1000, charts);
 
   function createCharts(chartsIds){
     createdCharts = [];
@@ -753,6 +752,8 @@
           datasets: [{
             label: "Eficienta",
             data: [],
+            borderColor: "#0363ff",
+            lineTension: 0
           }]
         },
         options:{
