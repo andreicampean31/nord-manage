@@ -444,7 +444,6 @@
         {"data": "target"},
         {"data": "interval"},
         //{"data": "last"}
-        
       ],
       "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
         if (aData['last'] == "1") {
@@ -464,7 +463,7 @@
     var table = $("#tableL1").DataTable();
     setInterval(function (){
       table.ajax.reload(null, false);
-    }, 1000);
+    }, 10000);
   });
 </script>
 <!-- Page specific script - Tables 2 -->
@@ -519,7 +518,7 @@
     var table = $("#tableL2").DataTable();
     setInterval(function (){
       table.ajax.reload(null, false);
-    }, 1000);
+    }, 10000);
   });
 </script>
 <!-- Page specific script - Tables 3 -->
@@ -576,7 +575,7 @@
     var table = $("#tableL3").DataTable();
     setInterval(function (){
       table.ajax.reload(null, false);
-    }, 1000);
+    }, 10000);
   });
 </script>
 <!-- Page specific script - Table 2A-->
@@ -633,7 +632,7 @@
     var table = $("#tableL2A").DataTable();
     setInterval(function (){
       table.ajax.reload(null, false);
-    }, 1000);
+    }, 10000);
   });
 </script>
 <!-- Page specific script - Table 3A-->
@@ -688,7 +687,7 @@
     var table = $("#tableL3A").DataTable();
     setInterval(function (){
       table.ajax.reload(null, false);
-    }, 1000);
+    }, 10000);
   });
 </script>
 
@@ -808,7 +807,7 @@
   var charts = createCharts(['effChart1', 'effChart2', 'effChart3', 'effChart2A', 'effChart3A']);
 
   chartIt(charts);
-  setInterval(updateChart, 1000, charts);
+  setInterval(updateChart, 10000, charts);
 
   function createCharts(chartsIds){
     createdCharts = [];

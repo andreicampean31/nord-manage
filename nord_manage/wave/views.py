@@ -131,6 +131,18 @@ def liveData(request, linia):
     
     context = count_total_productie(today_entries, 'today')
     #print(context)
+    
+    if context == [None]:
+        context = [{
+            'id': "",
+            'cod_placa': "",
+            'total': "",
+            'target': "",
+            'interval': "",
+            'last': "",
+            'linia': ""
+        }]
+
     return JsonResponse({"data": context}, safe=False)
 
 
