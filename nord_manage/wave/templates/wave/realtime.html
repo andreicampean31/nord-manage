@@ -147,7 +147,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   
           ctx.setLineDash([15, 15]);
           ctx.strokeStyle = lineOpts.lineColor;
-          ctx.lineWidth = 2.5;
+          ctx.lineWidth = 4;
           ctx.beginPath();
           ctx.moveTo(xValueStart, yValueStart);
           ctx.lineTo(xValueEnd, yValueEnd);
@@ -157,7 +157,47 @@ scratch. This page gets rid of all links and provides the needed markup only.
         }
       }
     });
+    
+    Chart.pluginService.register({
+      beforeDraw: function (chartInstance, easing) {
+        var lineOpts = chartInstance.options.drawHorizontalLines;
+        if (lineOpts) {
   
+          var yAxis = chartInstance.scales["y-axis-0"];
+          var yValueStart = yAxis.getPixelForValue(lineOpts.lineY[0], 0, 0, true);
+          var yValueEnd = yAxis.getPixelForValue(lineOpts.lineY[1], 0, 0, true);
+  
+          var xAxis = chartInstance.scales["x-axis-0"];
+          var xValueStart = xAxis.getPixelForTick(0) - 5;
+          //var xValueEnd = xAxis.getPixelForTick(xAxis.ticks.length-1) + 15/*xAxis.right*/;
+          var xValueEnd = xAxis.right;
+  
+          //console.log('xValueEnd', xValueEnd);
+          //console.log('xAxis.ticks.length', xAxis.ticks.length);
+          //console.log(xAxis.getPixelForTick(xAxis.ticks.length - 1));
+  
+          var ctx = chartInstance.chart.ctx;
+          ctx.save();
+  
+          // le texte
+          ctx.font = lineOpts.textFont;
+          ctx.fillStyle = lineOpts.textColor;
+          ctx.fillText(lineOpts.text, lineOpts.textPosition, yValueStart + 8);
+  
+          // la ligne en pointillés
+  
+          ctx.setLineDash([15, 15]);
+          ctx.strokeStyle = lineOpts.lineColor;
+          ctx.lineWidth = 4;
+          ctx.beginPath();
+          ctx.moveTo(xValueStart, yValueStart);
+          ctx.lineTo(xValueEnd, yValueEnd);
+          ctx.stroke();
+  
+          ctx.restore();
+        }
+      }
+    });
 
   </script>
   <!-- Page specific script - area chart - chart.js 1 -->
@@ -169,7 +209,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     setInterval(working_code, 1000);
 
     chartIt(charts);
-    setInterval(updateChart, 10000, charts);
+    setInterval(updateChart, 1000, charts);
     
     function createCharts(chartsIds){
       createdCharts = [];
@@ -186,6 +226,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 label: "Eficienta L1",
                 data: [],
                 borderColor: "#0363ff",
+                borderWidth: 6,
                 backgroundColor: "transparent",
                 lineTension: 0,
               },
@@ -193,6 +234,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 label: "Eficienta L2",
                 data: [],
                 borderColor: "#db0b35",
+                borderWidth: 6,
                 backgroundColor: "transparent",
                 lineTension: 0,
               },
@@ -200,6 +242,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 label: "Eficienta L3",
                 data: [],
                 borderColor: "#b50bdb",
+                borderWidth: 6,
                 backgroundColor: "transparent",
                 lineTension: 0,
               },
@@ -207,6 +250,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 label: "Eficienta L2A",
                 data: [],
                 borderColor: "#69db0b",
+                borderWidth: 6,
                 backgroundColor: "transparent",
                 lineTension: 0,
               },
@@ -214,6 +258,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 label: "Eficienta L3A",
                 data: [],
                 borderColor: "#db960b",
+                borderWidth: 6,
                 backgroundColor: "transparent",
                 lineTension: 0,
               },
@@ -256,12 +301,20 @@ scratch. This page gets rid of all links and provides the needed markup only.
               textFont: '18px sans-serif',
               textColor: "rgba(50, 155, 255, 0.85)"
             },
+            drawHorizontalLines: {
+              lineY: [80, 80],
+              lineColor: "rgba(50, 155, 255, 0.85)",
+              text: '',
+              textPosition: 360,
+              textFont: '18px sans-serif',
+              textColor: "rgba(50, 155, 255, 0.85)"
+            },
             title:{
               display: true,
               text: "Grafic eficienta Wave",
               fontSize: 40,
             }
-          }
+          },
         })
         
         createdCharts.push(newChart);
@@ -369,7 +422,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
         
         //console.log(chart_len);
         //console.log(new_data_len);
-  
+
         if(chart_len < new_data_len){
           //console.log("new");
           chart.data.labels.pop();
@@ -378,7 +431,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
           let i=1;
           chart.data.datasets.forEach((dataset) => {
             dataset.data.pop();
-            dataset.data.push(datas["ys"][i]).at(-2);
+            dataset.data.push(datas["ys"][i].at(-2));
             dataset.data.push(datas["ys"][i].at(-1));
             i++;
           })
@@ -408,7 +461,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
       json_codeL1["data"].forEach((placa) => {
         if(placa["last"] == 1){
           const cod_placa_now = $("#tableL1 tbody tr").find("td:eq(0)").html();
-          console.log(cod_placa_now);
           if(placa["cod_placa"] != cod_placa_now){
             $("#tableL1 tbody tr").remove();
             $("#tableL1 tbody").append("<tr class=' '><td>"+ placa["cod_placa"] +"</td><td>" + placa["total"] + "</td><td>" + placa["interval"] + "</td></tr>")
@@ -422,7 +474,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
       json_codeL2["data"].forEach((placa) => {
         if(placa["last"] == 1){
           const cod_placa_now = $("#tableL2 tbody tr").find("td:eq(0)").html();
-          console.log(cod_placa_now);
           if(placa["cod_placa"] != cod_placa_now){
             $("#tableL2 tbody tr").remove();
             $("#tableL2 tbody").append("<tr class=' '><td>"+ placa["cod_placa"] +"</td><td>" + placa["total"] + "</td><td>" + placa["interval"] + "</td></tr>")
@@ -435,9 +486,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
       })
       json_codeL3["data"].forEach((placa) => {
         if(placa["last"] == 1){
-          const cod_placa_now = $("#tableL1 tbody tr").find("td:eq(0)").html();
-          console.log(cod_placa_now);
+          const cod_placa_now = $("#tableL3 tbody tr").find("td:eq(0)").html();
+          
           if(placa["cod_placa"] != cod_placa_now){
+            //console.log(placa["cod_placa"]);
             $("#tableL3 tbody tr").remove();
             $("#tableL3 tbody").append("<tr class=' '><td>"+ placa["cod_placa"] +"</td><td>" + placa["total"] + "</td><td>" + placa["interval"] + "</td></tr>")
           }
@@ -449,8 +501,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
       })
       json_codeL2A["data"].forEach((placa) => {
         if(placa["last"] == 1){
-          const cod_placa_now = $("#tableL1 tbody tr").find("td:eq(0)").html();
-          console.log(cod_placa_now);
+          const cod_placa_now = $("#tableL2A tbody tr").find("td:eq(0)").html();
           if(placa["cod_placa"] != cod_placa_now){
             $("#tableL2A tbody tr").remove();
             $("#tableL2A tbody").append("<tr class=' '><td>"+ placa["cod_placa"] +"</td><td>" + placa["total"] + "</td><td>" + placa["interval"] + "</td></tr>")
@@ -463,8 +514,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
       })
       json_codeL3A["data"].forEach((placa) => {
         if(placa["last"] == 1){
-          const cod_placa_now = $("#tableL1 tbody tr").find("td:eq(0)").html();
-          console.log(cod_placa_now);
+          const cod_placa_now = $("#tableL3A tbody tr").find("td:eq(0)").html();
           if(placa["cod_placa"] != cod_placa_now){
             $("#tableL3A tbody tr").remove();
             $("#tableL3A tbody").append("<tr class=' '><td>"+ placa["cod_placa"] +"</td><td>" + placa["total"] + "</td><td>" + placa["interval"] + "</td></tr>")
@@ -475,7 +525,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
           }   
         }
       })
-      console.log(json_codeL1["data"][0]);
+      //console.log(json_codeL1["data"][0]);
     }
   </script>
   <!-- Page specific script - Tables 1 -->
